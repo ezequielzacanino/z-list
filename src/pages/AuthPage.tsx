@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase'
 export function AuthPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [sent, setSent] = useState(false)
+  const [notice, setNotice] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   async function signIn(event: React.FormEvent) {
@@ -22,10 +22,20 @@ export function AuthPage() {
       options: { shouldCreateUser: false },
     })
     if (error) setError(error.message)
-    else setSent(true)
+    else setNotice(`Te mandamos un link a ${email} para entrar.`)
   }
 
-  if (sent) return <p className="notice">Te mandamos un link a {email}.</p>
+  // Recovery mail for whoever forgot the password or never set one.
+  async function resetPassword() {
+    setError(null)
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: location.origin,
+    })
+    if (error) setError(error.message)
+    else setNotice(`Te mandamos un link a ${email}. Al entrar, poné una contraseña nueva en Contraseña.`)
+  }
+
+  if (notice) return <p className="notice">{notice}</p>
 
   return (
     <form className="stack" onSubmit={signIn}>
@@ -49,6 +59,9 @@ export function AuthPage() {
       <button type="submit">Entrar</button>
       <button type="button" className="ghost" disabled={!email} onClick={sendLink}>
         Entrar con un link por email
+      </button>
+      <button type="button" className="ghost" disabled={!email} onClick={resetPassword}>
+        Olvidé mi contraseña
       </button>
       {error && <p className="error">{error}</p>}
     </form>

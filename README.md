@@ -14,9 +14,10 @@ App de listas compartidas con actualización en tiempo real:
 
 ## Uso
 
-- Se entra con email y contraseña. La contraseña se le pone a cada usuario desde
-  Authentication → Users en el panel de Supabase, donde también se crean las cuentas.
-  Queda un link por email como alternativa para una cuenta que todavía no tenga una.
+- Se entra con email y contraseña. Las cuentas se crean a mano en Authentication →
+  Users, donde el mismo formulario fija la contraseña inicial. Quien no la tenga o la
+  olvide usa **Olvidé mi contraseña**, o entra con un link por email; ya adentro,
+  **Contraseña** en el encabezado la define.
 - El botón `☾`/`☀` del encabezado cambia entre tema claro y oscuro; arranca en el del
   sistema y recuerda la elección en el dispositivo.
 - **Compartir** abre el panel de la lista: copia el link de invitación y muestra sus

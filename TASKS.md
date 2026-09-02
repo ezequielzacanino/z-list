@@ -6,7 +6,8 @@ con una línea en `PROJECT_LOG.md` si cambió una decisión.
 ## Hecho
 
 - [x] Esquema, RLS por membresía y realtime en Supabase.
-- [x] Login por email y contraseña, con link por email como alternativa.
+- [x] Login por email y contraseña, con link por email y recuperación por mail
+      como alternativas, y cambio de contraseña desde la app.
 - [x] Listas con preset, campos de carga rápida editables por lista.
 - [x] Ítems con todos los atributos en el detalle; zona de abiertos e historial.
 - [x] Reordenar ítems abiertos a mano.

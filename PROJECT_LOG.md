@@ -132,18 +132,21 @@ bundle.
 
 ## 2026-09-02 — Ingreso con contraseña y tema elegible
 
-**Resumen**: La pantalla de ingreso pide email y contraseña, y deja el link por email
-como alternativa para una cuenta sin contraseña puesta. El encabezado suma un botón
+**Resumen**: La pantalla de ingreso pide email y contraseña, y ofrece link por email
+y mail de recuperación para una cuenta sin contraseña puesta. Ya en sesión,
+**Contraseña** en el encabezado la cambia sin pasar por el panel de Supabase. El encabezado suma un botón
 que alterna tema claro y oscuro, guardado por dispositivo y pintado antes del primer
 cuadro por un script en `index.html`.
 
-**Archivos**: `src/pages/AuthPage.tsx`, `src/lib/theme.ts`, `src/hooks/useTheme.ts`,
+**Archivos**: `src/pages/AuthPage.tsx`, `src/hooks/usePassword.ts`,
+`src/components/PasswordPanel.tsx`, `src/lib/theme.ts`, `src/hooks/useTheme.ts`,
 `src/components/ThemeToggle.tsx`, `src/pages/ListsPage.tsx`, `src/styles.css`,
 `index.html`, `README.md`, `TASKS.md`.
 
 **Fundamento**: El link por email obliga a esperar el correo cada vez que un
 dispositivo abre la app sin sesión, y la sesión que crea queda en el navegador que
 abrió el link, no en la app instalada. La contraseña entra en el acto y la puede
-guardar el navegador. El envío de link pasa a `shouldCreateUser: false`, acorde con
+guardar el navegador. Que cada uno defina la suya evita que las credenciales pasen
+por un tercero al crear la cuenta. El envío de link pasa a `shouldCreateUser: false`, acorde con
 el alta de usuarios cerrada.
 

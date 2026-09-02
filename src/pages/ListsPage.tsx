@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useLists } from '../hooks/useLists'
+import { usePassword } from '../hooks/usePassword'
+import { PasswordPanel } from '../components/PasswordPanel'
 import { ThemeToggle } from '../components/ThemeToggle'
 import { presets } from '../lib/presets'
 import { supabase } from '../lib/supabase'
@@ -9,6 +11,8 @@ export function ListsPage({ userId }: { userId: string }) {
   const { lists, loading, error, createList } = useLists(userId)
   const [name, setName] = useState('')
   const [preset, setPreset] = useState('plain')
+  const [changingPassword, setChangingPassword] = useState(false)
+  const { error: passwordError, saved, updatePassword } = usePassword()
 
   async function submit(event: React.FormEvent) {
     event.preventDefault()
@@ -23,10 +27,17 @@ export function ListsPage({ userId }: { userId: string }) {
       <header className="row">
         <h1>Mis listas</h1>
         <ThemeToggle />
+        <button className="ghost" onClick={() => setChangingPassword(!changingPassword)}>
+          Contraseña
+        </button>
         <button className="ghost" onClick={() => supabase.auth.signOut()}>
           Salir
         </button>
       </header>
+
+      {changingPassword && (
+        <PasswordPanel saved={saved} error={passwordError} onSave={updatePassword} />
+      )}
 
       {error && <p className="error">{error}</p>}
 
