@@ -24,6 +24,7 @@
     "@vitejs/plugin-react": "^5.0.4",
     "supabase": "^2.116.0",
     "typescript": "^5.9.3",
+    "vercel": "^59.11.1",
     "vite": "^7.1.9"
   }
 }
