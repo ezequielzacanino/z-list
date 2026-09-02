@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useLists } from '../hooks/useLists'
+import { ThemeToggle } from '../components/ThemeToggle'
 import { presets } from '../lib/presets'
 import { supabase } from '../lib/supabase'
 
@@ -21,6 +22,7 @@ export function ListsPage({ userId }: { userId: string }) {
     <div className="stack">
       <header className="row">
         <h1>Mis listas</h1>
+        <ThemeToggle />
         <button className="ghost" onClick={() => supabase.auth.signOut()}>
           Salir
         </button>

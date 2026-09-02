@@ -6,7 +6,7 @@ con una línea en `PROJECT_LOG.md` si cambió una decisión.
 ## Hecho
 
 - [x] Esquema, RLS por membresía y realtime en Supabase.
-- [x] Login por link de email.
+- [x] Login por email y contraseña, con link por email como alternativa.
 - [x] Listas con preset, campos de carga rápida editables por lista.
 - [x] Ítems con todos los atributos en el detalle; zona de abiertos e historial.
 - [x] Reordenar ítems abiertos a mano.
@@ -41,6 +41,8 @@ con una línea en `PROJECT_LOG.md` si cambió una decisión.
       campo numérico.
 - [x] Ordenar la lista por prioridad además del orden manual, con un toggle en el
       encabezado. El orden elegido se guarda en la lista.
+
+- [x] Botón de tema claro/oscuro en el encabezado, recordado por dispositivo.
 
 ## Más adelante
 

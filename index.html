@@ -16,6 +16,12 @@
     <title>Z-list</title>
   </head>
   <body>
+    <script>
+      // Paints the stored theme, or the system one, before the first frame.
+      document.documentElement.dataset.theme =
+        localStorage.getItem('theme') ??
+        (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
