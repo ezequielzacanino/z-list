@@ -41,26 +41,18 @@ con una línea en `PROJECT_LOG.md` si cambió una decisión.
 - [x] Ordenar la lista por prioridad además del orden manual, con un toggle en el
       encabezado. El orden elegido se guarda en la lista.
 
-## Búsqueda en el marketplace
-
-Buscar el producto desde la app y guardarlo como opción, sin capa de afiliados: los
-términos del programa no pagan comisión por compra propia ni permiten compartir links
-en apps privadas.
-
-- [x] Verificar términos vigentes del programa de afiliados de Mercado Libre: 2-4% en
-      electrónica y electrodomésticos, hasta 8% en el resto, 0% en alimentos; ventana
-      de atribución de 30 días sobre cualquier compra; la autocompra no paga comisión
-      y no se pueden compartir links en grupos privados ni sitios no declarados.
-      Fuentes secundarias: la página oficial de términos responde 403.
-- [x] Verificar el acceso actual a la API de búsqueda de Mercado Libre: exige
-      aplicación registrada y token, `/sites/MLA/search` anónimo devuelve 403. Desde
-      el 30/08/2026 las aplicaciones de Mercado Libre y Mercado Pago van separadas.
-- [ ] Edge Function de búsqueda en el marketplace, con las credenciales del lado del
-      servidor.
-- [ ] Buscador dentro del detalle del ítem: resultados en la app, guardar el elegido
-      como opción con el permalink limpio.
-
 ## Más adelante
+
+Buscar en Mercado Libre desde el detalle del ítem y guardar el permalink limpio como
+opción. Postergado: mientras tanto los links se cargan a mano.
+
+- Los términos del programa de afiliados no pagan comisión por compra propia ni
+  permiten compartir links en apps privadas, así que no habría capa de afiliados.
+- La API exige aplicación registrada y token: `/sites/MLA/search` anónimo da 403.
+- No hay `client_credentials`: hace falta un token autorizado por una cuenta real,
+  que dura 6 horas y se renueva con un refresh token de un solo uso. Eso obliga a
+  persistir credenciales rotativas en una tabla vedada a los clientes, y a una
+  autorización manual inicial desde el navegador.
 
 - [ ] Generar las copias vencidas en el servidor con un cron, para que aparezcan aunque
       nadie abra la app. Habilita notificaciones.
