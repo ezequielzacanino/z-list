@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useLists } from '../hooks/useLists'
 import { usePassword } from '../hooks/usePassword'
@@ -8,13 +8,18 @@ import { ThemeToggle } from '../components/ThemeToggle'
 import { presets } from '../lib/presets'
 import { supabase } from '../lib/supabase'
 
-export function ListsPage({ userId }: { userId: string }) {
+export function ListsPage({ userId, recovery }: { userId: string; recovery: boolean }) {
   const { lists, loading, error, createList } = useLists(userId)
   const [name, setName] = useState('')
   const [preset, setPreset] = useState('plain')
   const [changingPassword, setChangingPassword] = useState(false)
   const { error: passwordError, saved, updatePassword } = usePassword()
   const push = usePush(userId)
+
+  // Arriving from a recovery mail, the panel to set the new password opens alone.
+  useEffect(() => {
+    if (recovery) setChangingPassword(true)
+  }, [recovery])
 
   async function submit(event: React.FormEvent) {
     event.preventDefault()

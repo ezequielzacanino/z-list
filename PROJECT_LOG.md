@@ -186,3 +186,17 @@ dispositivo que desinstaló o revocó el permiso, y la función lo borra. `servi
 necesita privilegios explícitos: RLS no interviene, pero sin `GRANT` Postgres rechaza
 la consulta igual.
 
+## 2026-09-02 — Los mails de auth vuelven al dominio actual
+
+**Resumen**: El Site URL del proyecto de Supabase pasa a `https://z-list.vercel.app`,
+que además entra en la lista de redirecciones permitidas junto con el dominio viejo y
+`localhost:5173`. Al volver de un mail de recuperación, la app abre sola el panel de
+contraseña.
+
+**Archivos**: `src/hooks/useSession.ts`, `src/App.tsx`, `src/pages/ListsPage.tsx`.
+
+**Fundamento**: El `redirectTo` que manda la app sólo vale si está en la lista
+permitida; fuera de ella Supabase cae al Site URL, que apuntaba al dominio anterior y
+daba 404. La configuración de auth vive en el proyecto de Supabase, no en el
+repositorio, así que el cambio queda registrado acá.
+

@@ -6,7 +6,7 @@ import { ListPage } from './pages/ListPage'
 import { JoinPage } from './pages/JoinPage'
 
 export function App() {
-  const { session, loading } = useSession()
+  const { session, loading, recovery } = useSession()
 
   if (loading) return <p className="notice">Cargando…</p>
   if (!session) return <AuthPage />
@@ -14,7 +14,7 @@ export function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<ListsPage userId={session.user.id} />} />
+        <Route path="/" element={<ListsPage userId={session.user.id} recovery={recovery} />} />
         <Route path="/lista/:listId" element={<ListPage userId={session.user.id} />} />
         <Route path="/unirse/:listId" element={<JoinPage userId={session.user.id} />} />
       </Routes>
