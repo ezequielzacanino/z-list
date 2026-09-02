@@ -1,20 +1,9 @@
 // Applies the pending migrations in supabase/migrations to the linked project.
 import { execSync } from 'node:child_process'
-import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { readEnvFile } from './db.mjs'
 
 const REQUIRED = ['SUPABASE_ACCESS_TOKEN', 'SUPABASE_DB_PASSWORD']
-
-// Reads the file as plain text, so shell characters in a value stay literal.
-function readEnvFile(path) {
-  return Object.fromEntries(
-    readFileSync(path, 'utf8')
-      .split('\n')
-      .map((line) => line.match(/^([A-Za-z_][A-Za-z0-9_]*)=(.*)$/))
-      .filter(Boolean)
-      .map(([, key, value]) => [key, value.trim().replace(/^"|"$/g, '')]),
-  )
-}
 
 const env = { ...process.env, ...readEnvFile('.env.local') }
 const missing = REQUIRED.filter((key) => !env[key])

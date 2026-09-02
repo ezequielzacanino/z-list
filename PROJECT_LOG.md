@@ -166,3 +166,23 @@ conviven porque el índice único sobre `source_item_id` acota a una copia por
 ocurrencia. La función es `security definer` para escribir sobre todas las listas, y
 se le revoca el `execute` a `authenticated` para que sólo la llame el cron.
 
+## 2026-09-02 — Notificaciones push de tareas vencidas
+
+**Resumen**: `push_subscriptions` guarda un dispositivo por endpoint, con RLS y
+privilegios propios, y cada usuario ve y borra sólo los suyos. `items.notified_at`
+marca lo ya avisado. La edge function `notify-due` manda un aviso por lista con las
+copias generadas sin avisar y estampa la marca; `pg_cron` la llama por `pg_net` a los
+5, 20, 35 y 50 de cada hora, con la URL y la anon key leídas del vault.
+
+**Archivos**: `supabase/migrations/0007_push.sql`, `0008_service_role_grants.sql`,
+`supabase/functions/notify-due/index.ts`, `public/sw.js`, `src/lib/push.ts`,
+`src/hooks/usePush.ts`, `src/pages/ListsPage.tsx`, `scripts/db.mjs`,
+`scripts/setup_push.mjs`, `scripts/query.mjs`, `scripts/push_migrations.mjs`.
+
+**Fundamento**: El aviso se agrupa por lista para que una lista con varias tareas
+vencidas no dispare una ristra de notificaciones. `notified_at` hace idempotente el
+envío ante llamadas repetidas de cron. Un endpoint que contesta 404 o 410 es un
+dispositivo que desinstaló o revocó el permiso, y la función lo borra. `service_role`
+necesita privilegios explícitos: RLS no interviene, pero sin `GRANT` Postgres rechaza
+la consulta igual.
+

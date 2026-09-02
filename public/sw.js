@@ -28,3 +28,29 @@ self.addEventListener('fetch', (event) => {
     ),
   )
 })
+
+self.addEventListener('push', (event) => {
+  const notice = event.data.json()
+  event.waitUntil(
+    self.registration.showNotification(notice.title, {
+      body: notice.body,
+      icon: '/icon-192.png',
+      badge: '/icon-192.png',
+      tag: notice.url,
+      data: { url: notice.url },
+    }),
+  )
+})
+
+// Opens the list the notice is about, reusing the window already open.
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close()
+  const { url } = event.notification.data
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window' }).then((windows) => {
+      const open = windows.find((client) => client.url.startsWith(self.location.origin))
+      return open ? open.focus().then(() => open.navigate(url)) : self.clients.openWindow(url)
+    }),
+  )
+})
+
