@@ -59,9 +59,12 @@ opción. Postergado: mientras tanto los links se cargan a mano.
 - [ ] Notificaciones push de tareas vencidas.
 - [ ] Invitación por email a un usuario concreto, en vez de link abierto.
 
-## Decisiones abiertas
+## Decisiones tomadas
 
-- Compartir por link significa que cualquiera con la URL entra. Sirve mientras sean
-  ustedes dos; revisar si la app sale de ese uso.
-- Un ítem recurrente sin completar no genera copias nuevas. Si una tarea vencida
-  debería insistir, hay que decidir con qué frecuencia.
+- **Compartir por link abierto**: quien tenga la URL `/unirse/<id>` entra a la lista.
+  Se mantiene. Con el alta de usuarios desactivada, el link sólo sirve a quien ya
+  tiene cuenta, y las cuentas se crean a mano; el universo de riesgo es la gente que
+  ya fue dada de alta. Revisar si la app deja de ser de uso privado.
+- **Un ítem recurrente vencido no insiste**: sigue habiendo una sola copia abierta,
+  sin importar cuántos ciclos pasaron. Se mantiene, para que una lista que nadie abre
+  por un tiempo no se llene de duplicados de la misma tarea.
