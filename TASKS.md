@@ -24,7 +24,8 @@ con una línea en `PROJECT_LOG.md` si cambió una decisión.
 - [x] Verificar que las copias por recurrencia aparezcan una sola vez cuando los dos
       abren la lista al mismo tiempo: garantizado por `items_source_item_id_key`, el
       índice único sobre `source_item_id`, confirmado en la base desplegada.
-- [x] Publicar en Vercel: https://listas-ebon-kappa.vercel.app (`npm run deploy`).
+- [x] Publicar en Vercel: https://z-list.vercel.app, con deploy automático en cada
+      push a `main`.
 
 ## Próximo
 

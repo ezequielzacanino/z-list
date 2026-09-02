@@ -116,3 +116,17 @@ compra propia y prohíben compartir links en apps privadas o sitios no declarado
 es exactamente el uso de esta app. Mantener el andamiaje sería código a sostener para
 un escenario que los propios términos bloquean.
 
+## 2026-09-01 — Publicación en z-list.vercel.app
+
+**Resumen**: La app se publica en https://z-list.vercel.app, desde un proyecto de
+Vercel nuevo conectado al repositorio: cada push a `main` despliega. El proyecto
+anterior quedaba en manos de otra cuenta del mismo equipo, y el plan Hobby rechaza
+todo deploy que no dispare su dueño, así que ningún build llegaba a arrancar.
+
+**Archivos**: `.vercel/project.json`, `TASKS.md`.
+
+**Fundamento**: Una sola identidad para git, GitHub y Vercel elimina el cruce de
+cuentas de raíz. Las claves de Supabase viven como variables del proyecto; la anon
+key se declara pública de forma explícita, que es lo que ya era al viajar en el
+bundle.
+
