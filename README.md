@@ -12,6 +12,10 @@ App de listas compartidas con actualización en tiempo real:
    Con el proyecto linkeado a la CLI, `npm run db:push` aplica las pendientes.
 4. `npm install && npm run dev`
 
+`node scripts/query.mjs "<sql>"` consulta la base del proyecto linkeado, con la
+contraseña de `.env.local`; sirve para mirar `cron.job_run_details` o el estado de una
+tabla sin abrir el panel.
+
 ## Uso
 
 - Se entra con email y contraseña. Las cuentas se crean a mano en Authentication →
@@ -26,7 +30,8 @@ App de listas compartidas con actualización en tiempo real:
   se puede alternar a orden por prioridad, elección que queda guardada en la lista.
 - Cada fila muestra quién agregó el ítem, sólo cuando lo agregó otra persona.
 - Un ítem con repetición reaparece arriba como copia (marcada con `↻`) cuando pasa el
-  intervalo desde que se tildó. La ocurrencia anterior queda en el historial. El
+  intervalo desde que se tildó, la genere el cron del servidor o la app al abrir la
+  lista. La ocurrencia anterior queda en el historial. El
   intervalo puede ser semanal, quincenal, mensual o libre en días.
 - **Campos** elige qué pide el formulario de carga rápida en esa lista. Cualquier
   atributo se puede poner igual entrando al ítem.

@@ -58,8 +58,9 @@ opción. Postergado: mientras tanto los links se cargan a mano.
   persistir credenciales rotativas en una tabla vedada a los clientes, y a una
   autorización manual inicial desde el navegador.
 
-- [ ] Generar las copias vencidas en el servidor con un cron, para que aparezcan aunque
-      nadie abra la app. Habilita notificaciones.
+- [x] Generar las copias vencidas en el servidor con un cron: `pg_cron` corre
+      `materialize_due_items()` cada 15 minutos. La app las sigue materializando al
+      abrir la lista; el índice único sobre `source_item_id` deja una sola copia.
 - [ ] Notificaciones push de tareas vencidas.
 - [ ] Invitación por email a un usuario concreto, en vez de link abierto.
 

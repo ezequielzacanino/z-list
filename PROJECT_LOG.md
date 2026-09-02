@@ -150,3 +150,19 @@ guardar el navegador. Que cada uno defina la suya evita que las credenciales pas
 por un tercero al crear la cuenta. El envío de link pasa a `shouldCreateUser: false`, acorde con
 el alta de usuarios cerrada.
 
+## 2026-09-02 — Copias de recurrencia generadas por el servidor
+
+**Resumen**: `pg_cron` corre `materialize_due_items()` cada 15 minutos, que inserta la
+copia de cada ocurrencia recurrente vencida sin copia previa, sin autor y al final de
+la zona de abiertos de su lista. La app sigue materializando al abrir la lista.
+`scripts/query.mjs` consulta la base del proyecto linkeado.
+
+**Archivos**: `supabase/migrations/0006_recurrence_cron.sql`, `scripts/query.mjs`,
+`package.json`, `README.md`, `TASKS.md`.
+
+**Fundamento**: Una lista que nadie abre dejaba de generar copias, y las
+notificaciones necesitan que el ítem exista antes de que alguien mire. Las dos vías
+conviven porque el índice único sobre `source_item_id` acota a una copia por
+ocurrencia. La función es `security definer` para escribir sobre todas las listas, y
+se le revoca el `execute` a `authenticated` para que sólo la llame el cron.
+
