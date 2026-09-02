@@ -62,13 +62,11 @@ uncompleted copy never piles up further copies.
 
 ## Outbound links
 
-Item option URLs are stored **clean**, exactly as the source gave them. Affiliate
-tags are appended when the user taps the link, never persisted on the row, so a
-saved link stays valid, attribution lands inside the program's window, and
-affiliation can be switched off without touching stored data.
+Item option URLs are stored **clean**, exactly as the source gave them, so a saved
+link stays valid and carries no tracking the user did not ask for.
 
 Any marketplace search runs in a Supabase Edge Function: marketplace credentials
-never reach the client. Affiliate links are disclosed as such in the UI.
+never reach the client.
 
 ## Stack
 

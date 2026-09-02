@@ -41,11 +41,11 @@ con una línea en `PROJECT_LOG.md` si cambió una decisión.
 - [x] Ordenar la lista por prioridad además del orden manual, con un toggle en el
       encabezado. El orden elegido se guarda en la lista.
 
-## Infraestructura de afiliados
+## Búsqueda en el marketplace
 
-Objetivo secundario: no se busca monetizar, pero la arquitectura queda lista por si
-la app escala. Regla vigente en `CLAUDE.md`: URLs guardadas limpias, tag aplicado al
-hacer clic.
+Buscar el producto desde la app y guardarlo como opción, sin capa de afiliados: los
+términos del programa no pagan comisión por compra propia ni permiten compartir links
+en apps privadas.
 
 - [x] Verificar términos vigentes del programa de afiliados de Mercado Libre: 2-4% en
       electrónica y electrodomésticos, hasta 8% en el resto, 0% en alimentos; ventana
@@ -55,15 +55,10 @@ hacer clic.
 - [x] Verificar el acceso actual a la API de búsqueda de Mercado Libre: exige
       aplicación registrada y token, `/sites/MLA/search` anónimo devuelve 403. Desde
       el 30/08/2026 las aplicaciones de Mercado Libre y Mercado Pago van separadas.
-Las tres tareas de afiliación quedan frenadas hasta resolver la decisión abierta de
-abajo; el buscador y la Edge Function se sostienen por sí solos.
-
 - [ ] Edge Function de búsqueda en el marketplace, con las credenciales del lado del
       servidor.
 - [ ] Buscador dentro del detalle del ítem: resultados en la app, guardar el elegido
       como opción con el permalink limpio.
-- [ ] Generar el link afiliado en el momento del clic.
-- [ ] Divulgación visible de que los links son afiliados.
 
 ## Más adelante
 
@@ -76,8 +71,5 @@ abajo; el buscador y la Edge Function se sostienen por sí solos.
 
 - Compartir por link significa que cualquiera con la URL entra. Sirve mientras sean
   ustedes dos; revisar si la app sale de ese uso.
-- La afiliación no aplica al uso previsto: los términos no pagan comisión por compra
-  propia y prohíben compartir links en apps privadas. Decidir si se construye igual
-  como andamiaje para un uso futuro, o se recorta a buscador sin capa de afiliados.
 - Un ítem recurrente sin completar no genera copias nuevas. Si una tarea vencida
   debería insistir, hay que decidir con qué frecuencia.

@@ -102,3 +102,17 @@ se regeneran con el durazno del acento nuevo, en lugar del verde original.
 dónde; el historial de la CLI sí. Las credenciales viven en `.env.local`, ignorado por
 git, y no viajan en la línea de comandos.
 
+## 2026-09-01 — Se descarta la capa de afiliados
+
+**Resumen**: Se elimina del alcance la afiliación: generar el link con tag al hacer
+clic y su divulgación en la UI. La regla de enlaces salientes en `CLAUDE.md` conserva
+las URLs limpias y la búsqueda dentro de una Edge Function, y pierde las cláusulas
+sobre tags de afiliado.
+
+**Archivos**: `CLAUDE.md`, `TASKS.md`.
+
+**Fundamento**: Los términos del programa de Mercado Libre no pagan comisión por
+compra propia y prohíben compartir links en apps privadas o sitios no declarados, que
+es exactamente el uso de esta app. Mantener el andamiaje sería código a sostener para
+un escenario que los propios términos bloquean.
+
