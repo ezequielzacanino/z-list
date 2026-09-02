@@ -20,22 +20,23 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #241d1b;
-    --surface: #2f2523;
-    --sunken: #322328;
-    --fg: #f2e4dc;
-    --muted: #a8918a;
-    --line: #3d302c;
-    --accent: #e08a68;
-    --accent-soft: #3a2a25;
-    --accent-line: #eba184;
-    --accent-ink: #2a1a15;
-    --pink-soft: #422b31;
-    --pink-ink: #dba9b5;
-    --danger: #e0897c;
-    --shadow: 0 2px 10px rgb(0 0 0 / 25%);
+    --bg: #14151e;
+    --surface: #1c1d29;
+    --sunken: #241f38;
+    --fg: #e7e7f2;
+    --muted: #9192ab;
+    --line: #2c2e3f;
+    --accent: #7d9c66;
+    --accent-soft: #23301c;
+    --accent-line: #93b47a;
+    --accent-ink: #121808;
+    --pink-soft: #2b2440;
+    --pink-ink: #bcabdf;
+    --danger: #e08c8c;
+    --shadow: 0 2px 10px rgb(0 0 0 / 35%);
   }
 }
+
 
 * {
   box-sizing: border-box;
@@ -309,6 +310,10 @@ ul {
   gap: 0.25rem;
   font-size: 0.8rem;
   color: var(--muted);
+}
+
+.options a {
+  color: var(--accent-line);
 }
 
 .options li {
