@@ -6,4 +6,5 @@ tsconfig.tsbuildinfo
 
 .vercel
 .env*
+!.env.example
 supabase/.temp
