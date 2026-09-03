@@ -16,7 +16,7 @@ export function ListPage({ userId }: { userId: string }) {
   const [openItemId, setOpenItemId] = useState<string | null>(null)
   const [editingFields, setEditingFields] = useState(false)
   const [sharing, setSharing] = useState(false)
-  const [copied, setCopied] = useState(false)
+  const [inviteNotice, setInviteNotice] = useState<string | null>(null)
   const navigate = useNavigate()
   const { list, error: listError, updateList } = useList(listId!)
   const { items, loading, error, addItem, updateItem, toggleItem, deleteItem, moveItem } = useItems(
@@ -24,16 +24,23 @@ export function ListPage({ userId }: { userId: string }) {
     userId,
   )
   const { names, error: namesError } = useProfiles()
-  const { memberIds, error: membersError, removeMember } = useMembers(listId!)
+  const {
+    memberIds,
+    error: membersError,
+    addMemberByEmail,
+    removeMember,
+  } = useMembers(listId!)
 
   // Attribution is shown only for items somebody else added.
   function authorName(item: Item) {
     return item.created_by && item.created_by !== userId ? names[item.created_by] : undefined
   }
 
-  function copyInvite() {
-    navigator.clipboard.writeText(`${location.origin}/unirse/${listId}`)
-    setCopied(true)
+  // Only an account that already exists can be added to the list.
+  async function invite(email: string) {
+    const added = await addMemberByEmail(email)
+    setInviteNotice(added ? 'Listo, ya tiene la lista.' : 'No hay ninguna cuenta con ese email.')
+    return added
   }
 
   // Leaving the list means losing access to it.
@@ -89,8 +96,8 @@ export function ListPage({ userId }: { userId: string }) {
           memberIds={memberIds}
           names={names}
           currentUserId={userId}
-          copied={copied}
-          onCopy={copyInvite}
+          notice={inviteNotice}
+          onInvite={invite}
           onRemove={remove}
         />
       )}

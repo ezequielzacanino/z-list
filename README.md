@@ -33,8 +33,8 @@ tabla sin abrir el panel.
   **Contraseña** en el encabezado la define.
 - El botón `☾`/`☀` del encabezado cambia entre tema claro y oscuro; arranca en el del
   sistema y recuerda la elección en el dispositivo.
-- **Compartir** abre el panel de la lista: copia el link de invitación y muestra sus
-  miembros, a cualquiera de los cuales se puede sacar.
+- **Compartir** abre el panel de la lista: invita por email a una cuenta que ya
+  exista y muestra sus miembros, a cualquiera de los cuales se puede sacar.
 - Los ítems abiertos van arriba, el historial de tildados abajo. El orden es manual y
   se puede alternar a orden por prioridad, elección que queda guardada en la lista.
 - Cada fila muestra quién agregó el ítem, sólo cuando lo agregó otra persona.

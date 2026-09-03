@@ -200,3 +200,22 @@ permitida; fuera de ella Supabase cae al Site URL, que apuntaba al dominio anter
 daba 404. La configuración de auth vive en el proyecto de Supabase, no en el
 repositorio, así que el cambio queda registrado acá.
 
+
+## 2026-09-03 — Invitación por email en lugar de link abierto
+
+**Resumen**: `add_member_by_email(list_id, email)` busca la cuenta en `auth.users` y la
+suma a `list_members`; corre como `security definer`, exige que quien llama ya sea
+miembro y sólo la ejecuta `authenticated`. La política de alta de miembros deja de
+aceptar el auto-alta y pide membresía previa. Desaparecen la pantalla `/unirse/<id>`
+y el botón de copiar link; el panel de Compartir pide un email.
+
+**Archivos**: `supabase/migrations/0009_invite_by_email.sql`, `0010_invite_execute.sql`,
+`src/components/SharePanel.tsx`, `src/hooks/useMembers.ts`, `src/pages/ListPage.tsx`,
+`src/App.tsx`, `src/pages/JoinPage.tsx` (borrado), `README.md`, `TASKS.md`.
+
+**Fundamento**: El link daba acceso a cualquiera que lo tuviera, dentro y fuera de la
+conversación donde se compartió; ahora el acceso se otorga por cuenta. El cliente no
+puede leer `auth.users`, así que la búsqueda vive en la base y devuelve sólo si el
+email tenía cuenta. Sin tabla de invitaciones pendientes: el alta de usuarios está
+desactivada y se hace a mano, así que una invitación a una cuenta inexistente no
+tendría a quién esperar.

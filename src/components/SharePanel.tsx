@@ -1,23 +1,41 @@
-// Invitation link and the people who already hold it.
+import { useState } from 'react'
+
+// The people on the list, and the email field that adds one more.
 export function SharePanel({
   memberIds,
   names,
   currentUserId,
-  copied,
-  onCopy,
+  notice,
+  onInvite,
   onRemove,
 }: {
   memberIds: string[]
   names: Record<string, string>
   currentUserId: string
-  copied: boolean
-  onCopy: () => void
+  notice: string | null
+  onInvite: (email: string) => Promise<boolean>
   onRemove: (userId: string) => void
 }) {
+  const [email, setEmail] = useState('')
+
+  async function submit(event: React.FormEvent) {
+    event.preventDefault()
+    if (await onInvite(email)) setEmail('')
+  }
+
   return (
     <div className="share stack">
-      <button onClick={onCopy}>Copiar link de invitación</button>
-      {copied && <p className="notice">Link copiado.</p>}
+      <form className="row" onSubmit={submit}>
+        <input
+          required
+          type="email"
+          placeholder="Invitar por email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+        />
+        <button type="submit">Invitar</button>
+      </form>
+      {notice && <p className="notice">{notice}</p>}
       <ul className="options">
         {memberIds.map((id) => (
           <li key={id}>

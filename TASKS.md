@@ -13,7 +13,7 @@ con una línea en `PROJECT_LOG.md` si cambió una decisión.
 - [x] Reordenar ítems abiertos a mano.
 - [x] Recurrencia por copia, materializada al abrir la lista.
 - [x] Opciones con links por ítem.
-- [x] Compartir lista por link de invitación.
+- [x] Compartir lista invitando por email a una cuenta existente.
 - [x] Privilegios de tabla para `authenticated` y errores de Supabase visibles en la UI.
 - [x] PWA instalable: manifest, service worker e íconos generados por script.
 
@@ -64,14 +64,15 @@ opción. Postergado: mientras tanto los links se cargan a mano.
 - [x] Notificaciones push de tareas vencidas: la función `notify-due` manda un aviso
       por lista con las copias nuevas y marca `items.notified_at`. Cada dispositivo se
       suscribe desde **Avisos**.
-- [ ] Invitación por email a un usuario concreto, en vez de link abierto.
+- [x] Invitación por email a un usuario concreto, en vez de link abierto: el panel de
+      Compartir pide un email y agrega a esa cuenta.
 
 ## Decisiones tomadas
 
-- **Compartir por link abierto**: quien tenga la URL `/unirse/<id>` entra a la lista.
-  Se mantiene. Con el alta de usuarios desactivada, el link sólo sirve a quien ya
-  tiene cuenta, y las cuentas se crean a mano; el universo de riesgo es la gente que
-  ya fue dada de alta. Revisar si la app deja de ser de uso privado.
+- **Compartir invitando por email**: sólo un miembro de la lista suma a otra cuenta,
+  y sólo si esa cuenta ya existe. No hay URL que dé acceso a quien la tenga ni
+  invitaciones pendientes: el alta de usuarios se hace a mano en Supabase y recién
+  después se invita.
 - **Un ítem recurrente vencido no insiste**: sigue habiendo una sola copia abierta,
   sin importar cuántos ciclos pasaron. Se mantiene, para que una lista que nadie abre
   por un tiempo no se llene de duplicados de la misma tarea.

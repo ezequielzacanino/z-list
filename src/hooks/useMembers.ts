@@ -20,6 +20,23 @@ export function useMembers(listId: string) {
     load()
   }, [load])
 
+  // Adds the account holding that email; false when no account has it.
+  const addMemberByEmail = useCallback(
+    async (email: string) => {
+      const { data, error } = await supabase.rpc('add_member_by_email', {
+        target_list_id: listId,
+        target_email: email,
+      })
+      if (error) {
+        setError(error.message)
+        return false
+      }
+      await load()
+      return data as boolean
+    },
+    [listId, load],
+  )
+
   const removeMember = useCallback(
     async (userId: string) => {
       const { error } = await supabase
@@ -33,5 +50,5 @@ export function useMembers(listId: string) {
     [listId, load],
   )
 
-  return { memberIds, error, removeMember }
+  return { memberIds, error, addMemberByEmail, removeMember }
 }
