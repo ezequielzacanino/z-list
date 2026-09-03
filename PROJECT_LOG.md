@@ -242,3 +242,21 @@ reenvío del mensaje de WhatsApp, que es un canal que la app no controla. El alt
 pública sigue cerrada: la cuenta la crea `service_role` sólo si un miembro invitó ese
 email, y el mail que la estrena es el mismo de recuperación, así que el invitado cae
 en el panel de contraseña que ya existía.
+
+## 2026-09-03 — Íconos por categoría derivados del nombre
+
+**Resumen**: Cada ítem muestra un ícono de línea según una de quince categorías más
+un genérico. La categoría se calcula del nombre en el cliente: no hay columna, ni
+migración, ni política nueva, y cambiar el diccionario reetiqueta todo el historial.
+El matcher resuelve frase exacta, bigrama exacto, bigrama difuso, token exacto y
+token difuso, con similitud de Dice sobre trigramas para tolerar errores de tipeo.
+
+**Archivos**: `src/lib/categoryTerms.ts`, `src/lib/categorize.ts`,
+`src/components/CategoryIcon.tsx`, `src/components/ItemRow.tsx`, `src/lib/types.ts`,
+`src/styles.css`.
+
+**Fundamento**: Guardar la categoría obligaría a resolverla al escribir y a arrastrar
+valores viejos cuando el diccionario mejore; derivarla la vuelve un detalle de
+presentación, sin superficie compartida. El paso difuso corre sobre bigramas antes
+que el exacto sobre tokens porque un nombre mal tipeado como "papel higenico" cae en
+papelería si gana la palabra suelta.

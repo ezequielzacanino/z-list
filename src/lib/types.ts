@@ -1,5 +1,24 @@
 export type QuickAddField = 'quantity' | 'priority' | 'notes' | 'recurrence' | 'options'
 
+// Icon buckets derived from the item name, never stored.
+export type Category =
+  | 'fruta'
+  | 'verdura'
+  | 'carne'
+  | 'pescado'
+  | 'lacteos'
+  | 'panaderia'
+  | 'bebidas'
+  | 'almacen'
+  | 'limpieza'
+  | 'higiene'
+  | 'hogar'
+  | 'ropa'
+  | 'mascota'
+  | 'tecnologia'
+  | 'papeleria'
+  | 'generico'
+
 export type Profile = {
   id: string
   display_name: string

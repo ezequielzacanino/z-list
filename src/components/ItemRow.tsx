@@ -1,4 +1,6 @@
+import { categorize } from '../lib/categorize'
 import type { Item } from '../lib/types'
+import { CategoryIcon } from './CategoryIcon'
 
 const priorityLabels: Record<number, string> = { 1: 'Alta', 2: 'Media', 3: 'Baja' }
 
@@ -18,6 +20,7 @@ export function ItemRow({
   return (
     <li className={item.source_item_id ? 'item generated' : 'item'}>
       <input type="checkbox" checked={Boolean(item.done_at)} onChange={onToggle} />
+      <CategoryIcon category={categorize(item.name)} />
       <button className="item-name" onClick={onOpen}>
         {item.name}
         {item.quantity && <span className="tag">{item.quantity}</span>}
