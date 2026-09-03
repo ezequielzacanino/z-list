@@ -6,9 +6,11 @@ const supabase = createClient(
   Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
 )
 
+// The browser rejects the call unless every header supabase-js attaches is allowed here.
 const cors = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, apikey, content-type',
+  'Access-Control-Allow-Headers':
+    'authorization, apikey, content-type, x-client-info, x-supabase-api-version',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
@@ -29,10 +31,10 @@ async function addToList(token: string, email: string) {
 Deno.serve(async (request) => {
   if (request.method === 'OPTIONS') return new Response(null, { headers: cors })
 
-  const { token, email, redirect_to } = await request.json()
-  if (!token || !email) return reply({ error: 'Falta el token o el email.' }, 400)
-
   try {
+    const { token, email, redirect_to } = await request.json()
+    if (!token || !email) return reply({ error: 'Falta el token o el email.' }, 400)
+
     if (await addToList(token, email)) return reply({ created: false })
 
     const { error } = await supabase.auth.admin.createUser({ email, email_confirm: true })
