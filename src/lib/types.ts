@@ -43,3 +43,12 @@ export type ItemOption = {
 
 export type ItemDraft = Pick<Item, 'name'> &
   Partial<Pick<Item, 'quantity' | 'priority' | 'notes' | 'recurrence_days'>>
+
+export type ListInvite = {
+  token: string
+  list_id: string
+  created_by: string
+  created_at: string
+  expires_at: string
+  revoked_at: string | null
+}

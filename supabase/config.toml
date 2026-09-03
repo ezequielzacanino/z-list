@@ -1,0 +1,5 @@
+project_id = "zacalistas"
+
+# Redeeming an invitation happens before the invited person has an account.
+[functions.invite-user]
+verify_jwt = false

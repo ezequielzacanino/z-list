@@ -219,3 +219,26 @@ puede leer `auth.users`, así que la búsqueda vive en la base y devuelve sólo 
 email tenía cuenta. Sin tabla de invitaciones pendientes: el alta de usuarios está
 desactivada y se hace a mano, así que una invitación a una cuenta inexistente no
 tendría a quién esperar.
+
+## 2026-09-03 — Invitaciones por token: mail al que no tiene cuenta y compartir por WhatsApp
+
+**Resumen**: `list_invites` guarda un token por invitación, con RLS por membresía, que
+vence a los 7 días y se anula desde el panel. `join_with_invite()` lo canjea por
+membresía y `add_member_by_invite()`, reservada a `service_role`, suma un email a la
+lista del token. La edge function pública `invite-user` crea la cuenta que falta y
+manda el mail de contraseña. Compartir ofrece invitar por email o abrir WhatsApp con
+el link, y `/unirse/<token>` entra sin sesión pidiendo un email.
+
+**Archivos**: `supabase/migrations/0011_invites.sql`, `0012_invite_execute.sql`,
+`supabase/functions/invite-user/index.ts`, `supabase/config.toml`,
+`src/lib/invites.ts`, `src/lib/types.ts`, `src/hooks/useInvites.ts`,
+`src/hooks/useJoin.ts`, `src/hooks/useMembers.ts`, `src/pages/JoinPage.tsx`,
+`src/pages/ListPage.tsx`, `src/App.tsx`, `src/components/SharePanel.tsx`,
+`scripts/deploy_functions.mjs`, `package.json`.
+
+**Fundamento**: El token es la credencial, así que la función no necesita sesión y la
+ruta de unirse queda fuera del muro de login. Que venza y se pueda anular acota el
+reenvío del mensaje de WhatsApp, que es un canal que la app no controla. El alta
+pública sigue cerrada: la cuenta la crea `service_role` sólo si un miembro invitó ese
+email, y el mail que la estrena es el mismo de recuperación, así que el invitado cae
+en el panel de contraseña que ya existía.

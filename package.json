@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "deploy": "vercel deploy --prod",
     "typecheck": "tsc --noEmit",
-    "db:push": "node scripts/push_migrations.mjs"
+    "db:push": "node scripts/push_migrations.mjs",
+    "functions:deploy": "node scripts/deploy_functions.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.58.0",

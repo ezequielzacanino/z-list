@@ -50,5 +50,5 @@ export function useMembers(listId: string) {
     [listId, load],
   )
 
-  return { memberIds, error, addMemberByEmail, removeMember }
+  return { memberIds, error, load, addMemberByEmail, removeMember }
 }

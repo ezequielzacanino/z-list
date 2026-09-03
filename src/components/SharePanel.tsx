@@ -1,19 +1,26 @@
 import { useState } from 'react'
+import type { ListInvite } from '../lib/types'
 
-// The people on the list, and the email field that adds one more.
+// Who is on the list, plus the two ways of adding somebody: by email or by WhatsApp.
 export function SharePanel({
   memberIds,
   names,
   currentUserId,
+  invites,
   notice,
   onInvite,
+  onShareOnWhatsApp,
+  onRevoke,
   onRemove,
 }: {
   memberIds: string[]
   names: Record<string, string>
   currentUserId: string
+  invites: ListInvite[]
   notice: string | null
   onInvite: (email: string) => Promise<boolean>
+  onShareOnWhatsApp: () => void
+  onRevoke: (token: string) => void
   onRemove: (userId: string) => void
 }) {
   const [email, setEmail] = useState('')
@@ -35,6 +42,9 @@ export function SharePanel({
         />
         <button type="submit">Invitar</button>
       </form>
+      <button className="ghost" onClick={onShareOnWhatsApp}>
+        Compartir por WhatsApp
+      </button>
       {notice && <p className="notice">{notice}</p>}
       <ul className="options">
         {memberIds.map((id) => (
@@ -44,6 +54,20 @@ export function SharePanel({
               {id === currentUserId && <span className="tag">vos</span>}
             </span>
             <button className="ghost" onClick={() => onRemove(id)} aria-label="Sacar de la lista">
+              ×
+            </button>
+          </li>
+        ))}
+        {invites.map((invite) => (
+          <li key={invite.token}>
+            <span className="row muted">
+              Link abierto, vence el {new Date(invite.expires_at).toLocaleDateString()}
+            </span>
+            <button
+              className="ghost"
+              onClick={() => onRevoke(invite.token)}
+              aria-label="Anular el link"
+            >
               ×
             </button>
           </li>

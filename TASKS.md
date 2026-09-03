@@ -66,13 +66,19 @@ opción. Postergado: mientras tanto los links se cargan a mano.
       suscribe desde **Avisos**.
 - [x] Invitación por email a un usuario concreto, en vez de link abierto: el panel de
       Compartir pide un email y agrega a esa cuenta.
+- [x] Invitar por email a alguien sin cuenta: la edge function `invite-user` se la crea
+      y le manda el mail para poner su contraseña.
+- [x] Compartir por WhatsApp con un link de invitación por token, que vence a los 7
+      días y se anula desde el panel.
 
 ## Decisiones tomadas
 
-- **Compartir invitando por email**: sólo un miembro de la lista suma a otra cuenta,
-  y sólo si esa cuenta ya existe. No hay URL que dé acceso a quien la tenga ni
-  invitaciones pendientes: el alta de usuarios se hace a mano en Supabase y recién
-  después se invita.
+- **El alta pública sigue desactivada**: las cuentas nuevas las crea un miembro
+  invitando, por email o por el link de WhatsApp. Nadie se registra solo entrando a la
+  app.
+- **El link de WhatsApp es un token, no la lista**: da acceso a una lista, vence a los
+  7 días y se anula desde el panel. Si el mensaje se reenvía, quien lo reciba entra
+  hasta que se anule el link, así que para un solo destinatario conviene el email.
 - **Un ítem recurrente vencido no insiste**: sigue habiendo una sola copia abierta,
   sin importar cuántos ciclos pasaron. Se mantiene, para que una lista que nadie abre
   por un tiempo no se llene de duplicados de la misma tarea.

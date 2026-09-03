@@ -4,11 +4,13 @@ import { useItems } from '../hooks/useItems'
 import { useList } from '../hooks/useList'
 import { useProfiles } from '../hooks/useProfiles'
 import { useMembers } from '../hooks/useMembers'
+import { useInvites } from '../hooks/useInvites'
 import { ItemDetail } from '../components/ItemDetail'
 import { ItemRow } from '../components/ItemRow'
 import { QuickAdd } from '../components/QuickAdd'
 import { SharePanel } from '../components/SharePanel'
 import { fieldLabels } from '../lib/presets'
+import { inviteUrl } from '../lib/invites'
 import type { Item, QuickAddField } from '../lib/types'
 
 export function ListPage({ userId }: { userId: string }) {
@@ -27,20 +29,43 @@ export function ListPage({ userId }: { userId: string }) {
   const {
     memberIds,
     error: membersError,
+    load: reloadMembers,
     addMemberByEmail,
     removeMember,
   } = useMembers(listId!)
+  const {
+    invites,
+    error: invitesError,
+    createInvite,
+    inviteByEmail,
+    revokeInvite,
+  } = useInvites(listId!, userId)
 
   // Attribution is shown only for items somebody else added.
   function authorName(item: Item) {
     return item.created_by && item.created_by !== userId ? names[item.created_by] : undefined
   }
 
-  // Only an account that already exists can be added to the list.
+  // An account already open joins on the spot; one that does not exist gets a mail.
   async function invite(email: string) {
-    const added = await addMemberByEmail(email)
-    setInviteNotice(added ? 'Listo, ya tiene la lista.' : 'No hay ninguna cuenta con ese email.')
-    return added
+    if (await addMemberByEmail(email)) {
+      setInviteNotice('Listo, ya tiene la lista.')
+      return true
+    }
+    const mailed = await inviteByEmail(email)
+    if (mailed) {
+      setInviteNotice(`Le mandamos un mail a ${email} para que cree su cuenta.`)
+      await reloadMembers()
+    }
+    return mailed
+  }
+
+  // WhatsApp carries a link that opens this invitation alone, revocable from the panel.
+  async function shareOnWhatsApp() {
+    const token = await createInvite()
+    if (!token) return
+    const text = `Te comparto la lista "${list!.name}": ${inviteUrl(token)}`
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank')
   }
 
   // Leaving the list means losing access to it.
@@ -90,14 +115,18 @@ export function ListPage({ userId }: { userId: string }) {
       {error && <p className="error">{error}</p>}
       {namesError && <p className="error">{namesError}</p>}
       {membersError && <p className="error">{membersError}</p>}
+      {invitesError && <p className="error">{invitesError}</p>}
 
       {sharing && (
         <SharePanel
           memberIds={memberIds}
           names={names}
           currentUserId={userId}
+          invites={invites}
           notice={inviteNotice}
           onInvite={invite}
+          onShareOnWhatsApp={shareOnWhatsApp}
+          onRevoke={revokeInvite}
           onRemove={remove}
         />
       )}

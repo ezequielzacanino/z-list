@@ -10,14 +10,17 @@ App de listas compartidas con actualización en tiempo real:
    `VITE_SUPABASE_ANON_KEY` (Project Settings → API).
 3. Aplicar las migraciones de `supabase/migrations/`, en orden, desde el SQL Editor.
    Con el proyecto linkeado a la CLI, `npm run db:push` aplica las pendientes.
-4. `npm install && npm run dev`
+4. `npm run functions:deploy` publica las edge functions de `supabase/functions/`.
+5. En Authentication → URL Configuration, la URL de la app tiene que estar entre las
+   redirecciones permitidas: es a donde vuelve el invitado a poner su contraseña.
+6. `npm install && npm run dev`
 
 Para las notificaciones push, una vez por proyecto:
 
 1. Generar un par de claves VAPID; la pública va a `VITE_VAPID_PUBLIC_KEY` en `.env` y
    en las variables de Vercel, la privada queda sólo en Supabase.
 2. `supabase secrets set VAPID_PUBLIC_KEY=… VAPID_PRIVATE_KEY=… VAPID_SUBJECT=…`
-3. `supabase functions deploy notify-due`
+3. `npm run functions:deploy`
 4. `node scripts/setup_push.mjs`, que guarda en el vault la URL y la anon key con las
    que el cron llama a la función.
 
@@ -33,8 +36,11 @@ tabla sin abrir el panel.
   **Contraseña** en el encabezado la define.
 - El botón `☾`/`☀` del encabezado cambia entre tema claro y oscuro; arranca en el del
   sistema y recuerda la elección en el dispositivo.
-- **Compartir** abre el panel de la lista: invita por email a una cuenta que ya
-  exista y muestra sus miembros, a cualquiera de los cuales se puede sacar.
+- **Compartir** abre el panel de la lista. Invitar por email suma a la cuenta que ya
+  exista; si no existe, le crea una y le manda un mail para que ponga su contraseña.
+  **Compartir por WhatsApp** abre WhatsApp con un mensaje que lleva un link de
+  invitación, que vence a los 7 días y se anula desde el mismo panel. El panel lista
+  los miembros y las invitaciones vivas, y de las dos cosas se puede sacar a alguien.
 - Los ítems abiertos van arriba, el historial de tildados abajo. El orden es manual y
   se puede alternar a orden por prioridad, elección que queda guardada en la lista.
 - Cada fila muestra quién agregó el ítem, sólo cuando lo agregó otra persona.
