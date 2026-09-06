@@ -273,3 +273,18 @@ creador y las claves foráneas ya eran `on delete cascade`.
 **Fundamento**: El borrado le saca la lista a todos sus miembros, así que vive en la
 pantalla de la lista y no en el índice, donde un toque errado sobre una tarjeta sería
 irreversible.
+
+## 2026-09-06 — Ícono de la lista en la pantalla del teléfono
+
+**Resumen**: La pantalla de una lista ofrece "Al inicio". Mientras la lista está
+abierta, el `<link rel="manifest">` apunta a un manifest generado en el cliente con
+`id` y `start_url` propios de esa lista, así que cada lista se instala como un ícono
+distinto que abre directo esa lista. Donde el navegador expone `beforeinstallprompt`
+el botón lo dispara; donde no (iOS), muestra la instrucción del menú del navegador.
+
+**Archivos**: `src/lib/homescreen.ts`, `src/hooks/useHomeScreen.ts`,
+`src/components/HomeScreenHint.tsx`, `src/pages/ListPage.tsx`.
+
+**Fundamento**: El manifest estático apunta a la raíz y da un solo ícono para toda la
+app. Generarlo por lista en el cliente evita un endpoint dinámico y mantiene el
+hosting estático; el manifest de la raíz vuelve al desmontar la pantalla.

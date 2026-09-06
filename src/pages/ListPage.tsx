@@ -5,12 +5,15 @@ import { useList } from '../hooks/useList'
 import { useProfiles } from '../hooks/useProfiles'
 import { useMembers } from '../hooks/useMembers'
 import { useInvites } from '../hooks/useInvites'
+import { useHomeScreen } from '../hooks/useHomeScreen'
 import { ItemDetail } from '../components/ItemDetail'
 import { ItemRow } from '../components/ItemRow'
 import { QuickAdd } from '../components/QuickAdd'
+import { HomeScreenHint } from '../components/HomeScreenHint'
 import { SharePanel } from '../components/SharePanel'
 import { fieldLabels } from '../lib/presets'
 import { inviteUrl } from '../lib/invites'
+import { isStandalone } from '../lib/homescreen'
 import type { Item, QuickAddField } from '../lib/types'
 
 export function ListPage({ userId }: { userId: string }) {
@@ -20,6 +23,7 @@ export function ListPage({ userId }: { userId: string }) {
   const [sharing, setSharing] = useState(false)
   const [inviteNotice, setInviteNotice] = useState<string | null>(null)
   const [confirmingDelete, setConfirmingDelete] = useState(false)
+  const [showingHint, setShowingHint] = useState(false)
   const navigate = useNavigate()
   const { list, error: listError, updateList, deleteList } = useList(listId!)
   const { items, loading, error, addItem, updateItem, toggleItem, deleteItem, moveItem } = useItems(
@@ -41,6 +45,7 @@ export function ListPage({ userId }: { userId: string }) {
     inviteByEmail,
     revokeInvite,
   } = useInvites(listId!, userId)
+  const homeScreen = useHomeScreen(listId!, list?.name ?? '')
 
   // Attribution is shown only for items somebody else added.
   function authorName(item: Item) {
@@ -110,6 +115,16 @@ export function ListPage({ userId }: { userId: string }) {
         <button className="ghost" onClick={() => setEditingFields(!editingFields)}>
           Campos
         </button>
+        {!isStandalone() && (
+          <button
+            className="ghost"
+            onClick={() =>
+              homeScreen.canInstall ? homeScreen.install() : setShowingHint(!showingHint)
+            }
+          >
+            Al inicio
+          </button>
+        )}
         <button
           className="toggle"
           onClick={() => updateList({ sort_by_priority: !list.sort_by_priority })}
@@ -122,6 +137,8 @@ export function ListPage({ userId }: { userId: string }) {
       {namesError && <p className="error">{namesError}</p>}
       {membersError && <p className="error">{membersError}</p>}
       {invitesError && <p className="error">{invitesError}</p>}
+
+      {showingHint && <HomeScreenHint />}
 
       {sharing && (
         <SharePanel
