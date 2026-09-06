@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { STEP } from '../lib/ordering'
 import { supabase } from '../lib/supabase'
 import type { ItemOption } from '../lib/types'
 
@@ -33,7 +34,9 @@ export function useItemOptions(itemId: string) {
 
   const addOption = useCallback(
     async (label: string, url: string) => {
-      const position = options.length ? Math.max(...options.map((o) => o.position)) + 1024 : 1024
+      const position = options.length
+        ? Math.max(...options.map((option) => option.position)) + STEP
+        : STEP
       const { error } = await supabase
         .from('item_options')
         .insert({ item_id: itemId, label, url: url || null, position })

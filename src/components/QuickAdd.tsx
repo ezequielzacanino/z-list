@@ -1,22 +1,25 @@
 import { useState } from 'react'
 import { RecurrenceSelect } from './RecurrenceSelect'
-import type { ItemDraft, QuickAddField } from '../lib/types'
+import type { ItemDraft, OptionDraft, QuickAddField } from '../lib/types'
 
 const emptyDraft: ItemDraft = { name: '' }
+const emptyOption: OptionDraft = { label: '', url: '' }
 
 export function QuickAdd({
   fields,
   onAdd,
 }: {
   fields: QuickAddField[]
-  onAdd: (draft: ItemDraft) => Promise<void>
+  onAdd: (draft: ItemDraft, option?: OptionDraft) => Promise<void>
 }) {
   const [draft, setDraft] = useState<ItemDraft>(emptyDraft)
+  const [option, setOption] = useState<OptionDraft>(emptyOption)
 
   async function submit(event: React.FormEvent) {
     event.preventDefault()
-    await onAdd(draft)
+    await onAdd(draft, option.label ? option : undefined)
     setDraft(emptyDraft)
+    setOption(emptyOption)
   }
 
   return (
@@ -58,6 +61,21 @@ export function QuickAdd({
           value={draft.notes ?? ''}
           onChange={(event) => setDraft({ ...draft, notes: event.target.value })}
         />
+      )}
+      {fields.includes('options') && (
+        <>
+          <input
+            placeholder="Opción"
+            value={option.label}
+            onChange={(event) => setOption({ ...option, label: event.target.value })}
+          />
+          <input
+            type="url"
+            placeholder="Link"
+            value={option.url}
+            onChange={(event) => setOption({ ...option, url: event.target.value })}
+          />
+        </>
       )}
       <button type="submit">+</button>
     </form>

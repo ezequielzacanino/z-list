@@ -55,18 +55,22 @@ export function SharePanel({
               {names[id] ?? 'Sin nombre'}
               {id === currentUserId && <span className="tag">vos</span>}
             </span>
-            {id === currentUserId ? (
-              // The creator keeps the list and deletes it from its own button.
-              id !== ownerId && (
-                <button className="ghost" onClick={() => onRemove(id)}>
-                  Salir de la lista
-                </button>
-              )
-            ) : (
-              <button className="ghost" onClick={() => onRemove(id)} aria-label="Sacar de la lista">
-                ×
-              </button>
-            )}
+            {id === currentUserId
+              ? // The creator keeps the list and deletes it from its own button.
+                id !== ownerId && (
+                  <button className="ghost" onClick={() => onRemove(id)}>
+                    Salir de la lista
+                  </button>
+                )
+              : currentUserId === ownerId && (
+                  <button
+                    className="ghost"
+                    onClick={() => onRemove(id)}
+                    aria-label="Sacar de la lista"
+                  >
+                    ×
+                  </button>
+                )}
           </li>
         ))}
         {invites.map((invite) => (

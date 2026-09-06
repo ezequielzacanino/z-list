@@ -331,3 +331,22 @@ mail ya venció o se usó, en lugar de dejar la pantalla de login sin explicaci�
 estaba vencido, si el mail estaba mal escrito o si la contraseña no coincidía: todo
 se veía igual. El fragmento se lee al evaluar el módulo porque el cliente de Supabase
 lo borra apenas procesa la URL.
+
+## 2026-09-06 — Escritura por foco, opciones en la carga rápida y bajas acotadas
+
+**Resumen**: Los campos de texto del detalle guardan al perder el foco en vez de por
+tecla. La carga rápida dibuja el par opción + link que el preset de compras pendientes
+declaraba sin renderizar, y `addItem` guarda esa opción después de crear el ítem.
+`list_members_delete` pasa a permitir que el creador saque a cualquiera menos a sí
+mismo, y que los demás se saquen sólo a ellos mismos.
+
+**Archivos**: `supabase/migrations/0013_member_removal.sql`,
+`src/components/DraftInput.tsx`, `src/components/ItemDetail.tsx`,
+`src/components/QuickAdd.tsx`, `src/components/SharePanel.tsx`,
+`src/hooks/useItems.ts`, `src/hooks/useItemOptions.ts`, `src/lib/ordering.ts`,
+`src/lib/types.ts`, `src/styles.css`.
+
+**Fundamento**: Escribir por tecla generaba un UPDATE, un evento de realtime y una
+recarga completa por carácter en cada dispositivo, y las respuestas viejas pisaban lo
+que se estaba tipeando. La política anterior dejaba que cualquier miembro sacara al
+creador, y la lista quedaba sin nadie que pudiera abrirla ni borrarla.

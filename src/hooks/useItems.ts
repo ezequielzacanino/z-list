@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
-import { nextPosition, positionBetween } from '../lib/ordering'
+import { firstPosition, nextPosition, positionBetween } from '../lib/ordering'
 import { copyOf, dueOccurrences } from '../lib/recurrence'
-import type { Item, ItemDraft } from '../lib/types'
+import type { Item, ItemDraft, OptionDraft } from '../lib/types'
 
 export function useItems(listId: string, userId: string | undefined) {
   const [items, setItems] = useState<Item[]>([])
@@ -62,12 +62,26 @@ export function useItems(listId: string, userId: string | undefined) {
     // Runs on open and after each reload, never on local optimistic state.
   }, [loading]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // The option, when the quick-add form asks for one, needs the item to exist first.
   const addItem = useCallback(
-    async (draft: ItemDraft) => {
-      const { error } = await supabase
+    async (draft: ItemDraft, option?: OptionDraft) => {
+      const { data, error } = await supabase
         .from('items')
         .insert({ ...draft, list_id: listId, created_by: userId, position: nextPosition(items) })
-      if (error) setError(error.message)
+        .select('id')
+        .single()
+      if (error) {
+        setError(error.message)
+        return
+      }
+      if (!option) return
+      const { error: optionError } = await supabase.from('item_options').insert({
+        item_id: (data as { id: string }).id,
+        label: option.label,
+        url: option.url || null,
+        position: firstPosition(),
+      })
+      if (optionError) setError(optionError.message)
     },
     [listId, userId, items],
   )

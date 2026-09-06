@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useItemOptions } from '../hooks/useItemOptions'
+import { DraftInput } from './DraftInput'
 import { RecurrenceSelect } from './RecurrenceSelect'
 import type { Item } from '../lib/types'
 
@@ -29,7 +30,7 @@ export function ItemDetail({
   return (
     <div className="sheet">
       <header className="row">
-        <input value={item.name} onChange={(event) => onUpdate({ name: event.target.value })} />
+        <DraftInput value={item.name} onCommit={(name) => onUpdate({ name })} />
         <button className="ghost" onClick={onClose}>
           Cerrar
         </button>
@@ -37,9 +38,9 @@ export function ItemDetail({
 
       <label>
         Cantidad
-        <input
+        <DraftInput
           value={item.quantity ?? ''}
-          onChange={(event) => onUpdate({ quantity: event.target.value || null })}
+          onCommit={(quantity) => onUpdate({ quantity: quantity || null })}
         />
       </label>
 
@@ -66,9 +67,10 @@ export function ItemDetail({
 
       <label>
         Especificaciones
-        <textarea
+        <DraftInput
+          multiline
           value={item.notes ?? ''}
-          onChange={(event) => onUpdate({ notes: event.target.value || null })}
+          onCommit={(notes) => onUpdate({ notes: notes || null })}
         />
       </label>
 

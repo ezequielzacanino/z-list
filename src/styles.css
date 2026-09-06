@@ -213,6 +213,12 @@ ul {
   flex-wrap: wrap;
 }
 
+/* Quick-add fields wrap onto another line instead of shrinking to slivers. */
+.quick-add input:not(.narrow),
+.quick-add select {
+  min-width: 8rem;
+}
+
 .items .item {
   display: flex;
   align-items: center;

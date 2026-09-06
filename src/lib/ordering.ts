@@ -1,6 +1,11 @@
 import type { Item } from './types'
 
-const STEP = 1024
+export const STEP = 1024
+
+// Position for the first row of an empty ordered set.
+export function firstPosition(): number {
+  return STEP
+}
 
 // Position for a new item appended to the open zone.
 export function nextPosition(items: Item[]): number {

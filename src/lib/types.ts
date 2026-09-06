@@ -60,6 +60,9 @@ export type ItemOption = {
   created_at: string
 }
 
+// The single option a quick-add form can carry, saved once the item exists.
+export type OptionDraft = { label: string; url: string }
+
 export type ItemDraft = Pick<Item, 'name'> &
   Partial<Pick<Item, 'quantity' | 'priority' | 'notes' | 'recurrence_days'>>
 
