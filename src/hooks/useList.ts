@@ -37,5 +37,12 @@ export function useList(listId: string) {
     [listId],
   )
 
-  return { list, error, updateList }
+  // Cascades over members, items and invites; only the creator passes the policy.
+  const deleteList = useCallback(async () => {
+    const { error } = await supabase.from('lists').delete().eq('id', listId)
+    if (error) setError(error.message)
+    return !error
+  }, [listId])
+
+  return { list, error, updateList, deleteList }
 }

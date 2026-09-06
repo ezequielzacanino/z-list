@@ -19,8 +19,9 @@ export function ListPage({ userId }: { userId: string }) {
   const [editingFields, setEditingFields] = useState(false)
   const [sharing, setSharing] = useState(false)
   const [inviteNotice, setInviteNotice] = useState<string | null>(null)
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
   const navigate = useNavigate()
-  const { list, error: listError, updateList } = useList(listId!)
+  const { list, error: listError, updateList, deleteList } = useList(listId!)
   const { items, loading, error, addItem, updateItem, toggleItem, deleteItem, moveItem } = useItems(
     listId!,
     userId,
@@ -72,6 +73,11 @@ export function ListPage({ userId }: { userId: string }) {
   async function remove(memberId: string) {
     await removeMember(memberId)
     if (memberId === userId) navigate('/')
+  }
+
+  // Deleting takes the list away from everyone, so it asks once before going.
+  async function removeList() {
+    if (await deleteList()) navigate('/')
   }
 
   function toggleField(field: QuickAddField) {
@@ -181,6 +187,22 @@ export function ListPage({ userId }: { userId: string }) {
           </ul>
         </section>
       )}
+
+      {list.created_by === userId &&
+        (confirmingDelete ? (
+          <div className="row">
+            <button className="danger" onClick={removeList}>
+              Borrar la lista y todo lo que tiene
+            </button>
+            <button className="ghost" onClick={() => setConfirmingDelete(false)}>
+              Cancelar
+            </button>
+          </div>
+        ) : (
+          <button className="danger" onClick={() => setConfirmingDelete(true)}>
+            Borrar la lista
+          </button>
+        ))}
 
       {openItem && (
         <ItemDetail

@@ -260,3 +260,16 @@ valores viejos cuando el diccionario mejore; derivarla la vuelve un detalle de
 presentación, sin superficie compartida. El paso difuso corre sobre bigramas antes
 que el exacto sobre tokens porque un nombre mal tipeado como "papel higenico" cae en
 papelería si gana la palabra suelta.
+
+## 2026-09-06 — Borrar una lista desde su pantalla
+
+**Resumen**: La pantalla de una lista ofrece borrarla, con un paso de confirmación y
+sólo a quien la creó. El borrado arrastra en cascada miembros, ítems, opciones e
+invitaciones. No hay migración: la política `lists_delete` ya limitaba el borrado al
+creador y las claves foráneas ya eran `on delete cascade`.
+
+**Archivos**: `src/hooks/useList.ts`, `src/pages/ListPage.tsx`.
+
+**Fundamento**: El borrado le saca la lista a todos sus miembros, así que vive en la
+pantalla de la lista y no en el índice, donde un toque errado sobre una tarjeta sería
+irreversible.
