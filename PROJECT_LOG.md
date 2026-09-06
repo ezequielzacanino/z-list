@@ -288,3 +288,19 @@ el botón lo dispara; donde no (iOS), muestra la instrucción del menú del nave
 **Fundamento**: El manifest estático apunta a la raíz y da un solo ícono para toda la
 app. Generarlo por lista en el cliente evita un endpoint dinámico y mantiene el
 hosting estático; el manifest de la raíz vuelve al desmontar la pantalla.
+
+## 2026-09-06 — Ícono circular y encabezado en dos líneas
+
+**Resumen**: El generador de íconos dibuja un disco con el check sobre el fondo de la
+app, con supermuestreo para que el borde no quede dentado, y regenera
+`public/icon-192.png` y `public/icon-512.png`. El encabezado deja el nombre de la
+lista solo en su renglón y baja sus controles a una fila propia.
+
+**Archivos**: `scripts/generate_icons.mjs`, `public/icon-192.png`,
+`public/icon-512.png`, `src/pages/ListPage.tsx`, `src/pages/ListsPage.tsx`,
+`src/styles.css`.
+
+**Fundamento**: El ícono anterior llenaba el cuadrado, así que los lanzadores que
+recortan en círculo se comían las puntas del check; el disco por dentro del recorte
+se ve igual en máscara redonda y en cuadrada. Los nombres largos ya no empujaban a
+los botones fuera del renglón.

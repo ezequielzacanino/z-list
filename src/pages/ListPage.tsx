@@ -109,28 +109,30 @@ export function ListPage({ userId }: { userId: string }) {
           ←
         </Link>
         <h1>{list.name}</h1>
-        <button className="ghost" onClick={() => setSharing(!sharing)}>
-          Compartir
-        </button>
-        <button className="ghost" onClick={() => setEditingFields(!editingFields)}>
-          Campos
-        </button>
-        {!isStandalone() && (
-          <button
-            className="ghost"
-            onClick={() =>
-              homeScreen.canInstall ? homeScreen.install() : setShowingHint(!showingHint)
-            }
-          >
-            Al inicio
+        <div className="row actions">
+          <button className="ghost" onClick={() => setSharing(!sharing)}>
+            Compartir
           </button>
-        )}
-        <button
-          className="toggle"
-          onClick={() => updateList({ sort_by_priority: !list.sort_by_priority })}
-        >
-          {list.sort_by_priority ? '↓ Prioridad' : '↕ Manual'}
-        </button>
+          <button className="ghost" onClick={() => setEditingFields(!editingFields)}>
+            Campos
+          </button>
+          {!isStandalone() && (
+            <button
+              className="ghost"
+              onClick={() =>
+                homeScreen.canInstall ? homeScreen.install() : setShowingHint(!showingHint)
+              }
+            >
+              Al inicio
+            </button>
+          )}
+          <button
+            className="toggle"
+            onClick={() => updateList({ sort_by_priority: !list.sort_by_priority })}
+          >
+            {list.sort_by_priority ? '↓ Prioridad' : '↕ Manual'}
+          </button>
+        </div>
       </header>
 
       {error && <p className="error">{error}</p>}

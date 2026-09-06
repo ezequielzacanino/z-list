@@ -103,8 +103,14 @@ h3 {
 
 .stack > header.row {
   flex-wrap: wrap;
-  justify-content: flex-end;
   padding: 0.7rem 0.9rem;
+}
+
+/* The title keeps a line of its own and its controls sit underneath. */
+.actions {
+  flex: 1 0 100%;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 input,

@@ -33,18 +33,20 @@ export function ListsPage({ userId, recovery }: { userId: string; recovery: bool
     <div className="stack">
       <header className="row">
         <h1>Mis listas</h1>
-        <ThemeToggle />
-        {push.supported && (
-          <button className="ghost" onClick={push.enabled ? push.disable : push.enable}>
-            {push.enabled ? 'Avisos ✓' : 'Avisos'}
+        <div className="row actions">
+          <ThemeToggle />
+          {push.supported && (
+            <button className="ghost" onClick={push.enabled ? push.disable : push.enable}>
+              {push.enabled ? 'Avisos ✓' : 'Avisos'}
+            </button>
+          )}
+          <button className="ghost" onClick={() => setChangingPassword(!changingPassword)}>
+            Contraseña
           </button>
-        )}
-        <button className="ghost" onClick={() => setChangingPassword(!changingPassword)}>
-          Contraseña
-        </button>
-        <button className="ghost" onClick={() => supabase.auth.signOut()}>
-          Salir
-        </button>
+          <button className="ghost" onClick={() => supabase.auth.signOut()}>
+            Salir
+          </button>
+        </div>
       </header>
 
       {changingPassword && (

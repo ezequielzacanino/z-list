@@ -1,10 +1,13 @@
-// Writes the PWA icons: a check mark in the accent ink on the accent background.
+// Writes the PWA icons: an accent disc with a check mark, on the app background.
 import { deflateSync } from 'node:zlib'
 import { writeFileSync } from 'node:fs'
 
-const BACKGROUND = [244, 146, 111]
-const FOREGROUND = [85, 51, 42]
+const BACKGROUND = [253, 247, 243]
+const DISC = [244, 146, 111]
+const CHECK_INK = [85, 51, 42]
+const DISC_RADIUS = 0.44
 const STROKE = 0.085
+const SAMPLES = 3
 const CHECK = [
   [0.3, 0.53, 0.45, 0.67],
   [0.45, 0.67, 0.72, 0.34],
@@ -15,6 +18,11 @@ function distanceToSegment(x, y, [ax, ay, bx, by]) {
   const dy = by - ay
   const t = Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / (dx * dx + dy * dy)))
   return Math.hypot(x - (ax + t * dx), y - (ay + t * dy))
+}
+
+function colorAt(x, y) {
+  if (CHECK.some((segment) => distanceToSegment(x, y, segment) < STROKE / 2)) return CHECK_INK
+  return Math.hypot(x - 0.5, y - 0.5) < DISC_RADIUS ? DISC : BACKGROUND
 }
 
 function crc32(buffer) {
@@ -35,17 +43,26 @@ function chunk(type, data) {
   return Buffer.concat([length, body, crc])
 }
 
+// Averages a grid of samples per pixel so the disc and the check keep smooth edges.
+function pixelAt(x, y, size) {
+  const total = [0, 0, 0]
+  for (let sy = 0; sy < SAMPLES; sy++) {
+    for (let sx = 0; sx < SAMPLES; sx++) {
+      const color = colorAt(
+        (x + (sx + 0.5) / SAMPLES) / size,
+        (y + (sy + 0.5) / SAMPLES) / size,
+      )
+      for (let channel = 0; channel < 3; channel++) total[channel] += color[channel]
+    }
+  }
+  return total.map((sum) => Math.round(sum / (SAMPLES * SAMPLES)))
+}
+
 function renderIcon(size) {
   const raw = Buffer.alloc(size * (size * 3 + 1))
   for (let y = 0; y < size; y++) {
     const row = y * (size * 3 + 1)
-    for (let x = 0; x < size; x++) {
-      const inside = CHECK.some(
-        (segment) => distanceToSegment((x + 0.5) / size, (y + 0.5) / size, segment) < STROKE / 2,
-      )
-      const [r, g, b] = inside ? FOREGROUND : BACKGROUND
-      raw.set([r, g, b], row + 1 + x * 3)
-    }
+    for (let x = 0; x < size; x++) raw.set(pixelAt(x, y, size), row + 1 + x * 3)
   }
   const header = Buffer.alloc(13)
   header.writeUInt32BE(size, 0)
