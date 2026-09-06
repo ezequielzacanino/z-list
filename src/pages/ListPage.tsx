@@ -147,6 +147,7 @@ export function ListPage({ userId }: { userId: string }) {
           memberIds={memberIds}
           names={names}
           currentUserId={userId}
+          ownerId={list.created_by}
           invites={invites}
           notice={inviteNotice}
           onInvite={invite}

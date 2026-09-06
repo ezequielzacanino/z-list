@@ -304,3 +304,16 @@ lista solo en su renglón y baja sus controles a una fila propia.
 recortan en círculo se comían las puntas del check; el disco por dentro del recorte
 se ve igual en máscara redonda y en cuadrada. Los nombres largos ya no empujaban a
 los botones fuera del renglón.
+
+## 2026-09-06 — Salir de la lista deja de parecer un borrado
+
+**Resumen**: En el panel de compartir, la cruz queda sólo en los demás miembros. En la
+fila propia, quien no creó la lista ve "Salir de la lista"; quien la creó no ve nada,
+porque su única forma de deshacerse de ella es el botón de borrar.
+
+**Archivos**: `src/components/SharePanel.tsx`, `src/pages/ListPage.tsx`.
+
+**Fundamento**: La cruz en la fila propia sacaba al creador de su propia lista, que
+seguía existiendo sin que nadie pudiera abrirla: se leía como un borrado y no lo era.
+No cambian las políticas: `list_members_delete` sigue permitiendo que un miembro se
+saque a sí mismo o a otro.
