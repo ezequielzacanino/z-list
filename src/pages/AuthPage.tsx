@@ -1,17 +1,18 @@
 import { useState } from 'react'
+import { authMessage, linkError } from '../lib/authMessages'
 import { supabase } from '../lib/supabase'
 
 export function AuthPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [notice, setNotice] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(linkError)
 
   async function signIn(event: React.FormEvent) {
     event.preventDefault()
     setError(null)
     const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) setError(error.message)
+    if (error) setError(authMessage(error.message))
   }
 
   // Fallback for an account that still has no password.
@@ -21,7 +22,7 @@ export function AuthPage() {
       email,
       options: { shouldCreateUser: false },
     })
-    if (error) setError(error.message)
+    if (error) setError(authMessage(error.message))
     else setNotice(`Te mandamos un link a ${email} para entrar.`)
   }
 
@@ -31,8 +32,11 @@ export function AuthPage() {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: location.origin,
     })
-    if (error) setError(error.message)
-    else setNotice(`Te mandamos un link a ${email}. Al entrar, poné una contraseña nueva en Contraseña.`)
+    if (error) setError(authMessage(error.message))
+    else
+      setNotice(
+        `Te mandamos un link a ${email}. Abrilo y poné tu contraseña nueva en Contraseña; después entrás con ese email y esa contraseña.`,
+      )
   }
 
   if (notice) return <p className="notice">{notice}</p>

@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react'
+import { authMessage } from '../lib/authMessages'
 import { supabase } from '../lib/supabase'
 
 // Sets the password of the account in session.
@@ -10,7 +11,7 @@ export function usePassword() {
     setError(null)
     setSaved(false)
     const { error } = await supabase.auth.updateUser({ password })
-    if (error) setError(error.message)
+    if (error) setError(authMessage(error.message))
     else setSaved(true)
   }, [])
 

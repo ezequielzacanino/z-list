@@ -317,3 +317,17 @@ porque su única forma de deshacerse de ella es el botón de borrar.
 seguía existiendo sin que nadie pudiera abrirla: se leía como un borrado y no lo era.
 No cambian las políticas: `list_members_delete` sigue permitiendo que un miembro se
 saque a sí mismo o a otro.
+
+## 2026-09-06 — Errores de autenticación legibles
+
+**Resumen**: Los mensajes de Supabase pasan por una tabla de traducción antes de
+mostrarse, y el fragmento de la URL se lee al cargar para avisar cuando el link del
+mail ya venció o se usó, en lugar de dejar la pantalla de login sin explicación.
+
+**Archivos**: `src/lib/authMessages.ts`, `src/pages/AuthPage.tsx`,
+`src/hooks/usePassword.ts`, `src/components/PasswordPanel.tsx`.
+
+**Fundamento**: Un invitado que caía en el login no tenía forma de saber si el link
+estaba vencido, si el mail estaba mal escrito o si la contraseña no coincidía: todo
+se veía igual. El fragmento se lee al evaluar el módulo porque el cliente de Supabase
+lo borra apenas procesa la URL.

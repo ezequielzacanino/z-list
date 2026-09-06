@@ -32,7 +32,11 @@ export function PasswordPanel({
         />
         <button type="submit">Guardar</button>
       </form>
-      {saved && <p className="notice">Contraseña guardada.</p>}
+      {saved && (
+        <p className="notice">
+          Contraseña guardada. Desde ahora entrás con tu email y esta contraseña.
+        </p>
+      )}
       {error && <p className="error">{error}</p>}
     </div>
   )
