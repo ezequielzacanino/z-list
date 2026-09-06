@@ -350,3 +350,20 @@ mismo, y que los demás se saquen sólo a ellos mismos.
 recarga completa por carácter en cada dispositivo, y las respuestas viejas pisaban lo
 que se estaba tipeando. La política anterior dejaba que cualquier miembro sacara al
 creador, y la lista quedaba sin nadie que pudiera abrirla ni borrarla.
+
+## 2026-09-06 — Perfiles acotados, tests y caché por build
+
+**Resumen**: `profiles_select` deja de ser público: un perfil se lee sólo si es el
+propio o si comparte alguna lista con quien consulta, con índice por `user_id` para
+la comprobación. Entran vitest y las pruebas de `dueOccurrences`, `nextPosition`,
+`positionBetween` y `categorize`. El service worker toma el nombre de su caché del
+build que lo registra, así que cada deploy borra la anterior en vez de acumularlas.
+
+**Archivos**: `supabase/migrations/0014_profile_visibility.sql`, `vite.config.ts`,
+`src/main.tsx`, `src/build.d.ts`, `public/sw.js`, `src/lib/*.test.ts`,
+`package.json`, `.claude/launch.json`.
+
+**Fundamento**: Con `using (true)` cualquier usuario listaba el nombre de todas las
+cuentas del proyecto, compartieran o no una lista. El nombre fijo de la caché nunca
+disparaba la limpieza del `activate`, así que los assets hasheados de cada deploy
+quedaban para siempre en el dispositivo.

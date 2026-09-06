@@ -1,9 +1,16 @@
 // Serves hashed build assets from cache and always reaches the network for data.
-const CACHE = 'listas-v1'
+// The build stamps its own cache name on the registration URL, so a deploy drops the old one.
+const CACHE = `listas-${new URL(self.location.href).searchParams.get('v')}`
+
+// Assets are hashed and navigations go to the network, so a new build takes over at once.
+self.addEventListener('install', () => self.skipWaiting())
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key)))),
+    caches
+      .keys()
+      .then((keys) => Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key))))
+      .then(() => self.clients.claim()),
   )
 })
 
