@@ -46,7 +46,7 @@ export function ItemRow({
       )}
       <CategoryIcon category={categorize(item.name)} />
       <button className="item-name" onClick={onOpen}>
-        {item.name}
+        <span className="name">{item.name}</span>
         {item.quantity && <span className="tag">{item.quantity}</span>}
         {item.priority && (
           <span className={`tag priority-${item.priority}`}>

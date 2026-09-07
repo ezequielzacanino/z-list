@@ -137,8 +137,18 @@ export function ListPage({ userId }: { userId: string }) {
   return (
     <div className="stack">
       <header className="row">
-        <Link to="/" className="ghost">
-          ←
+        <Link to="/" className="ghost" aria-label="Volver">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M15 5l-7 7 7 7" />
+          </svg>
         </Link>
         <h1>{list.name}</h1>
         <div className="row actions">
