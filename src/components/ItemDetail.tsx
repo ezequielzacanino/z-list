@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
-import { useItemOptions } from '../hooks/useItemOptions'
-import { DraftInput } from './DraftInput'
-import { RecurrenceSelect } from './RecurrenceSelect'
-import type { Item } from '../lib/types'
+import { useEffect, useState } from "react";
+import { useItemOptions } from "../hooks/useItemOptions";
+import { DraftInput } from "./DraftInput";
+import { RecurrenceSelect } from "./RecurrenceSelect";
+import type { Item } from "../lib/types";
 
 // Exposes every attribute, regardless of the list's quick-add fields.
 export function ItemDetail({
@@ -11,121 +11,133 @@ export function ItemDetail({
   onDelete,
   onClose,
 }: {
-  item: Item
-  onUpdate: (patch: Partial<Item>) => void
-  onDelete: () => void
-  onClose: () => void
+  item: Item;
+  onUpdate: (patch: Partial<Item>) => void;
+  onDelete: () => void;
+  onClose: () => void;
 }) {
-  const { options, error, addOption, deleteOption } = useItemOptions(item.id)
-  const [label, setLabel] = useState('')
-  const [url, setUrl] = useState('')
-  const [busy, setBusy] = useState(false)
+  const { options, error, addOption, deleteOption } = useItemOptions(item.id);
+  const [label, setLabel] = useState("");
+  const [url, setUrl] = useState("");
+  const [busy, setBusy] = useState(false);
 
   // Escape closes the sheet, like tapping Cerrar.
   useEffect(() => {
-    const handle = (event: KeyboardEvent) => event.key === 'Escape' && onClose()
-    document.addEventListener('keydown', handle)
-    return () => document.removeEventListener('keydown', handle)
-  }, [onClose])
+    const handle = (event: KeyboardEvent) =>
+      event.key === "Escape" && onClose();
+    document.addEventListener("keydown", handle);
+    return () => document.removeEventListener("keydown", handle);
+  }, [onClose]);
 
   async function submitOption(event: React.FormEvent) {
-    event.preventDefault()
-    if (busy) return
-    setBusy(true)
-    await addOption(label, url)
-    setBusy(false)
-    setLabel('')
-    setUrl('')
+    event.preventDefault();
+    if (busy) return;
+    setBusy(true);
+    await addOption(label, url);
+    setBusy(false);
+    setLabel("");
+    setUrl("");
   }
 
   return (
-    <div className="sheet">
-      <header className="row">
-        <DraftInput value={item.name} onCommit={(name) => onUpdate({ name })} />
-        <button className="ghost" onClick={onClose}>
-          Cerrar
-        </button>
-      </header>
-
-      <label>
-        Cantidad
-        <DraftInput
-          value={item.quantity ?? ''}
-          onCommit={(quantity) => onUpdate({ quantity: quantity || null })}
-        />
-      </label>
-
-      <label>
-        Prioridad
-        <select
-          value={item.priority ?? ''}
-          onChange={(event) => onUpdate({ priority: Number(event.target.value) || null })}
-        >
-          <option value="">Sin prioridad</option>
-          <option value="1">Alta</option>
-          <option value="2">Media</option>
-          <option value="3">Baja</option>
-        </select>
-      </label>
-
-      <label>
-        Repetición
-        <RecurrenceSelect
-          value={item.recurrence_days}
-          onChange={(days) => onUpdate({ recurrence_days: days })}
-        />
-      </label>
-
-      <label>
-        Especificaciones
-        <DraftInput
-          multiline
-          value={item.notes ?? ''}
-          onCommit={(notes) => onUpdate({ notes: notes || null })}
-        />
-      </label>
-
-      <section className="stack">
-        <h3>Opciones</h3>
-        {error && <p className="error">{error}</p>}
-        <ul className="options">
-          {options.map((option) => (
-            <li key={option.id}>
-              {option.url ? (
-                <a href={option.url} target="_blank" rel="noreferrer">
-                  {option.label}
-                </a>
-              ) : (
-                option.label
-              )}
-              <button className="ghost" onClick={() => deleteOption(option.id)}>
-                ×
-              </button>
-            </li>
-          ))}
-        </ul>
-        <form className="row" onSubmit={submitOption}>
-          <input
-            required
-            placeholder="Opción"
-            value={label}
-            onChange={(event) => setLabel(event.target.value)}
+    <>
+      <div className="veil" onClick={onClose} />
+      <div className="sheet" role="dialog">
+        <header className="row">
+          <DraftInput
+            value={item.name}
+            onCommit={(name) => onUpdate({ name })}
           />
-          <input
-            type="url"
-            placeholder="Link"
-            value={url}
-            onChange={(event) => setUrl(event.target.value)}
-          />
-          <button type="submit" disabled={busy}>
-            +
+          <button className="ghost" onClick={onClose}>
+            Cerrar
           </button>
-        </form>
-      </section>
+        </header>
 
-      <button className="danger" onClick={onDelete}>
-        Borrar ítem
-      </button>
-    </div>
-  )
+        <label>
+          Cantidad
+          <DraftInput
+            value={item.quantity ?? ""}
+            onCommit={(quantity) => onUpdate({ quantity: quantity || null })}
+          />
+        </label>
+
+        <label>
+          Prioridad
+          <select
+            value={item.priority ?? ""}
+            onChange={(event) =>
+              onUpdate({ priority: Number(event.target.value) || null })
+            }
+          >
+            <option value="">Sin prioridad</option>
+            <option value="1">Alta</option>
+            <option value="2">Media</option>
+            <option value="3">Baja</option>
+          </select>
+        </label>
+
+        <label>
+          Repetición
+          <RecurrenceSelect
+            value={item.recurrence_days}
+            onChange={(days) => onUpdate({ recurrence_days: days })}
+          />
+        </label>
+
+        <label>
+          Especificaciones
+          <DraftInput
+            multiline
+            value={item.notes ?? ""}
+            onCommit={(notes) => onUpdate({ notes: notes || null })}
+          />
+        </label>
+
+        <section className="stack">
+          <h3>Opciones</h3>
+          {error && <p className="error">{error}</p>}
+          <ul className="options">
+            {options.map((option) => (
+              <li key={option.id}>
+                {option.url ? (
+                  <a href={option.url} target="_blank" rel="noreferrer">
+                    {option.label}
+                  </a>
+                ) : (
+                  option.label
+                )}
+                <button
+                  className="ghost"
+                  onClick={() => deleteOption(option.id)}
+                >
+                  ×
+                </button>
+              </li>
+            ))}
+          </ul>
+          <form className="row" onSubmit={submitOption}>
+            <input
+              required
+              placeholder="Opción"
+              value={label}
+              onChange={(event) => setLabel(event.target.value)}
+            />
+            <input
+              type="url"
+              placeholder="Link"
+              value={url}
+              onChange={(event) => setUrl(event.target.value)}
+            />
+            <button type="submit" disabled={busy}>
+              +
+            </button>
+          </form>
+        </section>
+
+        <button className="danger" onClick={onDelete}>
+          Borrar ítem
+        </button>
+      </div>
+    </>
+  );
 }
