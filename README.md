@@ -54,3 +54,8 @@ tabla sin abrir el panel.
   dispositivo, y en iPhone con la app ya instalada en la pantalla de inicio.
 - **Campos** elige qué pide el formulario de carga rápida en esa lista. Cualquier
   atributo se puede poner igual entrando al ítem.
+- Escribir en **Agregar** filtra los abiertos y el historial por nombre mientras se
+  tipea; Enter agrega lo escrito.
+- **Mandar como texto**, dentro de Compartir, abre la hoja de compartir del teléfono
+  con los ítems abiertos en texto plano, o los copia al portapapeles en escritorio.
+- **Instalar** deja la lista como ícono propio en la pantalla de inicio.

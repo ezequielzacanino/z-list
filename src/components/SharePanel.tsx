@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { ListInvite } from '../lib/types'
 
-// Who is on the list, plus the two ways of adding somebody: by email or by WhatsApp.
+// Who is on the list, the two ways of adding somebody, and the list as plain text.
 export function SharePanel({
   memberIds,
   names,
@@ -11,6 +11,7 @@ export function SharePanel({
   notice,
   onInvite,
   onShareOnWhatsApp,
+  onShareAsText,
   onRevoke,
   onRemove,
 }: {
@@ -22,6 +23,7 @@ export function SharePanel({
   notice: string | null
   onInvite: (email: string) => Promise<boolean>
   onShareOnWhatsApp: () => void
+  onShareAsText: () => void
   onRevoke: (token: string) => void
   onRemove: (userId: string) => void
 }) {
@@ -51,9 +53,14 @@ export function SharePanel({
           {busy ? 'Invitando…' : 'Invitar'}
         </button>
       </form>
-      <button className="ghost" onClick={onShareOnWhatsApp}>
-        Compartir por WhatsApp
-      </button>
+      <div className="row">
+        <button className="ghost" onClick={onShareOnWhatsApp}>
+          Compartir por WhatsApp
+        </button>
+        <button className="ghost" onClick={onShareAsText}>
+          Mandar como texto
+        </button>
+      </div>
       {notice && <p className="notice">{notice}</p>}
       <ul className="options">
         {memberIds.map((id) => (

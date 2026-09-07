@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
-import { useItemOptions } from "../hooks/useItemOptions";
-import { DraftInput } from "./DraftInput";
-import { RecurrenceSelect } from "./RecurrenceSelect";
-import type { Item } from "../lib/types";
+import { useEffect, useState } from 'react'
+import { useItemOptions } from '../hooks/useItemOptions'
+import { DraftInput } from './DraftInput'
+import { RecurrenceSelect } from './RecurrenceSelect'
+import type { Item } from '../lib/types'
 
 // Exposes every attribute, regardless of the list's quick-add fields.
 export function ItemDetail({
@@ -11,32 +11,31 @@ export function ItemDetail({
   onDelete,
   onClose,
 }: {
-  item: Item;
-  onUpdate: (patch: Partial<Item>) => void;
-  onDelete: () => void;
-  onClose: () => void;
+  item: Item
+  onUpdate: (patch: Partial<Item>) => void
+  onDelete: () => void
+  onClose: () => void
 }) {
-  const { options, error, addOption, deleteOption } = useItemOptions(item.id);
-  const [label, setLabel] = useState("");
-  const [url, setUrl] = useState("");
-  const [busy, setBusy] = useState(false);
+  const { options, error, addOption, deleteOption } = useItemOptions(item.id)
+  const [label, setLabel] = useState('')
+  const [url, setUrl] = useState('')
+  const [busy, setBusy] = useState(false)
 
   // Escape closes the sheet, like tapping Cerrar.
   useEffect(() => {
-    const handle = (event: KeyboardEvent) =>
-      event.key === "Escape" && onClose();
-    document.addEventListener("keydown", handle);
-    return () => document.removeEventListener("keydown", handle);
-  }, [onClose]);
+    const handle = (event: KeyboardEvent) => event.key === 'Escape' && onClose()
+    document.addEventListener('keydown', handle)
+    return () => document.removeEventListener('keydown', handle)
+  }, [onClose])
 
   async function submitOption(event: React.FormEvent) {
-    event.preventDefault();
-    if (busy) return;
-    setBusy(true);
-    await addOption(label, url);
-    setBusy(false);
-    setLabel("");
-    setUrl("");
+    event.preventDefault()
+    if (busy) return
+    setBusy(true)
+    await addOption(label, url)
+    setBusy(false)
+    setLabel('')
+    setUrl('')
   }
 
   return (
@@ -44,10 +43,7 @@ export function ItemDetail({
       <div className="veil" onClick={onClose} />
       <div className="sheet" role="dialog">
         <header className="row">
-          <DraftInput
-            value={item.name}
-            onCommit={(name) => onUpdate({ name })}
-          />
+          <DraftInput value={item.name} onCommit={(name) => onUpdate({ name })} />
           <button className="ghost" onClick={onClose}>
             Cerrar
           </button>
@@ -56,7 +52,7 @@ export function ItemDetail({
         <label>
           Cantidad
           <DraftInput
-            value={item.quantity ?? ""}
+            value={item.quantity ?? ''}
             onCommit={(quantity) => onUpdate({ quantity: quantity || null })}
           />
         </label>
@@ -64,10 +60,8 @@ export function ItemDetail({
         <label>
           Prioridad
           <select
-            value={item.priority ?? ""}
-            onChange={(event) =>
-              onUpdate({ priority: Number(event.target.value) || null })
-            }
+            value={item.priority ?? ''}
+            onChange={(event) => onUpdate({ priority: Number(event.target.value) || null })}
           >
             <option value="">Sin prioridad</option>
             <option value="1">Alta</option>
@@ -88,7 +82,7 @@ export function ItemDetail({
           Especificaciones
           <DraftInput
             multiline
-            value={item.notes ?? ""}
+            value={item.notes ?? ''}
             onCommit={(notes) => onUpdate({ notes: notes || null })}
           />
         </label>
@@ -106,10 +100,7 @@ export function ItemDetail({
                 ) : (
                   option.label
                 )}
-                <button
-                  className="ghost"
-                  onClick={() => deleteOption(option.id)}
-                >
+                <button className="ghost" onClick={() => deleteOption(option.id)}>
                   ×
                 </button>
               </li>
@@ -139,5 +130,5 @@ export function ItemDetail({
         </button>
       </div>
     </>
-  );
+  )
 }

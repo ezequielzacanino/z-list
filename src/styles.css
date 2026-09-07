@@ -18,7 +18,7 @@
   color-scheme: light;
 }
 
-:root[data-theme="dark"] {
+:root[data-theme='dark'] {
   --bg: #14151e;
   --surface: #1c1d29;
   --sunken: #241f38;
@@ -45,8 +45,8 @@ body {
   background: var(--bg);
   color: var(--fg);
   font:
-    500 18px/1.6 "Zen Maru Gothic",
-    "Quicksand",
+    500 18px/1.6 'Zen Maru Gothic',
+    'Quicksand',
     system-ui,
     sans-serif;
 }
@@ -140,7 +140,7 @@ select {
   background-size: 1.1rem;
 }
 
-:root[data-theme="dark"] select {
+:root[data-theme='dark'] select {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239192ab' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
 }
 
@@ -151,7 +151,7 @@ textarea:focus-visible {
   outline-offset: 1px;
 }
 
-input[type="checkbox"] {
+input[type='checkbox'] {
   flex: none;
   width: 1.4rem;
   height: 1.4rem;
@@ -161,7 +161,7 @@ input[type="checkbox"] {
 }
 
 /* The row's checkbox reaches the whole height of the row for a thumb. */
-.items .item input[type="checkbox"] {
+.items .item input[type='checkbox'] {
   box-sizing: content-box;
   padding: 0.55rem 0.4rem;
   margin: -0.55rem -0.2rem;
@@ -342,7 +342,7 @@ ul {
 }
 
 .item.generated .item-name::before {
-  content: "↻";
+  content: '↻';
   color: var(--accent-line);
 }
 
@@ -365,7 +365,7 @@ ul {
 }
 
 .history .name::after {
-  content: "";
+  content: '';
   position: absolute;
   inset: 52% 0 auto;
   height: 2px;

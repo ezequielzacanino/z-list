@@ -14,7 +14,7 @@ const minSimilarity = 0.62
 const cache = new Map<string, Category>()
 
 // Lowercases, strips accents and punctuation, and collapses spaces.
-function normalize(text: string): string {
+export function normalize(text: string): string {
   return text
     .normalize('NFD')
     .replace(/[̀-ͯ]/g, '')

@@ -8,9 +8,11 @@ const emptyOption: OptionDraft = { label: '', url: '' }
 export function QuickAdd({
   fields,
   onAdd,
+  onTyping,
 }: {
   fields: QuickAddField[]
   onAdd: (draft: ItemDraft, option?: OptionDraft) => Promise<void>
+  onTyping: (name: string) => void
 }) {
   const [draft, setDraft] = useState<ItemDraft>(emptyDraft)
   const [option, setOption] = useState<OptionDraft>(emptyOption)
@@ -26,7 +28,13 @@ export function QuickAdd({
     setBusy(false)
     setDraft(emptyDraft)
     setOption(emptyOption)
+    onTyping('')
     nameInput.current?.focus()
+  }
+
+  function typeName(name: string) {
+    setDraft({ ...draft, name })
+    onTyping(name)
   }
 
   return (
@@ -36,7 +44,7 @@ export function QuickAdd({
         required
         placeholder="Agregar"
         value={draft.name}
-        onChange={(event) => setDraft({ ...draft, name: event.target.value })}
+        onChange={(event) => typeName(event.target.value)}
       />
       {fields.includes('quantity') && (
         <input
