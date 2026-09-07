@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useItems } from '../hooks/useItems'
+import { useListOptions } from '../hooks/useListOptions'
 import { useList } from '../hooks/useList'
 import { useProfiles } from '../hooks/useProfiles'
 import { useMembers } from '../hooks/useMembers'
@@ -54,6 +55,8 @@ export function ListPage({ userId }: { userId: string }) {
     removeMember,
   } = useMembers(listId!)
   const { names, error: namesError } = useProfiles(memberIds)
+  const itemIds = useMemo(() => items.map((item) => item.id), [items])
+  const { byItem: optionsByItem, error: optionsError } = useListOptions(listId!, itemIds)
   const {
     invites,
     error: invitesError,
@@ -199,6 +202,7 @@ export function ListPage({ userId }: { userId: string }) {
 
       {error && <p className="error">{error}</p>}
       {namesError && <p className="error">{namesError}</p>}
+      {optionsError && <p className="error">{optionsError}</p>}
       {membersError && <p className="error">{membersError}</p>}
       {invitesError && <p className="error">{invitesError}</p>}
 
@@ -247,6 +251,7 @@ export function ListPage({ userId }: { userId: string }) {
           <ItemRow
             key={item.id}
             item={item}
+            options={optionsByItem[item.id]}
             authorName={authorName(item)}
             onToggle={() => toggleItem(item)}
             onOpen={() => setOpenItemId(item.id)}
@@ -272,6 +277,7 @@ export function ListPage({ userId }: { userId: string }) {
               <ItemRow
                 key={item.id}
                 item={item}
+                options={optionsByItem[item.id]}
                 authorName={authorName(item)}
                 onToggle={copied.has(item.id) ? undefined : () => toggleItem(item)}
                 onOpen={() => setOpenItemId(item.id)}

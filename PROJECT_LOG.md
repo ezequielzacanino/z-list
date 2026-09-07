@@ -401,3 +401,17 @@ conexión aunque las listas estuvieran en `localStorage`.
 **Fundamento**: Las navegaciones nunca pasaban por la rama que escribe en caché, sólo
 los assets hasheados. Toda ruta sirve el mismo shell, así que se guarda bajo una sola
 clave y la copia de red la mantiene al día.
+
+## 2026-09-07 — Opciones de toda la lista en una consulta
+
+**Resumen**: `useListOptions` trae las `item_options` de todos los ítems de la lista
+abierta con un solo `in`, las agrupa por ítem y las mantiene por realtime con filtro
+`item_id=in.(…)`. Cada fila muestra especificaciones y links en una pestaña colgada
+del rectángulo, sin abrir el detalle. El detalle sigue usando `useItemOptions`.
+
+**Archivos**: `src/hooks/useListOptions.ts`, `src/components/ItemRow.tsx`,
+`src/pages/ListPage.tsx`, `src/styles.css`.
+
+**Fundamento**: Una consulta por fila multiplicaba las peticiones por la cantidad de
+ítems. El filtro por lista de ids evita sumar `list_id` a `item_options` y respeta que
+la suscripción quede acotada a la lista abierta.

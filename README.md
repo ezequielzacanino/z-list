@@ -45,6 +45,8 @@ tabla sin abrir el panel.
   más viejo y con el día en que se tildó cada uno. El orden de los abiertos es manual
   y se puede alternar a orden por prioridad, elección que queda guardada en la lista.
 - Cada fila muestra quién agregó el ítem, sólo cuando lo agregó otra persona.
+- Si un ítem tiene especificaciones o links, cuelgan de su fila en una pestaña
+  angosta, sin abrir el detalle. Los links se abren de ahí mismo.
 - Un ítem con repetición reaparece arriba como copia (marcada con `↻`) cuando pasa el
   intervalo desde que se tildó, la genere el cron del servidor o la app al abrir la
   lista. La ocurrencia anterior queda en el historial y ya no se puede destildar. El
