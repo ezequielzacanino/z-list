@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
+import { readCache, writeCache } from '../lib/localCache'
+import { isOffline } from '../lib/outbox'
 import { supabase } from '../lib/supabase'
 import type { List } from '../lib/types'
 
@@ -9,8 +11,14 @@ export function useList(listId: string) {
 
   const load = useCallback(async () => {
     const { data, error } = await supabase.from('lists').select('*').eq('id', listId).single()
-    if (error) setError(error.message)
-    else setList(data as List)
+    if (!error) {
+      setList(data as List)
+      writeCache(`list:${listId}`, [data as List])
+    } else if (isOffline(error)) {
+      setList(readCache<List>(`list:${listId}`)?.[0] ?? null)
+    } else {
+      setError(error.message)
+    }
   }, [listId])
 
   useEffect(() => {

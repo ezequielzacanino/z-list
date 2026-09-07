@@ -74,3 +74,11 @@ export type ListInvite = {
   expires_at: string
   revoked_at: string | null
 }
+
+// A write that could not leave the device, kept until the network takes it.
+export type PendingWrite =
+  | { op: 'insert'; table: 'items'; row: Item }
+  | { op: 'insert'; table: 'item_options'; row: ItemOption }
+  | { op: 'update'; table: 'items'; id: string; patch: Partial<Item> }
+  | { op: 'delete'; table: 'items'; id: string }
+  | { op: 'delete'; table: 'item_options'; id: string }

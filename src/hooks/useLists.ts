@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
+import { readCache, writeCache } from '../lib/localCache'
+import { isOffline } from '../lib/outbox'
 import { supabase } from '../lib/supabase'
 import { presets } from '../lib/presets'
 import type { List } from '../lib/types'
@@ -10,8 +12,14 @@ export function useLists(userId: string | undefined) {
 
   const load = useCallback(async () => {
     const { data, error } = await supabase.from('lists').select('*').order('created_at')
-    if (error) setError(error.message)
-    else setLists(data as List[])
+    if (!error) {
+      setLists(data as List[])
+      writeCache('lists', data as List[])
+    } else if (isOffline(error)) {
+      setLists(readCache<List>('lists') ?? [])
+    } else {
+      setError(error.message)
+    }
     setLoading(false)
   }, [])
 

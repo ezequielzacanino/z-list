@@ -1,10 +1,14 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { readCache, writeCache } from '../lib/localCache'
 import { STEP } from '../lib/ordering'
+import { isOffline, sendOrQueue } from '../lib/outbox'
+import { applyPending } from '../lib/pending'
 import { supabase } from '../lib/supabase'
 import type { ItemOption } from '../lib/types'
+import { useOutbox } from './useOutbox'
 
 export function useItemOptions(itemId: string) {
-  const [options, setOptions] = useState<ItemOption[]>([])
+  const [rows, setRows] = useState<ItemOption[]>([])
   const [error, setError] = useState<string | null>(null)
 
   const load = useCallback(async () => {
@@ -13,9 +17,21 @@ export function useItemOptions(itemId: string) {
       .select('*')
       .eq('item_id', itemId)
       .order('position')
-    if (error) setError(error.message)
-    else setOptions(data as ItemOption[])
+    if (!error) {
+      setRows(data as ItemOption[])
+      writeCache(`item_options:${itemId}`, data as ItemOption[])
+    } else if (isOffline(error)) {
+      setRows(readCache<ItemOption>(`item_options:${itemId}`) ?? [])
+    } else {
+      setError(error.message)
+    }
   }, [itemId])
+
+  const outbox = useOutbox(load)
+  const options = useMemo(
+    () => applyPending(rows, outbox.pending, 'item_options', (row) => row.item_id === itemId),
+    [rows, outbox.pending, itemId],
+  )
 
   useEffect(() => {
     load()
@@ -37,18 +53,28 @@ export function useItemOptions(itemId: string) {
       const position = options.length
         ? Math.max(...options.map((option) => option.position)) + STEP
         : STEP
-      const { error } = await supabase
-        .from('item_options')
-        .insert({ item_id: itemId, label, url: url || null, position })
-      if (error) setError(error.message)
+      setError(
+        await sendOrQueue({
+          op: 'insert',
+          table: 'item_options',
+          row: {
+            id: crypto.randomUUID(),
+            item_id: itemId,
+            label,
+            url: url || null,
+            notes: null,
+            position,
+            created_at: new Date().toISOString(),
+          },
+        }),
+      )
     },
     [itemId, options],
   )
 
   const deleteOption = useCallback(async (id: string) => {
-    const { error } = await supabase.from('item_options').delete().eq('id', id)
-    if (error) setError(error.message)
+    setError(await sendOrQueue({ op: 'delete', table: 'item_options', id }))
   }, [])
 
-  return { options, error, addOption, deleteOption }
+  return { options, error: error ?? outbox.error, addOption, deleteOption }
 }

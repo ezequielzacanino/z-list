@@ -367,3 +367,24 @@ build que lo registra, así que cada deploy borra la anterior en vez de acumular
 cuentas del proyecto, compartieran o no una lista. El nombre fijo de la caché nunca
 disparaba la limpieza del `activate`, así que los assets hasheados de cada deploy
 quedaban para siempre en el dispositivo.
+
+## 2026-09-06 — Escritura offline con outbox
+
+**Resumen**: Las escrituras de `items` e `item_options` pasan por una cola durable en
+`localStorage`. Si el dispositivo no tiene red, la escritura se encola y la pantalla
+la muestra igual, superponiendo lo pendiente sobre las filas del servidor. Al volver
+la conexión (evento `online`, o la pestaña que se hace visible) la cola se reenvía en
+orden y se recarga. Las lecturas de listas, lista e ítems caen a la última copia
+cacheada cuando el fetch no sale.
+
+**Archivos**: `src/lib/outbox.ts`, `src/lib/pending.ts`, `src/lib/localCache.ts`,
+`src/hooks/useOutbox.ts`, `src/hooks/useItems.ts`, `src/hooks/useItemOptions.ts`,
+`src/hooks/useList.ts`, `src/hooks/useLists.ts`, `src/pages/ListPage.tsx`,
+`src/lib/types.ts`, `src/lib/pending.test.ts`.
+
+**Fundamento**: Los ids de las filas nuevas se generan en el cliente, así que un ítem
+creado sin red puede recibir ediciones y opciones antes de existir en el servidor, y
+el reenvío no duplica nada. Una respuesta que nunca llegó a la red se distingue de un
+rechazo del servidor: la primera espera, la segunda sale de la cola con su error para
+no bloquear las que siguen. La cola vive en un store con `useSyncExternalStore` para
+que todos los hooks vean la misma, sin librería de estado.

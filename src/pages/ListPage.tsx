@@ -26,10 +26,18 @@ export function ListPage({ userId }: { userId: string }) {
   const [showingHint, setShowingHint] = useState(false)
   const navigate = useNavigate()
   const { list, error: listError, updateList, deleteList } = useList(listId!)
-  const { items, loading, error, addItem, updateItem, toggleItem, deleteItem, moveItem } = useItems(
-    listId!,
-    userId,
-  )
+  const {
+    items,
+    loading,
+    error,
+    online,
+    pending,
+    addItem,
+    updateItem,
+    toggleItem,
+    deleteItem,
+    moveItem,
+  } = useItems(listId!, userId)
   const { names, error: namesError } = useProfiles()
   const {
     memberIds,
@@ -134,6 +142,14 @@ export function ListPage({ userId }: { userId: string }) {
           </button>
         </div>
       </header>
+
+      {!online && (
+        <p className="notice">
+          {pending
+            ? `Sin conexión: ${pending} ${pending === 1 ? 'cambio guardado' : 'cambios guardados'} acá, se mandan cuando vuelva.`
+            : 'Sin conexión. Lo que cambies se manda cuando vuelva.'}
+        </p>
+      )}
 
       {error && <p className="error">{error}</p>}
       {namesError && <p className="error">{namesError}</p>}
