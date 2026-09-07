@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useItems } from '../hooks/useItems'
 import { useList } from '../hooks/useList'
@@ -54,6 +54,15 @@ export function ListPage({ userId }: { userId: string }) {
     revokeInvite,
   } = useInvites(listId!, userId)
   const homeScreen = useHomeScreen(listId!, list?.name ?? '')
+
+  // The tab and the installed window carry the list's name.
+  const listName = list?.name
+  useEffect(() => {
+    if (listName) document.title = listName
+    return () => {
+      document.title = 'Z-list'
+    }
+  }, [listName])
 
   // Attribution is shown only for items somebody else added.
   function authorName(item: Item) {

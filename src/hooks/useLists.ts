@@ -4,6 +4,7 @@ import { isOffline } from '../lib/outbox'
 import { supabase } from '../lib/supabase'
 import { presets } from '../lib/presets'
 import type { List } from '../lib/types'
+import { useVisible } from './useVisible'
 
 export function useLists(userId: string | undefined) {
   const [lists, setLists] = useState<List[]>([])
@@ -22,6 +23,8 @@ export function useLists(userId: string | undefined) {
     }
     setLoading(false)
   }, [])
+
+  useVisible(load)
 
   useEffect(() => {
     if (!userId) return

@@ -7,6 +7,7 @@ import { supabase } from '../lib/supabase'
 import { copyOf, dueOccurrences } from '../lib/recurrence'
 import type { Item, ItemDraft, OptionDraft } from '../lib/types'
 import { useOutbox } from './useOutbox'
+import { useVisible } from './useVisible'
 
 export function useItems(listId: string, userId: string | undefined) {
   const [rows, setRows] = useState<Item[]>([])
@@ -35,6 +36,7 @@ export function useItems(listId: string, userId: string | undefined) {
   }, [listId])
 
   const outbox = useOutbox(load)
+  useVisible(load)
   const items = useMemo(
     () => applyPending(rows, outbox.pending, 'items', (row) => row.list_id === listId),
     [rows, outbox.pending, listId],

@@ -3,6 +3,7 @@ import { readCache, writeCache } from '../lib/localCache'
 import { isOffline } from '../lib/outbox'
 import { supabase } from '../lib/supabase'
 import type { List } from '../lib/types'
+import { useVisible } from './useVisible'
 
 // The open list and the settings its members share.
 export function useList(listId: string) {
@@ -20,6 +21,8 @@ export function useList(listId: string) {
       setError(error.message)
     }
   }, [listId])
+
+  useVisible(load)
 
   useEffect(() => {
     load()

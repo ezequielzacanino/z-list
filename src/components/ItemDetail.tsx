@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useItemOptions } from '../hooks/useItemOptions'
 import { DraftInput } from './DraftInput'
 import { RecurrenceSelect } from './RecurrenceSelect'
@@ -19,10 +19,21 @@ export function ItemDetail({
   const { options, error, addOption, deleteOption } = useItemOptions(item.id)
   const [label, setLabel] = useState('')
   const [url, setUrl] = useState('')
+  const [busy, setBusy] = useState(false)
+
+  // Escape closes the sheet, like tapping Cerrar.
+  useEffect(() => {
+    const handle = (event: KeyboardEvent) => event.key === 'Escape' && onClose()
+    document.addEventListener('keydown', handle)
+    return () => document.removeEventListener('keydown', handle)
+  }, [onClose])
 
   async function submitOption(event: React.FormEvent) {
     event.preventDefault()
+    if (busy) return
+    setBusy(true)
     await addOption(label, url)
+    setBusy(false)
     setLabel('')
     setUrl('')
   }
@@ -100,8 +111,15 @@ export function ItemDetail({
             value={label}
             onChange={(event) => setLabel(event.target.value)}
           />
-          <input placeholder="Link" value={url} onChange={(event) => setUrl(event.target.value)} />
-          <button type="submit">+</button>
+          <input
+            type="url"
+            placeholder="Link"
+            value={url}
+            onChange={(event) => setUrl(event.target.value)}
+          />
+          <button type="submit" disabled={busy}>
+            +
+          </button>
         </form>
       </section>
 
