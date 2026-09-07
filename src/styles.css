@@ -288,6 +288,12 @@ ul {
   background: var(--accent-soft);
 }
 
+.tag.date {
+  font-weight: 500;
+  color: var(--muted);
+  background: transparent;
+}
+
 .muted {
   font-size: 0.9rem;
   color: var(--muted);

@@ -2,6 +2,11 @@ import { categorize } from '../lib/categorize'
 import type { Item } from '../lib/types'
 import { CategoryIcon } from './CategoryIcon'
 
+// Day an occurrence was checked, shown in the history.
+function formatDay(iso: string) {
+  return new Date(iso).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })
+}
+
 const priorityLabels: Record<number, string> = { 1: 'Alta', 2: 'Media', 3: 'Baja' }
 
 export function ItemRow({
@@ -27,6 +32,7 @@ export function ItemRow({
         {item.priority && <span className="tag">{priorityLabels[item.priority]}</span>}
         {item.recurrence_days && <span className="tag">cada {item.recurrence_days} d</span>}
         {authorName && <span className="tag author">{authorName}</span>}
+        {item.done_at && <span className="tag date">{formatDay(item.done_at)}</span>}
       </button>
       {onMoveUp && (
         <button className="ghost" onClick={onMoveUp} aria-label="Subir">

@@ -107,7 +107,10 @@ export function ListPage({ userId }: { userId: string }) {
   const ordered = list.sort_by_priority
     ? [...open].sort((a, b) => (a.priority ?? Infinity) - (b.priority ?? Infinity))
     : open
-  const done = items.filter((item) => item.done_at)
+  // The history reads newest first, so the last tick lands right under the open zone.
+  const done = items
+    .filter((item) => item.done_at)
+    .sort((a, b) => b.done_at!.localeCompare(a.done_at!))
   const openItem = items.find((item) => item.id === openItemId)
 
   return (

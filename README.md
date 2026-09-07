@@ -41,8 +41,9 @@ tabla sin abrir el panel.
   **Compartir por WhatsApp** abre WhatsApp con un mensaje que lleva un link de
   invitación, que vence a los 7 días y se anula desde el mismo panel. El panel lista
   los miembros y las invitaciones vivas, y de las dos cosas se puede sacar a alguien.
-- Los ítems abiertos van arriba, el historial de tildados abajo. El orden es manual y
-  se puede alternar a orden por prioridad, elección que queda guardada en la lista.
+- Los ítems abiertos van arriba, el historial de tildados abajo, del más reciente al
+  más viejo y con el día en que se tildó cada uno. El orden de los abiertos es manual
+  y se puede alternar a orden por prioridad, elección que queda guardada en la lista.
 - Cada fila muestra quién agregó el ítem, sólo cuando lo agregó otra persona.
 - Un ítem con repetición reaparece arriba como copia (marcada con `↻`) cuando pasa el
   intervalo desde que se tildó, la genere el cron del servidor o la app al abrir la

@@ -41,7 +41,7 @@ export function QuickAdd({
       {fields.includes('priority') && (
         <select
           value={draft.priority ?? ''}
-          onChange={(event) => setDraft({ ...draft, priority: Number(event.target.value) })}
+          onChange={(event) => setDraft({ ...draft, priority: Number(event.target.value) || null })}
         >
           <option value="">Prioridad</option>
           <option value="1">Alta</option>

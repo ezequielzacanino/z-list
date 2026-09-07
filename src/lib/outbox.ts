@@ -62,8 +62,16 @@ export async function sendOrQueue(write: PendingWrite) {
   return null
 }
 
+let inFlight: Promise<{ sent: number; rejected: string | null }> | null = null
+
 // Replays in order, stopping at the first write the network still refuses.
-export async function flush() {
+// Callers arriving while a replay runs share it, so no write is sent twice.
+export function flush() {
+  if (!inFlight) inFlight = replay().finally(() => (inFlight = null))
+  return inFlight
+}
+
+async function replay() {
   let rejected: string | null = null
   let sent = 0
   for (const write of queue) {
