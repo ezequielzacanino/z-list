@@ -219,6 +219,11 @@ export function ListPage({ userId }: { userId: string }) {
                 ? () => moveItem(item.id, ordered[index - 2], ordered[index - 1])
                 : undefined
             }
+            onMoveDown={
+              index < ordered.length - 1 && !list.sort_by_priority
+                ? () => moveItem(item.id, ordered[index + 1], ordered[index + 2])
+                : undefined
+            }
           />
         ))}
       </ul>

@@ -15,12 +15,14 @@ export function ItemRow({
   onToggle,
   onOpen,
   onMoveUp,
+  onMoveDown,
 }: {
   item: Item
   authorName?: string
   onToggle?: () => void
   onOpen: () => void
   onMoveUp?: () => void
+  onMoveDown?: () => void
 }) {
   return (
     <li className={item.source_item_id ? 'item generated' : 'item'}>
@@ -40,10 +42,15 @@ export function ItemRow({
         {authorName && <span className="tag author">{authorName}</span>}
         {item.done_at && <span className="tag date">{formatDay(item.done_at)}</span>}
       </button>
-      {onMoveUp && (
-        <button className="ghost" onClick={onMoveUp} aria-label="Subir">
-          ↑
-        </button>
+      {(onMoveUp || onMoveDown) && (
+        <span className="move">
+          <button className="ghost" onClick={onMoveUp} disabled={!onMoveUp} aria-label="Subir">
+            ↑
+          </button>
+          <button className="ghost" onClick={onMoveDown} disabled={!onMoveDown} aria-label="Bajar">
+            ↓
+          </button>
+        </span>
       )}
     </li>
   )

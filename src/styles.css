@@ -140,6 +140,19 @@ input[type='checkbox'] {
   accent-color: var(--accent-line);
 }
 
+.move {
+  display: flex;
+  flex: none;
+}
+
+.move button {
+  padding: 0.35rem 0.4rem;
+}
+
+.move button:disabled {
+  opacity: 0.25;
+}
+
 .checked {
   flex: none;
   width: 1.2rem;
