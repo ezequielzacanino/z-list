@@ -18,13 +18,19 @@ export function ItemRow({
 }: {
   item: Item
   authorName?: string
-  onToggle: () => void
+  onToggle?: () => void
   onOpen: () => void
   onMoveUp?: () => void
 }) {
   return (
     <li className={item.source_item_id ? 'item generated' : 'item'}>
-      <input type="checkbox" checked={Boolean(item.done_at)} onChange={onToggle} />
+      {onToggle ? (
+        <input type="checkbox" checked={Boolean(item.done_at)} onChange={onToggle} />
+      ) : (
+        <span className="checked" aria-hidden="true">
+          ✓
+        </span>
+      )}
       <CategoryIcon category={categorize(item.name)} />
       <button className="item-name" onClick={onOpen}>
         {item.name}

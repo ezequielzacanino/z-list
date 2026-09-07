@@ -140,6 +140,14 @@ input[type='checkbox'] {
   accent-color: var(--accent-line);
 }
 
+.checked {
+  flex: none;
+  width: 1.2rem;
+  text-align: center;
+  font-weight: 700;
+  color: var(--muted);
+}
+
 .narrow {
   max-width: 5rem;
 }

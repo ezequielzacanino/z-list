@@ -47,7 +47,7 @@ tabla sin abrir el panel.
 - Cada fila muestra quién agregó el ítem, sólo cuando lo agregó otra persona.
 - Un ítem con repetición reaparece arriba como copia (marcada con `↻`) cuando pasa el
   intervalo desde que se tildó, la genere el cron del servidor o la app al abrir la
-  lista. La ocurrencia anterior queda en el historial. El
+  lista. La ocurrencia anterior queda en el historial y ya no se puede destildar. El
   intervalo puede ser semanal, quincenal, mensual o libre en días.
 - **Avisos** suscribe ese dispositivo a las notificaciones de tareas vencidas: llega
   un aviso por lista con las copias que generó el servidor. Hay que apretarlo en cada

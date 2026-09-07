@@ -112,6 +112,8 @@ export function ListPage({ userId }: { userId: string }) {
     .filter((item) => item.done_at)
     .sort((a, b) => b.done_at!.localeCompare(a.done_at!))
   const openItem = items.find((item) => item.id === openItemId)
+  // An occurrence that already spawned its copy is a closed record and cannot reopen.
+  const copied = new Set(items.map((item) => item.source_item_id))
 
   return (
     <div className="stack">
@@ -221,7 +223,7 @@ export function ListPage({ userId }: { userId: string }) {
                 key={item.id}
                 item={item}
                 authorName={authorName(item)}
-                onToggle={() => toggleItem(item)}
+                onToggle={copied.has(item.id) ? undefined : () => toggleItem(item)}
                 onOpen={() => setOpenItemId(item.id)}
               />
             ))}
