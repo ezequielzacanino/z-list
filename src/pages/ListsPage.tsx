@@ -13,6 +13,7 @@ export function ListsPage({ userId, recovery }: { userId: string; recovery: bool
   const [name, setName] = useState('')
   const [preset, setPreset] = useState('plain')
   const [changingPassword, setChangingPassword] = useState(false)
+  const [creating, setCreating] = useState(false)
   const { error: passwordError, saved, updatePassword } = usePassword()
   const push = usePush(userId)
 
@@ -23,7 +24,10 @@ export function ListsPage({ userId, recovery }: { userId: string; recovery: bool
 
   async function submit(event: React.FormEvent) {
     event.preventDefault()
+    if (creating) return
+    setCreating(true)
     await createList(name, preset)
+    setCreating(false)
     setName('')
   }
 
@@ -56,6 +60,10 @@ export function ListsPage({ userId, recovery }: { userId: string; recovery: bool
       {error && <p className="error">{error}</p>}
       {push.error && <p className="error">{push.error}</p>}
 
+      {!lists.length && (
+        <p className="muted">Todavía no tenés listas. Creá la primera acá abajo.</p>
+      )}
+
       <ul className="cards">
         {lists.map((list) => (
           <li key={list.id}>
@@ -81,7 +89,9 @@ export function ListsPage({ userId, recovery }: { userId: string; recovery: bool
             </option>
           ))}
         </select>
-        <button type="submit">Crear</button>
+        <button type="submit" disabled={creating}>
+          Crear
+        </button>
       </form>
     </div>
   )

@@ -193,6 +193,8 @@ export function ListPage({ userId }: { userId: string }) {
 
       <QuickAdd fields={list.quick_add_fields} onAdd={addItem} />
 
+      {!items.length && <p className="muted">La lista está vacía. Agregá algo arriba.</p>}
+
       <ul className="items">
         {ordered.map((item, index) => (
           <ItemRow

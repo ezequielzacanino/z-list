@@ -2,8 +2,17 @@
 // The build stamps its own cache name on the registration URL, so a deploy drops the old one.
 const CACHE = `listas-${new URL(self.location.href).searchParams.get('v')}`
 
-// Assets are hashed and navigations go to the network, so a new build takes over at once.
-self.addEventListener('install', () => self.skipWaiting())
+const SHELL = '/index.html'
+
+// The shell is cached up front so an install opens without network; assets fill in as they load.
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches
+      .open(CACHE)
+      .then((cache) => cache.add(SHELL))
+      .then(() => self.skipWaiting()),
+  )
+})
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
@@ -18,8 +27,17 @@ self.addEventListener('fetch', (event) => {
   const { request } = event
   if (request.method !== 'GET' || new URL(request.url).origin !== self.location.origin) return
 
+  // Every route serves the same shell: the network copy refreshes the cached one.
   if (request.mode === 'navigate') {
-    event.respondWith(fetch(request).catch(() => caches.match('/index.html')))
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          const copy = response.clone()
+          caches.open(CACHE).then((cache) => cache.put(SHELL, copy))
+          return response
+        })
+        .catch(() => caches.match(SHELL)),
+    )
     return
   }
 

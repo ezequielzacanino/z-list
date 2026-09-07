@@ -388,3 +388,16 @@ el reenvío no duplica nada. Una respuesta que nunca llegó a la red se distingu
 rechazo del servidor: la primera espera, la segunda sale de la cola con su error para
 no bloquear las que siguen. La cola vive en un store con `useSyncExternalStore` para
 que todos los hooks vean la misma, sin librería de estado.
+
+## 2026-09-07 — Shell cacheado para abrir sin red
+
+**Resumen**: El service worker guarda `index.html` al instalarse y lo refresca con cada
+navegación que sale bien, y lo sirve cuando la red falla. Antes la caída a caché
+buscaba una entrada que nunca se había guardado, así que la app instalada no abría sin
+conexión aunque las listas estuvieran en `localStorage`.
+
+**Archivos**: `public/sw.js`.
+
+**Fundamento**: Las navegaciones nunca pasaban por la rama que escribe en caché, sólo
+los assets hasheados. Toda ruta sirve el mismo shell, así que se guarda bajo una sola
+clave y la copia de red la mantiene al día.

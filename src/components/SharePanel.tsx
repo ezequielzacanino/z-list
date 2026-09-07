@@ -26,10 +26,15 @@ export function SharePanel({
   onRemove: (userId: string) => void
 }) {
   const [email, setEmail] = useState('')
+  const [busy, setBusy] = useState(false)
 
+  // Inviting may create an account and send a mail, so it runs once per tap.
   async function submit(event: React.FormEvent) {
     event.preventDefault()
+    if (busy) return
+    setBusy(true)
     if (await onInvite(email)) setEmail('')
+    setBusy(false)
   }
 
   return (
@@ -42,7 +47,9 @@ export function SharePanel({
           value={email}
           onChange={(event) => setEmail(event.target.value)}
         />
-        <button type="submit">Invitar</button>
+        <button type="submit" disabled={busy}>
+          {busy ? 'Invitando…' : 'Invitar'}
+        </button>
       </form>
       <button className="ghost" onClick={onShareOnWhatsApp}>
         Compartir por WhatsApp

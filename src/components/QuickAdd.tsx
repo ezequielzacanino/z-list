@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { RecurrenceSelect } from './RecurrenceSelect'
 import type { ItemDraft, OptionDraft, QuickAddField } from '../lib/types'
 
@@ -14,17 +14,25 @@ export function QuickAdd({
 }) {
   const [draft, setDraft] = useState<ItemDraft>(emptyDraft)
   const [option, setOption] = useState<OptionDraft>(emptyOption)
+  const [busy, setBusy] = useState(false)
+  const nameInput = useRef<HTMLInputElement>(null)
 
+  // One item per submit, and the cursor stays on the name to add the next one.
   async function submit(event: React.FormEvent) {
     event.preventDefault()
+    if (busy) return
+    setBusy(true)
     await onAdd(draft, option.label ? option : undefined)
+    setBusy(false)
     setDraft(emptyDraft)
     setOption(emptyOption)
+    nameInput.current?.focus()
   }
 
   return (
     <form className="row quick-add" onSubmit={submit}>
       <input
+        ref={nameInput}
         required
         placeholder="Agregar"
         value={draft.name}
@@ -77,7 +85,9 @@ export function QuickAdd({
           />
         </>
       )}
-      <button type="submit">+</button>
+      <button type="submit" disabled={busy}>
+        +
+      </button>
     </form>
   )
 }
