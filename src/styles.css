@@ -316,51 +316,72 @@ ul {
   min-height: 3.25rem;
 }
 
-/* Notes and links hang under the card as a narrower tab fused to its bottom edge. */
+/* Notes and links hang below the card at its right, one silhouette with it. */
+.items .item {
+  position: relative;
+}
+
+.items .item:has(.item-extra) {
+  margin-bottom: 1.9rem;
+  border-bottom-right-radius: 0;
+}
+
+.items .item:has(.notes):has(.links) {
+  margin-bottom: 3.8rem;
+}
+
 .item-extra {
-  align-self: flex-start;
+  position: absolute;
+  top: 100%;
+  right: -1px;
+  margin-top: -1px;
   max-width: calc(100% - 2.2rem);
-  margin: 0 0 -1px 2.2rem;
-  padding: 0.35rem 0.75rem 0.45rem;
-  background: var(--sunken);
-  border: 1px solid var(--line);
-  border-top: none;
-  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
-  font-size: 0.85rem;
-  color: var(--muted);
+  height: 2rem;
+  padding: 0 0.75rem;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  justify-content: center;
+  gap: 0.15rem;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  box-shadow: var(--shadow);
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.item:has(.notes):has(.links) .item-extra {
+  height: 3.9rem;
 }
 
 .item-extra .notes {
   margin: 0;
-  white-space: pre-line;
-  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .item-extra .links {
   display: flex;
-  flex-wrap: wrap;
   gap: 0.35rem;
+  white-space: nowrap;
 }
 
 .item-extra .links a,
 .item-extra .links span {
   color: var(--accent-line);
   font-weight: 600;
-  background: var(--surface);
+  background: var(--accent-soft);
   border-radius: 999px;
-  padding: 0.1rem 0.6rem;
+  padding: 0.05rem 0.6rem;
   text-decoration: none;
 }
 
 .item-extra .links span {
   color: var(--muted);
-}
-
-.history .item-extra {
-  background: var(--bg);
+  background: var(--sunken);
 }
 
 .category-icon {
