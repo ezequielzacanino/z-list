@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { readCache, writeCache } from '../lib/localCache'
 import { firstPosition, nextPosition, positionBetween } from '../lib/ordering'
 import { isOffline, sendOrQueue } from '../lib/outbox'
@@ -12,13 +12,17 @@ export function useItems(listId: string, userId: string | undefined) {
   const [rows, setRows] = useState<Item[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const requests = useRef(0)
 
+  // Only the latest request lands, so a slow answer never overwrites a newer one.
   const load = useCallback(async () => {
+    const request = (requests.current += 1)
     const { data, error } = await supabase
       .from('items')
       .select('*')
       .eq('list_id', listId)
       .order('position')
+    if (request !== requests.current) return
     if (!error) {
       setRows(data as Item[])
       writeCache(`items:${listId}`, data as Item[])

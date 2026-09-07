@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 
-// Members of the open list, in the order they joined.
+// Members of the open list, in the order they joined, kept current by realtime.
 export function useMembers(listId: string) {
   const [memberIds, setMemberIds] = useState<string[]>([])
   const [error, setError] = useState<string | null>(null)
@@ -18,7 +18,18 @@ export function useMembers(listId: string) {
 
   useEffect(() => {
     load()
-  }, [load])
+    const channel = supabase
+      .channel(`members:${listId}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'list_members', filter: `list_id=eq.${listId}` },
+        load,
+      )
+      .subscribe()
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [listId, load])
 
   // Adds the account holding that email; false when no account has it.
   const addMemberByEmail = useCallback(

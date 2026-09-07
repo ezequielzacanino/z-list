@@ -38,7 +38,6 @@ export function ListPage({ userId }: { userId: string }) {
     deleteItem,
     moveItem,
   } = useItems(listId!, userId)
-  const { names, error: namesError } = useProfiles()
   const {
     memberIds,
     error: membersError,
@@ -46,6 +45,7 @@ export function ListPage({ userId }: { userId: string }) {
     addMemberByEmail,
     removeMember,
   } = useMembers(listId!)
+  const { names, error: namesError } = useProfiles(memberIds)
   const {
     invites,
     error: invitesError,
