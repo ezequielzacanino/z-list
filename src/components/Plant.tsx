@@ -1,12 +1,12 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { drawMonster } from '../monsters/draw'
+import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
+import { drawPlant } from '../plants/draw'
 
-// Smallest square a drawing is framed in, so a baby still reads smaller than its final form.
+// Smallest square a drawing is framed in, so a seedling still reads smaller than a grown plant.
 const MIN_FRAME = 52
 const PADDING = 4
 
-// A list's monster, bouncing once whenever it reaches a new stage on screen.
-export function Monster({
+// A list's plant, springing up once whenever it reaches a new stage on screen.
+export function Plant({
   index,
   stage,
   size = 3.6,
@@ -15,6 +15,7 @@ export function Monster({
   stage: number
   size?: number
 }) {
+  const id = `plant${useId().replace(/[^a-zA-Z0-9]/g, '')}`
   const svg = useRef<SVGSVGElement>(null)
   const previous = useRef(stage)
   const [grew, setGrew] = useState(false)
@@ -25,7 +26,7 @@ export function Monster({
     previous.current = stage
   }, [stage])
 
-  // Centers the frame on the drawing itself, since every creature leans its own way.
+  // Centers the frame on the drawing itself, since every plant spreads its own way.
   useLayoutEffect(() => {
     const bounds = svg.current!.getBBox()
     const side = Math.max(MIN_FRAME, bounds.width + PADDING, bounds.height + PADDING)
@@ -37,14 +38,14 @@ export function Monster({
   return (
     <svg
       ref={svg}
-      className={grew ? 'monster grew' : 'monster'}
+      className={grew ? 'plant grew' : 'plant'}
       viewBox={frame}
       width={`${size}rem`}
       height={`${size}rem`}
       aria-hidden="true"
       onAnimationEnd={(event) => event.target === event.currentTarget && setGrew(false)}
     >
-      {drawMonster(index, stage)}
+      {drawPlant(index, stage, id)}
     </svg>
   )
 }

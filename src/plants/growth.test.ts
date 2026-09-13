@@ -26,15 +26,14 @@ describe('currentStage', () => {
 })
 
 describe('species', () => {
-  it('has fifty distinct creatures', () => {
+  it('has fifty distinct plants, matching the range the database picks from', () => {
     expect(species).toHaveLength(50)
     expect(new Set(species.map((one) => one.name)).size).toBe(50)
-    expect(new Set(species.map((one) => one.creature.scripts[Number(one.variant)])).size).toBe(50)
   })
 
   it('grows exactly one step at every stage', () => {
     for (const one of species) {
-      expect(one.creature.scripts[Number(one.variant)], one.name).toHaveLength(STAGES - 1)
+      expect(one.plant.steps, one.name).toHaveLength(STAGES - 1)
     }
   })
 })

@@ -18,7 +18,7 @@ import { HomeScreenHint } from '../components/HomeScreenHint'
 import { SharePanel } from '../components/SharePanel'
 import { Logo } from '../components/Logo'
 import { BudgetSummary } from '../components/BudgetSummary'
-import { MonsterBadge } from '../components/MonsterBadge'
+import { PlantBadge } from '../components/PlantBadge'
 import { PresenceBar } from '../components/PresenceBar'
 import { NoticeBell } from '../components/NoticeBell'
 import { OpenItems } from '../components/OpenItems'
@@ -31,7 +31,7 @@ import { normalize } from '../lib/categorize'
 import { listAsText } from '../lib/shareText'
 import { feedback } from '../lib/feedback'
 import { suggestions } from '../lib/suggest'
-import { species } from '../monsters/species'
+import { species } from '../plants/species'
 import type { DragHandle, Item, QuickAddField, SortMode } from '../lib/types'
 
 const nextMode: Record<SortMode, SortMode> = {
@@ -267,7 +267,7 @@ export function ListPage({ userId }: { userId: string }) {
             <path d="M15 5l-7 7 7 7" />
           </svg>
         </Link>
-        <MonsterBadge list={list} onReroll={reroll} />
+        <PlantBadge list={list} onReroll={reroll} />
         <h1>{list.name}</h1>
         <div className="row actions">
           <button className="ghost" onClick={() => setSharing(!sharing)}>

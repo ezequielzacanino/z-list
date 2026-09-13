@@ -491,3 +491,18 @@ hidra, etc.). `species.ts` lista las 50 especies con sus colores.
 **Fundamento**: Cada guion nombra el rasgo que crece en cada etapa, así la progresión
 cuenta una historia propia (una cabeza más, una cola más) en lugar de repartir rasgos
 comunes. El índice de especie guardado en `lists.monster` no cambia de rango.
+
+## 2026-09-13 — Plantas en lugar de criaturas
+
+**Resumen**: `src/monsters/` se reemplaza por `src/plants/`: diez tipos de planta en
+maceta (sakura, momiji, pino, bambú, hortensia, camelia, ginkgo, loto, kokedama,
+mandarino) en cinco variantes cada uno, sin contornos y con gradientes. Cada tipo tiene
+un guion de crecimiento de 19 pasos. `Monster` y `MonsterBadge` pasan a `Plant` y `PlantBadge`.
+
+**Archivos**: `src/plants/*`, `src/components/Plant.tsx`, `src/components/PlantBadge.tsx`,
+`src/pages/ListPage.tsx`, `src/pages/ListsPage.tsx`, `src/styles.css`,
+`scripts/plant_gallery.tsx`, `package.json`, `CLAUDE.md`.
+
+**Fundamento**: Sin cambios de esquema: `lists.monster` sigue guardando un índice de 0 a
+49, que ahora elige la especie de planta. Los gradientes llevan un prefijo por dibujo
+para que varias plantas en la misma pantalla no compartan ids.

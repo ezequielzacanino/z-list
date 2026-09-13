@@ -7,8 +7,8 @@ import { PasswordPanel } from '../components/PasswordPanel'
 import { ThemeToggle } from '../components/ThemeToggle'
 import { SoundToggle } from '../components/SoundToggle'
 import { Logo } from '../components/Logo'
-import { Monster } from '../components/Monster'
-import { currentStage } from '../monsters/growth'
+import { Plant } from '../components/Plant'
+import { currentStage } from '../plants/growth'
 import { presets } from '../lib/presets'
 import { supabase } from '../lib/supabase'
 
@@ -76,7 +76,7 @@ export function ListsPage({ userId, recovery }: { userId: string; recovery: bool
         {lists.map((list) => (
           <li key={list.id}>
             <Link to={`/lista/${list.id}`}>
-              <Monster
+              <Plant
                 index={list.monster}
                 stage={currentStage(list.growth, list.growth_at, now)}
                 size={3.4}

@@ -1,4 +1,4 @@
-// Monster stages from a list's growth points, mirrored by monster_points() in the database.
+// Plant stages from a list's growth points, mirrored by monster_points() in the database.
 export const STAGES = 20
 
 const DAY_MS = 86_400_000
@@ -16,7 +16,7 @@ export function stageOf(points: number) {
   return stage
 }
 
-// After a week without use, the monster loses one stage per idle week.
+// After a week without use, the plant loses one stage per idle week.
 export function currentPoints(points: number, since: string, now: Date) {
   const idleDays = (now.getTime() - Date.parse(since)) / DAY_MS
   const lost = Math.floor(Math.max(0, idleDays - GRACE_DAYS) / DAYS_PER_LOST_STAGE)
