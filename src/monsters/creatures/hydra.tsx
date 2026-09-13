@@ -1,14 +1,15 @@
 import { creature } from '../creature'
 import {
-  Eye,
+  Brow,
+  drop,
+  Fang,
   Flame,
-  GOLD,
   INK,
-  Leaf,
   line,
-  paint,
+  Peeper,
   polar,
   ribbon,
+  Silhouette,
   smooth,
   Sparkle,
   spread,
@@ -30,27 +31,27 @@ type Step =
   | 'embers'
 
 const EMBER = { fill: '#ffb36b', shade: '#a4481c', light: '#ffe0b8' }
-const cracks = ['M22 50l3-3l2 3l3-2', 'M36 48l3-3l2 2l3-3']
+const cracks = ['M20 51l3-3l2 3l3-2', 'M36 50l3-3l2 2l3-3']
 
-// Snake head in profile, snout toward +x, about twelve units long.
+// Snake head in profile, snout toward +x, about thirteen units long.
 const skull: Point[] = [
-  [-4.5, -2.4],
-  [-1, -4],
-  [3, -3.6],
-  [6.5, -1.6],
-  [7.6, 0.6],
-  [5.5, 2.6],
-  [1.5, 3.4],
-  [-3, 3],
-  [-5.4, 0.6],
+  [-5, -2.6],
+  [-1.5, -4.6],
+  [3, -4.2],
+  [6.8, -2],
+  [8, 0.6],
+  [6, 2.8],
+  [1.5, 3.6],
+  [-3, 3.2],
+  [-5.8, 0.8],
 ]
 const jaw: Point[] = [
-  [-3, 1],
-  [2, 0.8],
-  [6.5, 0.8],
-  [5.5, 2.4],
-  [1.5, 3.2],
-  [-3, 2.8],
+  [-3, 1.2],
+  [2, 1],
+  [7, 1],
+  [5.8, 2.6],
+  [1.5, 3.4],
+  [-3, 3],
 ]
 
 // A single-headed hatchling that grows head after head into a seven-headed hydra, of the sea or of lava.
@@ -102,111 +103,129 @@ export const hydra = creature<Step>(
   (level, { body, accent }) => {
     const count = 1 + level('heads')
     const grow = 0.86 + level('size') * 0.045
-    const k = count > 4 ? 0.74 : count > 2 ? 0.9 : 1.05
-    const reach = Math.min(80, 25 * (count - 1))
+    const k = count > 4 ? 0.8 : count > 2 ? 0.95 : 1.1
+    const reach = Math.min(84, 26 * (count - 1))
     const fins = level('fins')
     const horns = level('horns')
     const flames = level('flames')
     const heads = spread(count, -reach, reach).map((angle, index) => {
-      const length = count > 3 && index % 2 ? 19 : 27
-      const [x, y] = polar(32, 42, angle, length)
-      const facing = angle === 0 ? -55 : Math.sign(angle) * (62 + Math.abs(angle) * 0.3)
+      const length = count > 3 && index % 2 ? 23 : 32
+      const [x, y] = polar(30, 42, angle, length)
+      const facing = angle === 0 ? -50 : Math.sign(angle) * (60 + Math.abs(angle) * 0.3)
       const mirror = facing < 0
-      const [sx, sy]: Point = [32 + angle * 0.1, 41]
+      const [sx, sy]: Point = [30 + angle * 0.08, 41]
       const [bx, by] = polar(x, y, facing + 180, 4 * k)
-      const [mx, my] = polar((sx + bx) / 2, (sy + by) / 2, angle - 90 * Math.sign(angle || -1), 3)
-      return { x, y, angle, mirror, rotate: mirror ? facing + 90 : facing - 90, neck: [[sx, sy], [mx, my], [bx, by]] as Point[] }
+      const [mx, my] = polar((sx + bx) / 2, (sy + by) / 2, angle - 90 * Math.sign(angle || -1), 3.5)
+      const transform = `translate(${x} ${y}) rotate(${mirror ? facing + 90 : facing - 90}) scale(${mirror ? -k : k} ${k})`
+      return { angle, transform, mirror, neck: [[sx, sy], [mx, my], [bx, by]] as Point[] }
     })
     const ordered = [...heads].sort((a, b) => b.angle - a.angle)
     return (
       <g transform={`translate(32 58) scale(${grow}) translate(-32 -58)`}>
         {level('waves') > 0 && <Waves y={58} count={level('waves')} />}
-        <path d={ribbon([[48, 52], [57, 52], [61, 45], [59, 37]], [7, 5, 3, 1.4])} {...paint(body)} />
-        {ordered.map(({ angle, neck }) => (
-          <path key={angle} d={ribbon(neck, [7 * k, 6 * k, 5 * k])} {...paint(body)} />
-        ))}
+        {(fins > 0 || horns > 0) && (
+          <Silhouette color={fins > 0 ? accent.fill : WHITE} width={1.8}>
+            {ordered.map(({ angle, transform }) => (
+              <g key={angle} transform={transform}>
+                {fins > 0 &&
+                  [-1, 1].map((side) => (
+                    <path key={side} d={drop(-2.5, -3.2, (2 + fins) * 1.6, (2 + fins) * 0.5, side * 40 - 30)} />
+                  ))}
+                {horns > 0 &&
+                  [-1, 1].map((side) => (
+                    <path
+                      key={side}
+                      d={smooth(
+                        [
+                          [-3.5 + side * 2, -3.4],
+                          [-3 + side * 2.5, -6 - horns * 1.7],
+                          [-1.5 + side * 2, -3.6],
+                        ],
+                        true,
+                      )}
+                    />
+                  ))}
+              </g>
+            ))}
+          </Silhouette>
+        )}
+        <Silhouette color={body.fill}>
+          <path d={ribbon([[46, 53], [55, 54], [61, 48], [61, 39]], [6.5, 5, 3.2, 1.6])} />
+          {ordered.map(({ angle, neck }) => (
+            <path key={angle} d={ribbon(neck, [6.5 * k, 5.6 * k, 4.8 * k])} />
+          ))}
+          <path
+            d={smooth(
+              [
+                [14, 57],
+                [12.5, 48],
+                [18, 40.5],
+                [29, 38],
+                [39, 39.5],
+                [47, 45],
+                [48.5, 53],
+                [45, 58],
+                [36, 58.8],
+                [20, 58.8],
+              ],
+              true,
+            )}
+          />
+          {[[19, 53, 16], [41, 53, 44]].map(([x, y, tx]) => (
+            <g key={x}>
+              <path d={ribbon([[x, y], [tx, 57]], [6.5, 6])} />
+              {[-2.6, 0, 2.6].map((dx) => (
+                <circle key={dx} cx={tx + dx} cy={57.8} r={1.7} />
+              ))}
+            </g>
+          ))}
+          {ordered.map(({ angle, transform }) => (
+            <g key={angle} transform={transform}>
+              <path d={smooth(skull, true)} />
+            </g>
+          ))}
+        </Silhouette>
         <path
           d={smooth(
             [
-              [15, 57],
-              [12, 49],
-              [17, 41],
-              [26, 36.5],
-              [34, 35],
-              [42, 37],
-              [49, 42],
-              [52, 50],
-              [49, 57],
-              [38, 58.5],
-              [24, 58.5],
-            ],
-            true,
-          )}
-          {...paint(body)}
-        />
-        <path
-          d={smooth(
-            [
-              [21, 56],
-              [19, 49],
-              [25, 44],
-              [33, 43],
-              [40, 44.5],
-              [45, 49.5],
-              [44, 56],
+              [19, 56.5],
+              [18, 49],
+              [24, 45],
+              [31, 44],
+              [38, 45.5],
+              [43, 50.5],
+              [42, 56.5],
             ],
             true,
           )}
           fill={body.light}
         />
-        {level('scales') > 0 && (
-          <path
-            d="M19 45a1.6 1.6 0 0 0 3.2 0M23 41a1.6 1.6 0 0 0 3.2 0M39 41a1.6 1.6 0 0 0 3.2 0M44 45a1.6 1.6 0 0 0 3.2 0M28 39a1.6 1.6 0 0 0 3.2 0M35 39a1.6 1.6 0 0 0 3.2 0"
-            {...line(body.shade, 0.8)}
-            opacity={0.5}
-          />
-        )}
-        {level('scales') > 1 && (
-          <path d="M21 48a1.6 1.6 0 0 0 3.2 0M40 48a1.6 1.6 0 0 0 3.2 0" {...line(accent.shade, 0.9)} opacity={0.6} />
-        )}
+        {level('scales') > 0 &&
+          [[18, 45], [23, 41.5], [36, 42], [43, 47], [29, 40.5]].map(([x, y]) => (
+            <circle key={x} cx={x} cy={y} r={1} fill={body.light} />
+          ))}
+        {level('scales') > 1 &&
+          [[21, 49], [41, 49.5]].map(([x, y]) => <circle key={x} cx={x} cy={y} r={1} fill={accent.fill} />)}
         {cracks.slice(0, level('cracks')).map((d) => (
           <g key={d}>
             <path d={d} {...line('#ff7a3d', 1.5)} />
             <path d={d} {...line('#ffd166', 0.6)} />
           </g>
         ))}
-        {[[19, 52, 16], [45, 52, 48]].map(([x, y, tx]) => (
-          <g key={x}>
-            <path d={ribbon([[x, y], [tx, 58]], [7, 6.5])} {...paint(body)} />
-            <path d={smooth([[tx - 4, 57], [tx - 2, 55.5], [tx, 55.2], [tx + 2, 55.5], [tx + 4, 57], [tx + 3, 59], [tx - 3, 59]], true)} {...paint(body)} />
-          </g>
-        ))}
-        {flames > 0 && [22, 42].map((x) => <Flame key={x} x={x} y={41} size={1.4 + flames * 0.3} />)}
-        {ordered.map(({ x, y, angle, mirror, rotate }) => (
-          <g key={angle} transform={`translate(${x} ${y}) rotate(${rotate}) scale(${mirror ? -k : k} ${k})`}>
-            {fins > 0 &&
-              [-1, 1].map((side) => (
-                <Leaf key={side} x={-2} y={-3} size={2 + fins} angle={side * 40 - 30} color={accent} vein={false} />
-              ))}
-            {horns > 0 &&
-              [-1, 1].map((side) => (
-                <path
-                  key={side}
-                  d={smooth([[-3.5 + side * 2, -3.2], [-3 + side * 2.5, -5.5 - horns * 1.6], [-1.5 + side * 2, -3.4]], true)}
-                  {...paint(GOLD, 0.7)}
-                />
-              ))}
-            {flames > 2 && <Flame x={9} y={-1} size={1.6} angle={90} />}
-            <path d={smooth(skull, true)} {...paint(body)} />
+        {flames > 0 && [21, 42].map((x) => <Flame key={x} x={x} y={43} size={1.4 + flames * 0.3} />)}
+        {ordered.map(({ angle, transform }) => (
+          <g key={angle} transform={transform}>
+            {flames > 2 && <Flame x={9.5} y={-0.5} size={1.6} angle={90} />}
             <path d={smooth(jaw, true)} fill={body.light} />
-            <path d="M-1.5 -4.4L2 -3.2" {...line(INK, 1)} />
-            <Eye x={0.5} y={-1.3} r={1.4} />
-            <circle cx={6.3} cy={-0.8} r={0.55} fill={INK} />
-            <path d="M6.6 1.4Q3 2.6 0 1.8" {...line(INK, 0.8)} />
+            <Peeper x={0.8} y={-1.4} r={1.9} look={0.5} />
+            <Brow x={0.8} y={-3.9} w={4} tilt={-14} />
+            <circle cx={6.6} cy={-1} r={0.55} fill={INK} />
+            <path d="M7.2 1.4Q3.5 2.8 -0.5 2.2" {...line(INK, 1)} />
+            <Fang x={4.3} y={2.1} size={1.4} />
           </g>
         ))}
-        {level('pearls') > 0 && <circle cx={10} cy={55} r={2.4} fill={WHITE} stroke="#9fd3ff" strokeWidth={0.8} />}
-        {level('pearls') > 1 && <circle cx={55} cy={40} r={2} fill={WHITE} stroke="#9fd3ff" strokeWidth={0.8} />}
+        {level('pearls') > 0 && <circle cx={9} cy={56} r={2.4} fill={WHITE} stroke={INK} strokeWidth={1} />}
+        {level('pearls') > 1 && <circle cx={56} cy={33} r={2} fill={WHITE} stroke={INK} strokeWidth={1} />}
         {level('embers') > 0 && <Sparkle x={10} y={30} size={1.8} color={EMBER} />}
         {level('embers') > 1 && <Sparkle x={56} y={24} size={2.2} color={EMBER} />}
       </g>

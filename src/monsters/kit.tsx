@@ -1,9 +1,11 @@
+import type { ReactNode } from 'react'
+
 // Colors, geometric cuts and small parts every creature is assembled from, on a 64x64 grid.
 // Creatures are cut from circles, sectors, rings, capsules and triangles, flat-filled and outlined.
 export type Tone = { fill: string; shade: string; light: string }
 export type Point = [number, number]
 
-export const INK = '#3a2c2b'
+export const INK = '#292425'
 export const WHITE = '#fffdf8'
 export const CHEEK = '#ff9fb3'
 export const GOLD: Tone = { fill: '#ffd166', shade: '#a8781f', light: '#fff1c2' }
@@ -228,6 +230,72 @@ export function Eye({ x, y, r = 1.8, glow }: { x: number; y: number; r?: number;
       {glow && <circle cx={x} cy={y} r={r * 2.3} fill={glow} opacity={0.5} />}
       <circle cx={x} cy={y} r={r} fill={INK} />
       <circle cx={x + r * 0.35} cy={y - r * 0.4} r={r * 0.38} fill={WHITE} />
+    </g>
+  )
+}
+
+// Pieces fused into one flat shape with a single thick outline: drawn in ink first, then filled on top.
+export function Silhouette({ color, width = 2.2, children }: { color: string; width?: number; children: ReactNode }) {
+  return (
+    <g>
+      <g fill={INK} stroke={INK} strokeWidth={width} strokeLinejoin="round" strokeLinecap="round">
+        {children}
+      </g>
+      <g fill={color}>{children}</g>
+    </g>
+  )
+}
+
+// Dot eye with a glint.
+export function Dot({ x, y, r = 1.3 }: { x: number; y: number; r?: number }) {
+  return (
+    <g>
+      <circle cx={x} cy={y} r={r} fill={INK} />
+      <circle cx={x + r * 0.35} cy={y - r * 0.35} r={r * 0.32} fill={WHITE} />
+    </g>
+  )
+}
+
+// Round eye with a white sclera and a pupil looking a little toward one side.
+export function Peeper({ x, y, r = 2, look = 0 }: { x: number; y: number; r?: number; look?: number }) {
+  return (
+    <g>
+      <circle cx={x} cy={y} r={r} fill={WHITE} stroke={INK} strokeWidth={0.6} />
+      <circle cx={x + look * r * 0.35} cy={y + r * 0.1} r={r * 0.5} fill={INK} />
+      <circle cx={x + look * r * 0.35 + r * 0.2} cy={y - r * 0.15} r={r * 0.16} fill={WHITE} />
+    </g>
+  )
+}
+
+// Open mouth with a tongue.
+export function Maw({ x, y, w, h, tongue = true }: { x: number; y: number; w: number; h: number; tongue?: boolean }) {
+  return (
+    <g>
+      <path d={`M${x - w} ${y}Q${x} ${y + h * 2} ${x + w} ${y}z`} fill={INK} />
+      {tongue && <ellipse cx={x} cy={y + h * 0.75} rx={w * 0.4} ry={h * 0.42} fill="#ff5c7a" />}
+    </g>
+  )
+}
+
+// Eyebrow: a short ink stroke, tilted by an angle so it frowns or lifts.
+export function Brow({ x, y, w, tilt = 0 }: { x: number; y: number; w: number; tilt?: number }) {
+  const [ax, ay] = polar(x, y, 270 + tilt, w / 2)
+  const [bx, by] = polar(x, y, 90 + tilt, w / 2)
+  return <path d={`M${ax} ${ay}L${bx} ${by}`} {...line(INK, 1.3)} />
+}
+
+// Single fang hanging from a mouth line.
+export function Fang({ x, y, size = 1.6 }: { x: number; y: number; size?: number }) {
+  return <path d={tri(x, y, size * 0.8, size, 180)} fill={WHITE} stroke={INK} strokeWidth={0.5} strokeLinejoin="round" />
+}
+
+// Open grin: a filled dark mouth with a strip of teeth.
+export function Grin({ x, y, w, teeth = true }: { x: number; y: number; w: number; teeth?: boolean }) {
+  const depth = w * 0.7
+  return (
+    <g>
+      <path d={`M${x - w} ${y}Q${x} ${y + depth * 2} ${x + w} ${y}z`} fill={INK} />
+      {teeth && <path d={`M${x - w * 0.7} ${y + 0.3}H${x + w * 0.7}V${y + 1.6}H${x - w * 0.7}z`} fill={WHITE} />}
     </g>
   )
 }

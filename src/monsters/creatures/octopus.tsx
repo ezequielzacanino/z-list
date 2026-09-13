@@ -1,18 +1,22 @@
 import { creature } from '../creature'
 import {
-  Blush,
-  capsule,
+  Brow,
   Crown,
-  Eye,
   Glow,
+  Grin,
   INK,
   line,
   paint,
-  Smile,
+  Peeper,
+  ribbon,
+  Silhouette,
+  smooth,
   Sparkle,
-  Waves,
+  trace,
   WATER,
+  Waves,
   WHITE,
+  type Point,
 } from '../kit'
 
 type Step =
@@ -28,13 +32,13 @@ type Step =
   | 'shimenawa'
   | 'pearl'
 
-const roots = [21, 25.5, 30, 34, 38.5, 43]
+const roots = [20, 25, 30, 34, 39, 44]
 const spots = [
-  [26, 24, 1.6],
-  [38, 23, 1.3],
-  [33, 20, 1.1],
-  [22, 30, 1],
-  [42, 30, 1.2],
+  [26, 22, 1.6],
+  [37, 20, 1.2],
+  [41, 28, 1.4],
+  [23, 31, 1],
+  [33, 17, 1],
 ]
 
 // A little octopus whose arms lengthen into the crowned Kraken, or the glowing Akkorokamui.
@@ -85,53 +89,66 @@ export const octopus = creature<Step>(
   ],
   (level, { body, accent }) => {
     const grow = 0.88 + level('size') * 0.04
-    const length = 5 + level('tentacles') * 3
+    const length = 6 + level('tentacles') * 3
     const suckers = level('suckers')
     const shimenawa = level('shimenawa')
     const glow = level('glow')
-    const ends = roots.map((x) => {
-      const dir = (x - 32) / 11
-      return [x + dir * length * 0.6 + dir * 2, 41 + length * 0.75, dir]
+    const arms = roots.map((x, index) => {
+      const dir = (x - 32) / 12
+      const curl = index % 2 ? 1 : -1
+      const end: Point = [x + dir * length * 0.7 + dir * 3, 40 + length * 0.8]
+      const path: Point[] = [
+        [x, 38],
+        [x + dir * length * 0.1 - curl * 1.5, 40 + length * 0.4],
+        end,
+        [end[0] + dir * 3, end[1] - 3 - Math.abs(dir) * 2],
+      ]
+      return { path, end, dir }
     })
     return (
       <g transform={`translate(32 58) scale(${grow}) translate(-32 -58)`}>
         {glow > 1 && <Glow x={32} y={34} r={26} color={accent.fill} />}
         {level('wave') > 0 && <Waves y={58} count={level('wave')} />}
-        {roots.map((x, index) => {
-          const [ex, ey, dir] = ends[index]
+        <Silhouette color={body.fill}>
+          {arms.map(({ path }, index) => (
+            <path key={index} d={ribbon(path, [4.6, 4, 2.8, 1.6])} />
+          ))}
+          <path d={smooth([[32, 14], [40.5, 16.5], [44.5, 27], [43, 40], [21, 40], [19.5, 27], [23.5, 16.5]], true)} />
+        </Silhouette>
+        {arms.map(({ path, dir }, index) => {
+          const along = trace(path, 4)
           return (
-            <g key={x}>
-              <path d={capsule(x, 40, ex, ey, 3.8)} {...paint(body)} />
-              <circle cx={ex + dir * 1.6} cy={ey - 1.2} r={1.9} {...paint(body)} />
-              {suckers > 0 && (
-                <circle cx={x + (ex - x) * 0.6} cy={40 + (ey - 40) * 0.6} r={0.8} fill={body.light} />
-              )}
-              {suckers > 1 && (
-                <circle cx={x + (ex - x) * 0.3} cy={40 + (ey - 40) * 0.3} r={0.8} fill={body.light} />
-              )}
+            <g key={index}>
+              {suckers > 0 && <circle cx={along[7][0] - dir * 0.6} cy={along[7][1]} r={0.9} fill={body.light} />}
+              {suckers > 1 && <circle cx={along[4][0] - dir * 0.6} cy={along[4][1]} r={0.9} fill={body.light} />}
             </g>
           )
         })}
-        <path d="M19 42V30A13 13 0 0 1 45 30V42z" {...paint(body)} />
-        <circle cx={27} cy={23.5} r={2.2} fill={body.light} opacity={0.7} />
+        <path d={smooth([[32, 33], [38, 34.5], [39.5, 40], [24.5, 40], [26, 34.5]], true)} fill={body.light} />
         {spots.slice(0, [0, 3, 5][level('spots')]).map(([x, y, r]) => (
-          <circle key={x} cx={x} cy={y} r={r} fill={body.shade} opacity={0.3} />
+          <circle key={x} cx={x} cy={y} r={r} fill={body.shade} opacity={0.25} />
         ))}
         {shimenawa > 0 && (
-          <path d={capsule(19.5, 30.5, 44.5, 30.5, 2.8)} fill="#e2bf86" stroke="#8a6a3d" strokeWidth={0.8} />
+          <Silhouette color="#e2bf86" width={1.6}>
+            <path d={ribbon([[19.5, 25], [32, 23.5], [44.5, 25]], [3, 3.4, 3])} />
+          </Silhouette>
         )}
         {shimenawa > 1 &&
-          [26, 38].map((x) => <path key={x} d={`M${x} 32l1.6 2.2l-2.2 1.6l1.6 2.4`} {...line(WHITE, 1.4)} />)}
-        {shimenawa > 2 && <circle cx={32} cy={30.5} r={1.6} fill="#d94f5c" />}
-        <Eye x={27} y={35.5} r={2} />
-        <Eye x={37} y={35.5} r={2} />
-        <Blush x={23.5} y={39} />
-        <Blush x={40.5} y={39} />
-        <Smile x={32} y={39} w={1.8} />
+          [26, 38].map((x) => <path key={x} d={`M${x} 26.5l1.6 2.2l-2.2 1.6l1.6 2.4`} {...line(WHITE, 1.4)} />)}
+        {shimenawa > 2 && <circle cx={32} cy={24.2} r={1.6} fill="#d94f5c" />}
+        <Peeper x={26} y={29} r={2.7} look={0.4} />
+        <Peeper x={38} y={29} r={2.7} look={0.4} />
+        {level('crown') > 1 && (
+          <>
+            <Brow x={26} y={26} w={4} tilt={-12} />
+            <Brow x={38} y={26} w={4} tilt={12} />
+          </>
+        )}
+        <Grin x={32} y={34.5} w={4.4} />
         {level('crown') > 0 && (
           <Crown
             x={32}
-            y={18.5}
+            y={15}
             width={5 + level('crown') * 2}
             gem={level('crown') > 2 ? accent.fill : undefined}
           />
@@ -146,21 +163,19 @@ export const octopus = creature<Step>(
             <circle key={y} cx={x} cy={y} r={r} fill={WATER.light} stroke={WATER.shade} strokeWidth={0.6} />
           ))}
         {level('ship') > 0 && (
-          <g transform={`translate(${ends[5][0] - 1} ${ends[5][1] - 9})`}>
+          <g transform={`translate(${arms[5].end[0] - 1} ${arms[5].end[1] - 9})`}>
             <path d="M-4 3H5L3 6H-2z" fill={WHITE} stroke={INK} strokeWidth={0.6} />
             <path d="M0.5 3V-3L4 2z" fill="#ff9fb3" stroke={INK} strokeWidth={0.5} />
           </g>
         )}
         {level('pearl') > 0 && (
           <>
-            <Glow x={ends[0][0] + 1} y={ends[0][1] - 7} r={4 + level('pearl')} color="#dff4ff" />
+            <Glow x={arms[0].end[0] + 1} y={arms[0].end[1] - 7} r={4 + level('pearl')} color="#dff4ff" />
             <circle
-              cx={ends[0][0] + 1}
-              cy={ends[0][1] - 7}
+              cx={arms[0].end[0] + 1}
+              cy={arms[0].end[1] - 7}
               r={2 + level('pearl') * 0.7}
-              fill={WHITE}
-              stroke="#9fd3ff"
-              strokeWidth={0.8}
+              {...paint({ fill: WHITE, shade: '#9fd3ff', light: WHITE }, 0.8)}
             />
           </>
         )}
