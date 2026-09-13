@@ -134,6 +134,80 @@ export function drop(x: number, y: number, length: number, r: number, angle = 0)
   return `M${x} ${y}L${start.join(' ')}A${r} ${r} 0 1 1 ${end.join(' ')}z`
 }
 
+// Cubic spline through anchor points, closed into a silhouette or left open as a line.
+export function smooth(points: Point[], closed = false) {
+  const n = points.length
+  const at = (index: number) =>
+    closed ? points[(index + n) % n] : points[Math.max(0, Math.min(n - 1, index))]
+  let d = `M${points[0].join(' ')}`
+  for (let index = 0; index < (closed ? n : n - 1); index++) {
+    const [x0, y0] = at(index - 1)
+    const [x1, y1] = at(index)
+    const [x2, y2] = at(index + 1)
+    const [x3, y3] = at(index + 2)
+    d += `C${round(x1 + (x2 - x0) / 6)} ${round(y1 + (y2 - y0) / 6)} ${round(x2 - (x3 - x1) / 6)} ${round(y2 - (y3 - y1) / 6)} ${x2} ${y2}`
+  }
+  return closed ? d + 'z' : d
+}
+
+// Points sampled along the open spline through the anchors, several per segment.
+export function trace(points: Point[], perSegment = 8): Point[] {
+  const n = points.length
+  const at = (index: number) => points[Math.max(0, Math.min(n - 1, index))]
+  const out: Point[] = [points[0]]
+  for (let index = 0; index < n - 1; index++) {
+    const [x0, y0] = at(index - 1)
+    const [x1, y1] = at(index)
+    const [x2, y2] = at(index + 1)
+    const [x3, y3] = at(index + 2)
+    const c1: Point = [x1 + (x2 - x0) / 6, y1 + (y2 - y0) / 6]
+    const c2: Point = [x2 - (x3 - x1) / 6, y2 - (y3 - y1) / 6]
+    for (let step = 1; step <= perSegment; step++) {
+      const t = step / perSegment
+      const u = 1 - t
+      out.push([
+        round(u * u * u * x1 + 3 * u * u * t * c1[0] + 3 * u * t * t * c2[0] + t * t * t * x2),
+        round(u * u * u * y1 + 3 * u * u * t * c1[1] + 3 * u * t * t * c2[1] + t * t * t * y2),
+      ])
+    }
+  }
+  return out
+}
+
+// Value a share of the way along a list of widths.
+function along(widths: number[], share: number) {
+  const position = share * (widths.length - 1)
+  const index = Math.min(widths.length - 2, Math.floor(position))
+  return widths[index] + (widths[index + 1] - widths[index]) * (position - index)
+}
+
+// Band along a spline whose width follows the given profile, rounded at both ends.
+export function ribbon(points: Point[], widths: number[]) {
+  const path = trace(points)
+  const last = path.length - 1
+  const left: Point[] = []
+  const right: Point[] = []
+  path.forEach(([x, y], index) => {
+    const [px, py] = path[Math.max(0, index - 1)]
+    const [nx, ny] = path[Math.min(last, index + 1)]
+    const length = Math.hypot(nx - px, ny - py) || 1
+    const half = along(widths, index / last) / 2
+    const ox = (-(ny - py) / length) * half
+    const oy = ((nx - px) / length) * half
+    left.push([round(x + ox), round(y + oy)])
+    right.push([round(x - ox), round(y - oy)])
+  })
+  const cap = (index: number, toward: number, half: number): Point => {
+    const [x, y] = path[index]
+    const [tx, ty] = path[toward]
+    const length = Math.hypot(x - tx, y - ty) || 1
+    return [round(x + ((x - tx) / length) * half), round(y + ((y - ty) / length) * half)]
+  }
+  const tip = cap(last, last - 1, widths[widths.length - 1] / 2)
+  const root = cap(0, 1, widths[0] / 2)
+  return smooth([...left, tip, ...right.reverse(), root], true)
+}
+
 // Evenly spaced points along a polyline, from its first point to its last.
 export function beads(points: Point[], count: number): Point[] {
   const lengths = points.slice(1).map(([x, y], index) => Math.hypot(x - points[index][0], y - points[index][1]))
