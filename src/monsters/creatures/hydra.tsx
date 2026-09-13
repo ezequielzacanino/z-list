@@ -13,6 +13,7 @@ import {
   poly,
   Sparkle,
   spread,
+  taper,
   Waves,
   WHITE,
 } from '../kit'
@@ -123,7 +124,7 @@ export const hydra = creature<Step>(
                 />
               ))}
             {flames > 2 && <Flame x={x} y={y - radius - 0.5} size={1.3} />}
-            <circle cx={x} cy={y} r={radius} {...paint(body)} />
+            <path d={taper(x, y - radius * 0.15, radius, x, y + radius * 0.5, radius * 0.62)} {...paint(body)} />
             <circle cx={x - radius * 0.38} cy={y - radius * 0.1} r={radius * 0.24} fill={INK} />
             <circle cx={x + radius * 0.38} cy={y - radius * 0.1} r={radius * 0.24} fill={INK} />
             <path

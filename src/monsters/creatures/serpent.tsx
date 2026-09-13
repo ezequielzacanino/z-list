@@ -11,6 +11,7 @@ import {
   paint,
   Sparkle,
   spread,
+  taper,
   tri,
   WHITE,
   type Point,
@@ -134,16 +135,16 @@ export const serpent = creature<Step>(
               vein={false}
             />
           ))}
-        <circle cx={28} cy={24} r={7.8} {...paint(body)} />
-        <path d={fan(28, 26, 4.2, 90, 270)} fill={body.light} />
+        <path d={taper(28, 22.5, 7.5, 28, 29, 4.6)} {...paint(body)} />
+        <path d={taper(28, 26.5, 3.6, 28, 29.5, 3)} fill={body.light} />
         {gaze > 0 && [25, 31].map((x) => <circle key={x} cx={x} cy={23} r={2.8} fill={accent.light} />)}
         <Eye x={25} y={23} r={1.7} glow={gaze > 1 ? accent.fill : undefined} />
         <Eye x={31} y={23} r={1.7} glow={gaze > 1 ? accent.fill : undefined} />
         <Blush x={22.5} y={26.5} />
         <Blush x={33.5} y={26.5} />
-        <path d="M26.5 28A1.8 1.8 0 0 0 29.5 28" {...line('#3a2c2b', 1.1)} />
+        <path d="M26.5 29.5A1.8 1.8 0 0 0 29.5 29.5" {...line('#3a2c2b', 1.1)} />
         {level('fangs') > 0 &&
-          [26.8, 29.2].map((x) => <path key={x} d={tri(x, 28.6, 1.4, 1.8, 180)} fill={WHITE} />)}
+          [26.8, 29.2].map((x) => <path key={x} d={tri(x, 30.1, 1.4, 1.8, 180)} fill={WHITE} />)}
         {crown > 0 && (
           <Crown x={28} y={17.6} width={5 + crown * 2} gem={crown > 2 ? accent.fill : undefined} />
         )}

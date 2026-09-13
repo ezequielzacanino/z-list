@@ -104,6 +104,18 @@ export function capsule(x1: number, y1: number, x2: number, y2: number, width: n
   return `M${a.join(' ')}L${b.join(' ')}A${r} ${r} 0 0 1 ${c.join(' ')}L${d.join(' ')}A${r} ${r} 0 0 1 ${a.join(' ')}z`
 }
 
+// Hull of two circles: a rounded cone from a wide end to a narrow one, for snouts, beaks and jaws.
+export function taper(x1: number, y1: number, r1: number, x2: number, y2: number, r2: number) {
+  const heading = (Math.atan2(x2 - x1, y1 - y2) * 180) / Math.PI
+  const offset = (Math.acos((r1 - r2) / Math.hypot(x2 - x1, y2 - y1)) * 180) / Math.PI
+  const a = polar(x1, y1, heading - offset, r1)
+  const b = polar(x2, y2, heading - offset, r2)
+  const c = polar(x2, y2, heading + offset, r2)
+  const d = polar(x1, y1, heading + offset, r1)
+  const large = offset > 90 ? 1 : 0
+  return `M${a.join(' ')}L${b.join(' ')}A${r2} ${r2} 0 ${large} 1 ${c.join(' ')}L${d.join(' ')}A${r1} ${r1} 0 ${1 - large} 1 ${a.join(' ')}z`
+}
+
 // Isosceles triangle standing on its base center, pointing toward an angle.
 export function tri(x: number, y: number, width: number, height: number, angle = 0) {
   return poly([

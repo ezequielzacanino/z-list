@@ -12,6 +12,7 @@ import {
   poly,
   Sparkle,
   Star,
+  taper,
   tri,
   WHITE,
 } from '../kit'
@@ -115,7 +116,7 @@ export const pony = creature<Step>(
         ))}
         <path d={poly([[22, 43], [31, 43], [26.5, 23], [18.5, 25.5]])} {...paint(body)} />
         <path d={tri(21, 20, 5, 9, 15)} {...paint(body)} />
-        <circle cx={18} cy={26} r={7.5} {...paint(body)} />
+        <path d={taper(18.5, 25.5, 7.3, 11, 30.5, 4.2)} {...paint(body)} />
         {mane > 3 && <circle cx={20.5} cy={19} r={2.6} {...paint(accent)} />}
         {horn > 0 && (
           <g>
@@ -129,9 +130,9 @@ export const pony = creature<Step>(
             ))}
           </g>
         )}
-        <circle cx={11.5} cy={30} r={4.6} {...paint({ ...body, fill: body.light })} />
-        <circle cx={9.6} cy={29} r={0.7} fill={INK} />
-        <path d="M9.5 32.5A2 2 0 0 0 13 32.5" {...line(INK, 0.9)} />
+        <path d={taper(14, 29.5, 3.4, 10.5, 31, 3.2)} fill={body.light} />
+        <circle cx={8.5} cy={29.5} r={0.7} fill={INK} />
+        <path d="M9 33A2 2 0 0 0 12.5 33" {...line(INK, 0.9)} />
         <Eye x={19} y={24.5} r={1.7} />
         <Blush x={17} y={29.5} r={1.4} />
         {pegasus &&

@@ -15,6 +15,7 @@ import {
   polar,
   Sparkle,
   spread,
+  taper,
   tri,
   WHITE,
   type Point,
@@ -118,6 +119,7 @@ function Dragon({ level, look: { body, accent } }: Props) {
       ))}
       {level('claws') > 0 &&
         [23.5, 26.5, 36.5, 39.5].map((x) => <path key={x} d={tri(x, 58, 1.6, 1.6, -90)} fill={WHITE} />)}
+      <path d={capsule(27, 41, 21, 33, 9)} {...paint(body)} />
       <circle cx={34} cy={45} r={12} {...paint(body)} />
       {level('belly') > 0 && (
         <>
@@ -140,17 +142,18 @@ function Dragon({ level, look: { body, accent } }: Props) {
       )}
       {horns > 0 && (
         <>
-          <path d={tri(12.5, 26, 3.2, 3 + horns * 2, -15)} {...paint(GOLD, 0.9)} />
-          <path d={tri(20, 25.5, 4, 4 + horns * 2.4, 20)} {...paint(GOLD, 0.9)} />
+          <path d={tri(15.5, 24.5, 3.2, 3 + horns * 2, -20)} {...paint(GOLD, 0.9)} />
+          <path d={tri(22, 25, 4, 4 + horns * 2.4, 15)} {...paint(GOLD, 0.9)} />
         </>
       )}
-      <circle cx={18} cy={32} r={8.5} {...paint(body)} />
-      <circle cx={11.5} cy={34.5} r={4.6} {...paint({ ...body, fill: body.light })} />
-      <circle cx={9} cy={33.3} r={0.7} fill={INK} />
-      <path d="M9.5 36.5A2.2 2.2 0 0 0 13.5 36.5" {...line(INK, 0.9)} />
-      <Eye x={18} y={29.5} r={1.8} />
-      <Blush x={22} y={34.5} r={1.6} />
-      {fire > 0 && <Flame x={4.5} y={36} size={1 + fire} angle={-90} />}
+      <path d={taper(19.5, 31, 8.2, 8, 35.5, 3.4)} {...paint(body)} />
+      <path d={taper(16, 35.5, 3.6, 8.5, 36.5, 2.2)} fill={body.light} />
+      <path d="M15 27.2L20 25.6" {...line(INK, 1.1)} />
+      <circle cx={6.3} cy={34.6} r={0.7} fill={INK} />
+      <path d="M6 37.5Q10 39.5 14 38.5" {...line(INK, 0.9)} />
+      <Eye x={18.5} y={29} r={1.8} />
+      <Blush x={22.5} y={34} r={1.6} />
+      {fire > 0 && <Flame x={3.5} y={36.5} size={1 + fire} angle={-90} />}
       {fire > 2 && (
         <>
           <Sparkle x={52} y={14} size={2} color={{ ...GOLD, fill: '#ffb36b' }} />
@@ -218,16 +221,18 @@ function Ryu({ level, look: { body, accent } }: Props) {
             )}
           </g>
         ))}
-      <circle cx={16} cy={31} r={6.8} {...paint(body)} />
-      <path d={capsule(8.5, 33.5, 14, 33.5, 5.5)} {...paint({ ...body, fill: body.light })} />
-      <circle cx={7.8} cy={32.5} r={0.6} fill={INK} />
-      <Eye x={16} y={29} r={1.6} />
-      <Blush x={19} y={33.5} r={1.5} />
+      <path d={taper(16.5, 30.5, 6.6, 7.5, 33.5, 3)} {...paint(body)} />
+      <path d={taper(13, 34, 2.8, 8, 34.5, 2)} fill={body.light} />
+      <path d="M13.2 27.2L17.5 25.8" {...line(INK, 1)} />
+      <circle cx={5.8} cy={32.7} r={0.6} fill={INK} />
+      <path d="M5.5 35.3Q9 37 12.5 36" {...line(INK, 0.8)} />
+      <Eye x={16.5} y={28.8} r={1.6} />
+      <Blush x={19.5} y={33} r={1.5} />
       {whiskers > 0 &&
         [-1, 1].map((side) => (
           <path
             key={side}
-            d={`M8 ${34 + side}L${5 - whiskers} ${37 + side * 2 + whiskers}L${6 - whiskers * 1.5} ${40 + side + whiskers * 2}`}
+            d={`M6.5 ${33.5 + side}L${4 - whiskers} ${36.5 + side * 2 + whiskers}L${5 - whiskers * 1.5} ${39.5 + side + whiskers * 2}`}
             {...line(accent.shade, 0.9)}
           />
         ))}
