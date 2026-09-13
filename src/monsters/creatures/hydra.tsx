@@ -1,12 +1,10 @@
 import { creature } from '../creature'
+import { FaceSide } from '../faces'
 import {
-  Brow,
   drop,
-  Fang,
   Flame,
   INK,
   line,
-  Peeper,
   polar,
   ribbon,
   Silhouette,
@@ -217,11 +215,8 @@ export const hydra = creature<Step>(
           <g key={angle} transform={transform}>
             {flames > 2 && <Flame x={9.5} y={-0.5} size={1.6} angle={90} />}
             <path d={smooth(jaw, true)} fill={body.light} />
-            <Peeper x={0.8} y={-1.4} r={1.9} look={0.5} />
-            <Brow x={0.8} y={-3.9} w={4} tilt={-14} />
             <circle cx={6.6} cy={-1} r={0.55} fill={INK} />
-            <path d="M7.2 1.4Q3.5 2.8 -0.5 2.2" {...line(INK, 1)} />
-            <Fang x={4.3} y={2.1} size={1.4} />
+            <FaceSide x={0.8} y={-1.4} snout={6.8} size={0.9} />
           </g>
         ))}
         {level('pearls') > 0 && <circle cx={9} cy={56} r={2.4} fill={WHITE} stroke={INK} strokeWidth={1} />}

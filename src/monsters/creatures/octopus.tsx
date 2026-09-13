@@ -1,13 +1,11 @@
 import { creature } from '../creature'
+import { FaceFront } from '../faces'
 import {
-  Brow,
   Crown,
   Glow,
-  Grin,
   INK,
   line,
   paint,
-  Peeper,
   ribbon,
   Silhouette,
   smooth,
@@ -136,15 +134,7 @@ export const octopus = creature<Step>(
         {shimenawa > 1 &&
           [26, 38].map((x) => <path key={x} d={`M${x} 26.5l1.6 2.2l-2.2 1.6l1.6 2.4`} {...line(WHITE, 1.4)} />)}
         {shimenawa > 2 && <circle cx={32} cy={24.2} r={1.6} fill="#d94f5c" />}
-        <Peeper x={26} y={29} r={2.7} look={0.4} />
-        <Peeper x={38} y={29} r={2.7} look={0.4} />
-        {level('crown') > 1 && (
-          <>
-            <Brow x={26} y={26} w={4} tilt={-12} />
-            <Brow x={38} y={26} w={4} tilt={12} />
-          </>
-        )}
-        <Grin x={32} y={34.5} w={4.4} />
+        <FaceFront x={32} y={29} gap={6} size={1.05} />
         {level('crown') > 0 && (
           <Crown
             x={32}

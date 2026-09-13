@@ -1,14 +1,12 @@
 import type { ReactNode } from 'react'
 import { creature, type Look } from '../creature'
+import { FaceSide } from '../faces'
 import {
-  Brow,
   Cloud,
   drop,
-  Fang,
   Flame,
   INK,
   line,
-  Peeper,
   ribbon,
   Silhouette,
   smooth,
@@ -140,22 +138,17 @@ function Horns({ level, long = false }: { level: number; long?: boolean }) {
 function Face({
   body,
   long = false,
-  fierce = 0,
   children,
 }: {
   body: Look['body']
   long?: boolean
-  fierce?: number
   children?: ReactNode
 }) {
   return (
     <g transform={long ? 'scale(1.12 1)' : undefined}>
       <path d={smooth(jaw, true)} fill={body.light} />
-      <Peeper x={1} y={-1.8} r={2.1} look={0.5} />
-      <Brow x={1.2} y={-4.6} w={4.5} tilt={-8 - fierce * 8} />
       <circle cx={8.2} cy={-1.4} r={0.65} fill={INK} />
-      <path d="M9 1.6Q4.5 3.2 -1 2.6" {...line(INK, 1.1)} />
-      <Fang x={5.5} y={2.4} size={1.6} />
+      <FaceSide x={1} y={-1.8} snout={8.2} />
       {children}
     </g>
   )
@@ -264,7 +257,7 @@ function Dragon({ level, look: { body, accent } }: Props) {
       {claws > 0 &&
         [18.5, 22, 36.5, 40].map((x) => <path key={x} d={tri(x, 59, 1.6, 1.8, -100)} fill={WHITE} />)}
       <g transform={HEAD}>
-        <Face body={body} fierce={Math.min(2, horns)} />
+        <Face body={body} />
       </g>
       {fire > 0 && <Flame x={3} y={23.5} size={1 + fire} angle={-90} />}
       {fire > 2 && (
