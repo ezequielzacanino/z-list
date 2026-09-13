@@ -85,8 +85,13 @@ settle for a few minutes and arrive as one notice per author and list.
 
 ## Monsters
 
-Every list raises a monster, picked at random from the species in `src/monsters/`
-when the list is created; while it is still a baby, tapping it swaps the species.
+Every list raises a monster, picked at random from the fifty species in
+`src/monsters/species.ts` when the list is created; while it is still a baby, tapping
+it swaps the species. Species come in pairs: each creature line in
+`src/monsters/creatures/` starts from one baby animal and has two nineteen-step
+evolution scripts, each ending in a different mythological creature. Every stage adds
+one small visible change, and the final form stands out by its features more than by
+its size, so it still fits beside the list name.
 A person adding an item earns the list one point and the first completion of an item
 three; generated copies and repeated checks earn nothing. Points map to twenty
 stages, each a little further than the one before. After a week without use the
@@ -117,7 +122,7 @@ src/
   hooks/        # data hooks, one per concern (useSession, useLists, useItems)
   components/   # presentational components, one per file
   pages/        # routed screens
-  monsters/     # species, body parts and growth stages of the list monsters
+  monsters/     # list monsters: creature lines, species, drawing kit and growth stages
 supabase/
   migrations/   # numbered SQL migrations, forward-only
 ```

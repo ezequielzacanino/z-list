@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest'
 import { currentStage, stageOf, STAGES, threshold } from './growth'
-import { ladder, levelsAt } from './ladder'
 import { species } from './species'
 
 describe('stageOf', () => {
@@ -27,20 +26,15 @@ describe('currentStage', () => {
 })
 
 describe('species', () => {
-  it('has fifty distinct monsters', () => {
+  it('has fifty distinct creatures', () => {
     expect(species).toHaveLength(50)
-    const looks = species.map((one) => [one.body, one.eyes, one.mouth, ...one.traits].join())
-    expect(new Set(looks).size).toBe(50)
     expect(new Set(species.map((one) => one.name)).size).toBe(50)
+    expect(new Set(species.map((one) => one.creature.scripts[Number(one.variant)])).size).toBe(50)
   })
 
-  it('gives every monster a new feature at each of its stages', () => {
+  it('grows exactly one step at every stage', () => {
     for (const one of species) {
-      expect(ladder(one.traits).length, one.name).toBeGreaterThanOrEqual(STAGES - 1)
-      const shown = Array.from({ length: STAGES }, (_, stage) =>
-        JSON.stringify(levelsAt(one.traits, stage)),
-      )
-      expect(new Set(shown).size, one.name).toBe(STAGES)
+      expect(one.creature.scripts[Number(one.variant)], one.name).toHaveLength(STAGES - 1)
     }
   })
 })

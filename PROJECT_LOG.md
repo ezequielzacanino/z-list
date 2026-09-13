@@ -476,3 +476,18 @@ pendientes, sin cambios de esquema.
 **Fundamento**: Los puntos viven en la base para que borrar ítems no reste progreso;
 `counted_at` impide sumar tildando y destildando. El decaimiento se aplica al sumar y
 se calcula igual en el cliente, así nadie tiene que escribir cuando la lista está quieta.
+
+## 2026-09-13 — Criaturas mitológicas
+
+**Resumen**: Los monstruos genéricos se reemplazan por 25 líneas de criaturas en
+`src/monsters/creatures/`, cada una con dos guiones de evolución de 19 pasos que
+terminan en criaturas distintas (fénix y ave del trueno, cerbero y ortro, kitsune,
+hidra, etc.). `species.ts` lista las 50 especies con sus colores.
+
+**Archivos**: `src/monsters/creature.ts`, `src/monsters/kit.tsx`,
+`src/monsters/creatures/*`, `src/monsters/species.ts`, `src/monsters/draw.tsx`,
+`src/monsters/growth.test.ts`, `CLAUDE.md`.
+
+**Fundamento**: Cada guion nombra el rasgo que crece en cada etapa, así la progresión
+cuenta una historia propia (una cabeza más, una cola más) en lugar de repartir rasgos
+comunes. El índice de especie guardado en `lists.monster` no cambia de rango.
