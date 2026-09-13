@@ -79,7 +79,7 @@ export function ListsPage({ userId, recovery }: { userId: string; recovery: bool
               <Monster
                 index={list.monster}
                 stage={currentStage(list.growth, list.growth_at, now)}
-                size={2.8}
+                size={3.4}
               />
               <span className="card-text">
                 <strong>{list.name}</strong>
