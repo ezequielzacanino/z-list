@@ -1,5 +1,5 @@
 import { creature } from '../creature'
-import { Blush, Eye, Flame, Glow, INK, line, paint, Sparkle, tone, Tube, type Tone } from '../kit'
+import { Blush, capsule, Eye, fan, Flame, Glow, INK, line, paint, Sparkle, tone, tri, type Tone } from '../kit'
 
 type Step = 'heads' | 'ears' | 'size' | 'tail' | 'paws' | 'collar' | 'mane' | 'spots'
 
@@ -79,53 +79,34 @@ export const dog = creature<Step>(
         {mane > 1 && <Flame x={x} y={y - radius + 2} size={3.2} cold={orthrus} />}
         {[-1, 1].map((side) =>
           ears > 1 ? (
+            <path key={side} d={tri(x + side * 4.2, y - radius + 2.5, 5, 6, side * 20)} {...paint(ear)} />
+          ) : (
             <path
               key={side}
-              d={`M${x + side * 2} ${y - radius + 2}L${x + side * 5.5} ${y - radius - 4}L${x + side * 6.5} ${y - 1}z`}
-              {...paint(ear)}
-            />
-          ) : (
-            <ellipse
-              key={side}
-              cx={x + side * (radius - 0.5)}
-              cy={y}
-              rx={2.3 + ears * 0.5}
-              ry={4.2 + ears}
-              transform={`rotate(${side * -18} ${x + side * radius} ${y})`}
+              d={capsule(x + side * (radius - 0.5), y - 2, x + side * (radius + 0.8), y + 2.5 + ears, 4.6 + ears)}
               {...paint(ear)}
             />
           ),
         )}
         <circle cx={x} cy={y} r={radius} {...paint(body)} />
-        <ellipse cx={x} cy={y + 3} rx={3.8} ry={2.8} fill={body.light} />
+        <circle cx={x} cy={y + 3} r={3.3} fill={body.light} />
         {orthrus && index === 0 && level('spots') > 0 && (
-          <ellipse cx={x + 2.8} cy={y - 1.3} rx={2.8} ry={2.4} fill={ear.fill} opacity={0.8} />
+          <circle cx={x + 2.8} cy={y - 1.3} r={2.6} fill={ear.fill} opacity={0.8} />
         )}
-        <ellipse cx={x} cy={y + 1.9} rx={1.3} ry={0.95} fill={INK} />
+        <path d={fan(x, y + 1.2, 1.4, 90, 270)} fill={INK} />
         <Eye x={x - 2.8} y={y - 1.3} r={1.45} />
         <Eye x={x + 2.8} y={y - 1.3} r={1.45} />
         <Blush x={x - 4.4} y={y + 2.4} r={1.4} />
         <Blush x={x + 4.4} y={y + 2.4} r={1.4} />
-        <path d={`M${x - 1.6} ${y + 3.8}Q${x} ${y + 5} ${x + 1.6} ${y + 3.8}`} {...line(INK, 1)} />
-        {index === heads.length - 1 && (
-          <ellipse cx={x + 0.9} cy={y + 5.2} rx={1} ry={1.3} fill="#ff8fa3" />
-        )}
+        <path d={`M${x - 1.6} ${y + 3.6}A2 2 0 0 0 ${x + 1.6} ${y + 3.6}`} {...line(INK, 1)} />
+        {index === heads.length - 1 && <path d={fan(x + 0.9, y + 4.6, 1.2, 90, 270)} fill="#ff8fa3" />}
         {collar > 0 && (
-          <path
-            d={`M${x - 4.5} ${y + radius - 1}Q${x} ${y + radius + 2} ${x + 4.5} ${y + radius - 1}`}
-            {...line('#e05a5a', 2.2)}
-          />
+          <path d={capsule(x - 4.5, y + radius - 0.2, x + 4.5, y + radius - 0.2, 2.2)} {...paint(tone(0, 65, 62), 0.7)} />
         )}
-        {collar > 1 && (
-          <circle cx={x} cy={y + radius + 2.2} r={1.3} {...paint(tone(45, 90, 65), 0.6)} />
-        )}
+        {collar > 1 && <circle cx={x} cy={y + radius + 2} r={1.3} {...paint(tone(45, 90, 65), 0.6)} />}
         {collar > 2 &&
           [-3, 3].map((offset) => (
-            <path
-              key={offset}
-              d={`M${x + offset - 0.9} ${y + radius}L${x + offset * 1.25} ${y + radius + 2.4}L${x + offset + 0.9} ${y + radius + 0.2}z`}
-              fill="#c8c8d0"
-            />
+            <path key={offset} d={tri(x + offset, y + radius + 0.6, 1.8, 2.2, offset * 8)} fill="#c8c8d0" />
           ))}
       </g>
     )
@@ -134,20 +115,16 @@ export const dog = creature<Step>(
         {mane > 2 && <Glow x={32} y={40} r={27} color={orthrus ? '#8fd3ff' : '#ff9a5a'} />}
         <Tail level={tail} color={body} cold={orthrus} burning={paws > 2} />
         {[-1, 1].map((side) => (
-          <ellipse key={side} cx={32 + side * 9.5} cy={52} rx={5} ry={4.5} {...paint(body)} />
+          <circle key={side} cx={32 + side * 9.5} cy={52.5} r={4.6} {...paint(body)} />
         ))}
         {paws > 1 && [22, 42].map((x) => <Flame key={x} x={x} y={57} size={2.6} cold={orthrus} />)}
-        <ellipse cx={32} cy={47} rx={11} ry={9.5} {...paint(body)} />
-        <ellipse cx={32} cy={49} rx={6} ry={6} fill={body.light} />
-        {mane > 0 &&
-          [28, 32, 36].map((x) => <circle key={x} cx={x} cy={41.5} r={2.4} fill={body.light} />)}
+        <circle cx={32} cy={47} r={10} {...paint(body)} />
+        <circle cx={32} cy={49.5} r={5.8} fill={body.light} />
+        {mane > 0 && [28, 32, 36].map((x) => <circle key={x} cx={x} cy={41.5} r={2.4} fill={body.light} />)}
         {[28, 36].map((x) => (
-          <rect key={x} x={x - 2.6} y={50} width={5.2} height={8} rx={2.6} {...paint(body)} />
+          <path key={x} d={capsule(x, 52, x, 55.5, 5.2)} {...paint(body)} />
         ))}
-        {paws > 0 &&
-          [28, 36].map((x) => (
-            <Flame key={x} x={x} y={58} size={1.6 + paws * 0.5} cold={orthrus} />
-          ))}
+        {paws > 0 && [28, 36].map((x) => <Flame key={x} x={x} y={58} size={1.6 + paws * 0.5} cold={orthrus} />)}
         {heads.map(head)}
         {mane > 2 && (
           <>
@@ -160,21 +137,11 @@ export const dog = creature<Step>(
   },
 )
 
-function Tail({
-  level,
-  color,
-  cold,
-  burning,
-}: {
-  level: number
-  color: Tone
-  cold: boolean
-  burning: boolean
-}) {
+function Tail({ level, color, cold, burning }: { level: number; color: Tone; cold: boolean; burning: boolean }) {
   if (level === 0) return <circle cx={43.5} cy={50} r={2.6} {...paint(color)} />
   return (
     <>
-      <Tube d="M41 51C47 50 50 45 49 39" color={color} width={level > 1 ? 4.6 : 3.2} />
+      <path d={capsule(41, 51, 49, 39.5, level > 1 ? 4.6 : 3.2)} {...paint(color)} />
       {level > 1 && <circle cx={49} cy={38.5} r={2.6} fill={color.light} />}
       {burning && <Flame x={49} y={37} size={2.4} cold={cold} />}
     </>

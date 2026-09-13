@@ -1,5 +1,5 @@
 import { creature } from '../creature'
-import { Eye, Flame, Glow, GOLD, INK, line, paint, Sparkle, Star, tone, WHITE } from '../kit'
+import { capsule, Eye, fan, Flame, Glow, GOLD, INK, line, paint, poly, Sparkle, Star, tone, tri, WHITE } from '../kit'
 
 type Step =
   | 'feathers'
@@ -69,13 +69,12 @@ export const owl = creature<Step>(
     const moon = level('moon')
     const hat = level('hat')
     const book = level('book')
+    const veil = level('veil')
     const glow = level('eyes') > 0 ? accent.fill : undefined
     const hatHeight = 5 + hat * 3
     return (
       <>
-        {moon > 3 && (
-          <circle cx={32} cy={28} r={17} fill="#fff3c4" stroke={GOLD.shade} strokeWidth={0.6} />
-        )}
+        {moon > 3 && <circle cx={32} cy={28} r={17} fill="#fff3c4" stroke={GOLD.shade} strokeWidth={0.6} />}
         {moon > 2 && <circle cx={32} cy={33} r={14} fill={GOLD.light} opacity={0.6} />}
         {moon > 0 && moon < 4 && (
           <path
@@ -83,39 +82,25 @@ export const owl = creature<Step>(
             {...paint(GOLD, 0.7)}
           />
         )}
-        {level('veil') > 0 && (
-          <path
-            d={`M18 40Q${12 - level('veil') * 2} 58 20 58.5H44Q${52 + level('veil') * 2} 58 46 40z`}
-            fill={NIGHT.fill}
-            stroke={NIGHT.shade}
-            strokeWidth={1}
-          />
+        {veil > 0 && (
+          <path d={poly([[18, 40], [12 - veil * 2, 58.5], [52 + veil * 2, 58.5], [46, 40]])} {...paint(NIGHT, 1)} />
         )}
-        {level('veil') > 1 && <Star x={16} y={52} size={1.8} />}
-        {wings > 2 && (
-          <ellipse cx={47} cy={33} rx={4} ry={9.5} transform="rotate(40 47 33)" {...paint(body)} />
-        )}
+        {veil > 1 && <Star x={16} y={52} size={1.8} />}
+        {wings > 2 && <path d={fan(42, 46, 14, 15, 70)} {...paint(body)} />}
         {wings > 0 &&
           (wings > 2 ? [-1] : [-1, 1]).map((side) => (
-            <ellipse
+            <path
               key={side}
-              cx={32 + side * 12.5}
-              cy={44}
-              rx={3 + wings * 0.5}
-              ry={7 + wings}
+              d={capsule(32 + side * 12.5, 40 - wings * 0.5, 32 + side * 12.5, 48 + wings * 0.5, 6 + wings)}
               {...paint(body)}
             />
           ))}
         {tufts > 0 &&
           [-1, 1].map((side) => (
-            <path
-              key={side}
-              d={`M${32 + side * 7} 27L${32 + side * 11} ${26 - tufts * 3}L${32 + side * 12.5} 30z`}
-              {...paint(body)}
-            />
+            <path key={side} d={tri(32 + side * 9.5, 28, 5, 3 + tufts * 3, side * 20)} {...paint(body)} />
           ))}
-        <ellipse cx={32} cy={41} rx={13.5} ry={16} {...paint(body)} />
-        <ellipse cx={32} cy={48.5} rx={8} ry={8} fill={body.light} />
+        <path d={capsule(32, 37, 32, 44.5, 27)} {...paint(body)} />
+        <circle cx={32} cy={48.5} r={8} fill={body.light} />
         {Array.from({ length: level('feathers') }, (_, row) => (
           <path
             key={row}
@@ -124,20 +109,11 @@ export const owl = creature<Step>(
             opacity={0.5}
           />
         ))}
-        <path
-          d="M32 30C28 24 18 26 20 36C21 42 28 44 32 42C36 44 43 42 44 36C46 26 36 24 32 30z"
-          fill={body.light}
-        />
         {[26.5, 37.5].map((x) => (
-          <circle
-            key={x}
-            cx={x}
-            cy={35}
-            r={4.2}
-            fill={WHITE}
-            stroke={body.shade}
-            strokeWidth={0.9}
-          />
+          <circle key={x} cx={x} cy={35} r={6.6} fill={body.light} />
+        ))}
+        {[26.5, 37.5].map((x) => (
+          <circle key={x} cx={x} cy={35} r={4.2} fill={WHITE} stroke={body.shade} strokeWidth={0.9} />
         ))}
         <Eye x={26.5} y={35} r={2.2} glow={glow} />
         <Eye x={37.5} y={35} r={2.2} glow={level('eyes') > 1 ? glow : undefined} />
@@ -147,15 +123,13 @@ export const owl = creature<Step>(
             {...line(INK, 0.9)}
           />
         )}
-        <path d="M30.8 38.5h2.4l-1.2 2.6z" {...paint(GOLD, 0.6)} />
+        <path d={tri(32, 38.5, 2.6, 2.6, 180)} {...paint(GOLD, 0.6)} />
         <path d="M28 56.5v2M29.5 56.5v2M34.5 56.5v2M36 56.5v2" {...line(GOLD.shade, 1.2)} />
-        {book === 1 && (
-          <rect x={26.5} y={49} width={11} height={7} rx={1} {...paint(tone(355, 55, 60), 0.8)} />
-        )}
+        {book === 1 && <rect x={26.5} y={49} width={11} height={7} rx={1} {...paint(tone(355, 55, 60), 0.8)} />}
         {book > 1 && (
           <g>
             <path
-              d="M32 51Q28 49 24 50V56Q28 55 32 57Q36 55 40 56V50Q36 49 32 51z"
+              d={poly([[32, 51], [24, 50], [24, 56], [32, 57], [40, 56], [40, 50]])}
               fill={WHITE}
               stroke={INK}
               strokeWidth={0.8}
@@ -167,22 +141,14 @@ export const owl = creature<Step>(
         {book > 2 && <Sparkle x={36} y={46} size={2} />}
         {hat > 0 && (
           <g>
-            <path d={`M24.5 25L${33 + hat} ${25 - hatHeight}L39.5 25z`} {...paint(HAT)} />
-            <ellipse cx={32} cy={25.5} rx={9.5} ry={1.9} {...paint(HAT)} />
+            <path d={poly([[24.5, 25], [33 + hat, 25 - hatHeight], [39.5, 25]])} {...paint(HAT)} />
+            <path d={capsule(23, 25.5, 41, 25.5, 3.6)} {...paint(HAT)} />
             {hat > 1 && <Star x={32.5} y={25 - hatHeight * 0.45} size={1.6} />}
           </g>
         )}
         {level('candle') > 0 && (
           <g>
-            <rect
-              x={9.5}
-              y={48}
-              width={3}
-              height={8}
-              fill={WHITE}
-              stroke="#b9ab9a"
-              strokeWidth={0.6}
-            />
+            <rect x={9.5} y={48} width={3} height={8} fill={WHITE} stroke="#b9ab9a" strokeWidth={0.6} />
             <Flame x={11} y={47.5} size={1.3} />
           </g>
         )}

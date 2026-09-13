@@ -1,12 +1,15 @@
 import { creature } from '../creature'
 import {
   Blush,
+  capsule,
   Eye,
+  fan,
   Flame,
   Glow,
   INK,
   line,
   paint,
+  poly,
   polar,
   Sparkle,
   spread,
@@ -81,70 +84,52 @@ export const fox = creature<Step>(
     const ears = level('ears')
     const marks = level('marks')
     const foxfire = level('foxfire')
-    const earHeight = 5 + ears * 2
+    const earTop = 12 - ears * 2
     return (
       <g transform={`translate(32 58) scale(${grow}) translate(-32 -58)`}>
         {foxfire > 2 && <Glow x={32} y={38} r={27} color={snowy ? '#bfe6ff' : '#9fd7ff'} />}
         {angles.map((angle) => {
-          const length = 22
-          const tip = polar(32, 52, angle, length)
-          const middle = polar(32, 52, angle, length * 0.55)
-          const left = polar(...middle, angle - 90, 7)
-          const edge = polar(...middle, angle + 90, 7)
-          const white = polar(32, 52, angle, length * 0.84)
+          const [tx, ty] = polar(32, 50, angle, 18)
+          const [wx, wy] = polar(32, 50, angle, 19)
           return (
             <g key={angle}>
-              <path
-                d={`M32 52Q${left.join(' ')} ${tip.join(' ')}Q${edge.join(' ')} 32 52z`}
-                {...paint(body)}
-              />
-              <circle cx={white[0]} cy={white[1]} r={2.6} fill={WHITE} />
+              <path d={capsule(32, 50, tx, ty, 7.5)} {...paint(body)} />
+              <circle cx={wx} cy={wy} r={2.7} fill={WHITE} />
             </g>
           )
         })}
-        <path d="M32 35C40 37 42 48 40 57H24C22 48 24 37 32 35z" {...paint(body)} />
-        <ellipse cx={32} cy={49} rx={4.5} ry={6} fill={WHITE} />
-        {[28.5, 35.5].map((x) => (
-          <rect key={x} x={x - 2} y={52} width={4} height={6} rx={2} {...paint(body)} />
+        <path d={poly([[32, 34], [44.5, 57.5], [19.5, 57.5]])} {...paint(body)} />
+        <path d={poly([[32, 41], [37.5, 53], [26.5, 53]])} fill={WHITE} />
+        {[28, 36].map((x) => (
+          <path key={x} d={fan(x, 57.5, 3.2, -90, 90)} {...paint(body)} />
         ))}
         {level('bell') > 0 && (
           <>
-            <path d="M26 39Q32 42 38 39" {...line('#d64550', 1.8)} />
-            <circle cx={32} cy={42} r={1.9} {...paint(tone(45, 90, 65), 0.6)} />
+            <path d="M26 42.5H38" {...line('#d64550', 1.8)} />
+            <circle cx={32} cy={44.5} r={1.9} {...paint(tone(45, 90, 65), 0.6)} />
           </>
         )}
         {[-1, 1].map((side) => (
           <g key={side}>
+            <path d={poly([[32 + side * 15, 27], [32 + side * 13, earTop], [32 + side * 2, 22]])} {...paint(body)} />
             <path
-              d={`M${32 + side * 4} 25L${32 + side * 8} ${25 - earHeight}L${32 + side * 10.5} 28z`}
-              {...paint(body)}
-            />
-            <path
-              d={`M${32 + side * 6} 25.5L${32 + side * 8} ${26.5 - earHeight * 0.7}L${32 + side * 9.3} 27.5z`}
+              d={poly([[32 + side * 12.5, 23], [32 + side * 12, earTop + 5], [32 + side * 6, 21.5]])}
               fill={ears > 1 ? INK : body.shade}
               opacity={0.55}
             />
           </g>
         ))}
-        <path
-          d="M21.5 29.5Q23.5 22.5 32 23.5Q40.5 22.5 42.5 29.5Q40.5 37 32 39Q23.5 37 21.5 29.5z"
-          {...paint(body)}
-        />
-        <path d="M23.5 32Q28 36.5 32 39Q36 36.5 40.5 32Q36 35 32 35Q28 35 23.5 32z" fill={WHITE} />
-        <Eye x={28} y={30} r={1.6} />
-        <Eye x={36} y={30} r={1.6} />
-        <ellipse cx={32} cy={34.2} rx={1.2} ry={0.9} fill={INK} />
-        <Blush x={25.5} y={33.5} r={1.5} />
-        <Blush x={38.5} y={33.5} r={1.5} />
+        <path d={poly([[14, 28], [32, 18], [50, 28], [32, 42]])} {...paint(body)} />
+        <path d={poly([[17.5, 30], [46.5, 30], [32, 41]])} fill={WHITE} />
+        <Eye x={26} y={27.5} r={1.7} />
+        <Eye x={38} y={27.5} r={1.7} />
+        <path d={poly([[30.4, 32], [33.6, 32], [32, 34.4]])} fill={INK} />
+        <Blush x={22} y={31.8} r={1.5} />
+        <Blush x={42} y={31.8} r={1.5} />
         {marks > 0 && (
-          <path
-            d="M22.8 30.5l2.6 .8M22.8 32.3l2.4 .4M41.2 30.5l-2.6 .8M41.2 32.3l-2.4 .4"
-            {...line(MARK, 1.1)}
-          />
+          <path d="M17.5 26.5l3 .6M17.5 28.5l3 .1M46.5 26.5l-3 .6M46.5 28.5l-3 .1" {...line(MARK, 1.1)} />
         )}
-        {marks > 1 && (
-          <path d="M32 24.5C33.3 26 33 27.6 32 28.3C31 27.6 30.7 26 32 24.5z" fill={MARK} />
-        )}
+        {marks > 1 && <path d={poly([[32, 20.5], [33.6, 23.5], [32, 26], [30.4, 23.5]])} fill={MARK} />}
         {foxfires.slice(0, foxfire).map(([x, y]) => (
           <g key={x}>
             <Glow x={x} y={y - 3} r={5} color="#bfe6ff" />

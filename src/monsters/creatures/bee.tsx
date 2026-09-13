@@ -1,7 +1,9 @@
 import { creature } from '../creature'
 import {
   Blush,
+  capsule,
   Crown,
+  drop,
   Eye,
   Flower,
   Glow,
@@ -10,10 +12,12 @@ import {
   line,
   paint,
   polar,
+  poly,
   Smile,
   Sparkle,
   spread,
   Star,
+  tri,
   WHITE,
 } from '../kit'
 
@@ -94,61 +98,35 @@ export const bee = creature<Step>(
       <g transform={`translate(32 58) scale(${grow}) translate(-32 -58)`}>
         {rays > 2 && <Glow x={32} y={32} r={22} color={GOLD.fill} />}
         {rays > 0 &&
-          spread(6 + rays * 2, 0, 360 - 360 / (6 + rays * 2)).map((angle) => {
-            const [x1, y1] = polar(32, 30, angle, 11)
-            const [x2, y2] = polar(32, 30, angle, 13 + rays * 1.5)
-            return <path key={angle} d={`M${x1} ${y1}L${x2} ${y2}`} {...line(GOLD.fill, 1.6)} />
-          })}
-        {level('halo') > 0 && <ellipse cx={32} cy={19} rx={7} ry={1.8} {...line(GOLD.fill, 1.8)} />}
+          spread(6 + rays * 2, 0, 360 - 360 / (6 + rays * 2)).map((angle) => (
+            <path key={angle} d={tri(...polar(32, 30, angle, 11), 2.6, 2 + rays * 1.5, angle)} fill={GOLD.fill} />
+          ))}
+        {level('halo') > 0 && <path d={capsule(25, 19, 39, 19, 3.6)} {...line(GOLD.fill, 1.8)} />}
         {wings > 0 &&
           [-1, 1].map((side) => (
-            <g key={side}>
-              <ellipse
-                cx={32 + side * 9}
-                cy={35}
-                rx={3.5 + wings * 1.4}
-                ry={5.5 + wings * 1.6}
-                transform={`rotate(${side * 28} ${32 + side * 9} 35)`}
-                {...paint(WING, 0.8)}
-                opacity={0.9}
-              />
-              {wings > 2 && (
-                <ellipse
-                  cx={32 + side * 12}
-                  cy={42}
-                  rx={3}
-                  ry={4.5}
-                  transform={`rotate(${side * 60} ${32 + side * 12} 42)`}
-                  {...paint(WING, 0.8)}
-                  opacity={0.9}
-                />
-              )}
+            <g key={side} opacity={0.9}>
+              <path d={drop(32 + side * 5, 39, 9 + wings * 3, 3 + wings * 1.3, side * 40)} {...paint(WING, 0.8)} />
+              {wings > 2 && <path d={drop(32 + side * 8, 44, 8, 2.8, side * 100)} {...paint(WING, 0.8)} />}
             </g>
           ))}
-        <path d="M30.5 54.5L32 58.5L33.5 54.5z" fill={INK} />
-        <ellipse cx={32} cy={45} rx={11} ry={10} {...paint(body)} />
+        <path d={tri(32, 54.5, 3, 4, 180)} fill={INK} />
+        <circle cx={32} cy={45} r={10.5} {...paint(body)} />
         {Array.from({ length: level('stripes') }, (_, index) => {
           const y = 42 + index * 4.5
-          const half = 11 * Math.sqrt(1 - ((y - 45) / 10) ** 2) - 1.2
-          return (
-            <path
-              key={y}
-              d={`M${32 - half} ${y}Q32 ${y + 2} ${32 + half} ${y}`}
-              {...line(STRIPE, 2.6)}
-            />
-          )
+          const half = Math.sqrt(10.5 ** 2 - (y - 45) ** 2) - 1.6
+          return <path key={y} d={capsule(32 - half + 1.3, y, 32 + half - 1.3, y, 2.6)} fill={STRIPE} />
         })}
         {[-1, 1].map((side) => (
-          <ellipse key={side} cx={32 + side * 10.5} cy={45} rx={2} ry={2.8} {...paint(body)} />
+          <circle key={side} cx={32 + side * 10.5} cy={45} r={2.4} {...paint(body)} />
         ))}
-        {honey > 0 && <path d="M38 50q1.5 2.5 0 4q-1.5-1.5 0-4z" {...paint(HONEY, 0.6)} />}
+        {honey > 0 && <path d={drop(38, 50, 4.2, 1.4, 180)} {...paint(HONEY, 0.6)} />}
         {honey > 1 && (
           <g>
-            <path d="M43 47H51L50 55Q47 57 44 55z" {...paint(HONEY, 0.8)} />
-            <rect x={42.5} y={45.5} width={9} height={2.2} rx={1} fill={HONEY.shade} />
+            <path d={poly([[43, 47], [51, 47], [50, 55], [44, 55]])} {...paint(HONEY, 0.8)} />
+            <path d={capsule(43.3, 46.6, 50.7, 46.6, 2.2)} fill={HONEY.shade} />
           </g>
         )}
-        {honey > 2 && <path d="M45 47.5q-.8 3 .6 4" {...line(HONEY.fill, 1.4)} />}
+        {honey > 2 && <path d="M45 47.5v4" {...line(HONEY.fill, 1.4)} />}
         {level('wand') > 0 && (
           <g>
             <path d="M21 52L15 40" {...line(GOLD.shade, 1.8)} />
@@ -159,7 +137,7 @@ export const bee = creature<Step>(
           [-1, 1].map((side) => (
             <g key={side}>
               <path
-                d={`M${32 + side * 2.5} 23.5q${side * 1} -3 ${side * (2.5 + antennae)} ${-2.5 - antennae * 1.5}`}
+                d={`M${32 + side * 2.5} 23.5L${32 + side * (5 + antennae)} ${21 - antennae * 1.5}`}
                 {...line(STRIPE, 1.1)}
               />
               <circle
@@ -177,14 +155,9 @@ export const bee = creature<Step>(
         <Eye x={35.2} y={30} r={1.7} />
         <Blush x={26.3} y={33} r={1.4} />
         <Blush x={37.7} y={33} r={1.4} />
-        <Smile x={32} y={33.5} w={1.4} />
+        <Smile x={32} y={33.3} w={1.4} />
         {level('crown') > 0 && (
-          <Crown
-            x={32}
-            y={23}
-            width={4 + level('crown') * 1.6}
-            gem={level('crown') > 2 ? accent.fill : undefined}
-          />
+          <Crown x={32} y={23} width={4 + level('crown') * 1.6} gem={level('crown') > 2 ? accent.fill : undefined} />
         )}
         {flowers.slice(0, level('flowers')).map(([x, y]) => (
           <Flower key={x} x={x} y={y} size={1.8} color={accent} />

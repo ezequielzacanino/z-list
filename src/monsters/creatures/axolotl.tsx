@@ -1,7 +1,9 @@
 import { creature } from '../creature'
 import {
   Blush,
+  capsule,
   Eye,
+  fan,
   Flame,
   Glow,
   GOLD,
@@ -9,10 +11,12 @@ import {
   Leaf,
   line,
   paint,
+  poly,
   Sparkle,
   spread,
-  Tube,
+  tri,
   WATER,
+  type Point,
 } from '../kit'
 
 type Step =
@@ -90,12 +94,10 @@ export const axolotl = creature<Step>(
     const wings = level('wings')
     const flames = level('flames')
     const tail = level('tail')
-    const tailEnd = tail > 0 ? [55, 44 - tail * 2] : [50, 50]
+    const tailEnd: Point = tail > 0 ? [55, 44 - tail * 2] : [50, 50]
     return (
       <g transform={`translate(32 58) scale(${grow}) translate(-32 -58)`}>
-        {(wings > 2 || flames > 3) && (
-          <Glow x={32} y={40} r={26} color={salamander ? EMBER.fill : WATER.fill} />
-        )}
+        {(wings > 2 || flames > 3) && <Glow x={32} y={40} r={26} color={salamander ? EMBER.fill : WATER.fill} />}
         {wings > 0 &&
           [-1, 1].map((side) => (
             <Leaf
@@ -108,19 +110,17 @@ export const axolotl = creature<Step>(
               vein={false}
             />
           ))}
-        <Tube d={`M38 52Q48 ${56 - tail} ${tailEnd[0]} ${tailEnd[1]}`} color={body} width={4} />
-        {level('fins') > 0 && (
-          <Leaf x={46} y={53} size={3 + level('fins')} angle={60} color={accent} vein={false} />
-        )}
+        <path d={poly([[36.5, 49], tailEnd, [40, 55.5]])} {...paint(body)} />
+        {level('fins') > 0 && <Leaf x={46} y={53} size={3 + level('fins')} angle={60} color={accent} vein={false} />}
         {flames > 0 && <Flame x={tailEnd[0]} y={tailEnd[1] + 1} size={1.8 + flames * 0.4} />}
         {flames > 1 && <Flame x={39} y={43} size={1.8} />}
         {[26, 38].map((x) => (
-          <ellipse key={x} cx={x} cy={56.3} rx={3} ry={1.8} {...paint(body)} />
+          <path key={x} d={fan(x, 58, 3, -90, 90)} {...paint(body)} />
         ))}
-        <ellipse cx={32} cy={48} rx={8.5} ry={8} {...paint(body)} />
-        <ellipse cx={32} cy={50} rx={5} ry={5} fill={body.light} />
+        <circle cx={32} cy={48} r={8} {...paint(body)} />
+        <circle cx={32} cy={50} r={5} fill={body.light} />
         {[-1, 1].map((side) => (
-          <ellipse key={side} cx={32 + side * 8.5} cy={49} rx={1.8} ry={2.6} {...paint(body)} />
+          <circle key={side} cx={32 + side * 8.3} cy={49} r={2.1} {...paint(body)} />
         ))}
         {[-1, 1].map((side) =>
           [29, 33, 37].map((y, index) => {
@@ -140,7 +140,7 @@ export const axolotl = creature<Step>(
             )
           }),
         )}
-        <ellipse cx={32} cy={34} rx={13} ry={9.5} {...paint(body)} />
+        <path d={capsule(25.5, 34, 38.5, 34, 19)} {...paint(body)} />
         {spots.slice(0, level('spots') * 2).map(([x, y, r]) => (
           <circle
             key={`${x}${y}`}
@@ -153,25 +153,16 @@ export const axolotl = creature<Step>(
         ))}
         {level('horns') > 0 &&
           [-1, 1].map((side) => (
-            <path
-              key={side}
-              d={`M${32 + side * 3.5} 26L${32 + side * 5} ${24 - level('horns') * 1.8}L${32 + side * 6.5} 26.5z`}
-              {...paint(GOLD, 0.7)}
-            />
+            <path key={side} d={tri(32 + side * 5, 25.5, 3, 1.5 + level('horns') * 1.8, side * 10)} {...paint(GOLD, 0.7)} />
           ))}
-        {level('fins') > 1 && <path d="M27 25Q32 21 37 25" {...line(accent.fill, 2)} />}
+        {level('fins') > 1 && <path d="M27 25A7 7 0 0 1 37 25" {...line(accent.fill, 2)} />}
         {level('crown') > 0 &&
           spread(level('crown') * 2 + 1, -8, 8).map((x) => (
-            <Flame
-              key={x}
-              x={32 + x}
-              y={26 - (level('crown') - 1) * 0.5}
-              size={1.3 + level('crown') * 0.3}
-            />
+            <Flame key={x} x={32 + x} y={26 - (level('crown') - 1) * 0.5} size={1.3 + level('crown') * 0.3} />
           ))}
         <Eye x={25.5} y={33.5} r={1.8} />
         <Eye x={38.5} y={33.5} r={1.8} />
-        <path d="M27.5 38Q32 41 36.5 38" {...line(INK, 1.1)} />
+        <path d="M27.5 37.8A6 6 0 0 0 36.5 37.8" {...line(INK, 1.1)} />
         <Blush x={22} y={37.5} />
         <Blush x={42} y={37.5} />
         {[
@@ -181,15 +172,7 @@ export const axolotl = creature<Step>(
         ]
           .slice(0, level('bubbles'))
           .map(([x, y, r]) => (
-            <circle
-              key={y}
-              cx={x}
-              cy={y}
-              r={r}
-              fill={WATER.light}
-              stroke={WATER.shade}
-              strokeWidth={0.6}
-            />
+            <circle key={y} cx={x} cy={y} r={r} fill={WATER.light} stroke={WATER.shade} strokeWidth={0.6} />
           ))}
         {level('embers') > 0 && <Sparkle x={10} y={24} size={2} color={EMBER} />}
         {level('embers') > 1 && <Sparkle x={52} y={16} size={2.4} color={EMBER} />}

@@ -1,8 +1,11 @@
 import { creature } from '../creature'
 import {
   Blush,
+  capsule,
   Crown,
+  drop,
   Eye,
+  fan,
   Flower,
   GOLD,
   INK,
@@ -10,6 +13,7 @@ import {
   LEAF,
   line,
   paint,
+  poly,
   Sparkle,
   tone,
   WATER,
@@ -93,49 +97,28 @@ export const frog = creature<Step>(
     const shell = level('shell')
     const dish = level('dish')
     const beak = level('beak')
+    const lilypad = level('lilypad')
     return (
       <g transform={`translate(32 58) scale(${grow}) translate(-32 -58)`}>
-        {level('lilypad') > 0 && (
-          <path
-            d={`M${13 - level('lilypad') * 2} 57.5A${19 + level('lilypad') * 2} 3.8 0 1 0 ${51 + level('lilypad') * 2} 57.5L32 56z`}
-            {...paint(LEAF, 0.9)}
-          />
-        )}
-        {level('lilypad') > 1 && (
-          <Flower
-            x={10}
-            y={54}
-            size={1.8}
-            color={{ fill: '#ffb3c1', shade: '#b0566a', light: WHITE }}
-          />
-        )}
-        {cape > 0 && (
-          <path d={`M18 42Q${13 - cape} 58 21 58.5H43Q${51 + cape} 58 46 42z`} {...paint(CAPE)} />
-        )}
-        {cape > 1 && <path d="M21 58.2H43" {...line(GOLD.fill, 1.4)} />}
-        {shell > 0 && (
-          <ellipse cx={32} cy={46} rx={14 + shell * 1.5} ry={10 + shell} {...paint(SHELL)} />
-        )}
-        {shell > 2 && <path d="M18 44h3M43 44h3M19 49h3M42 49h3" {...line(SHELL.shade, 1)} />}
+        {lilypad > 0 && <path d={capsule(13 - lilypad * 2, 57, 51 + lilypad * 2, 57, 3.6)} {...paint(LEAF, 0.9)} />}
+        {lilypad > 1 && <Flower x={10} y={54} size={1.8} color={{ fill: '#ffb3c1', shade: '#b0566a', light: WHITE }} />}
+        {cape > 0 && <path d={poly([[18, 42], [13 - cape, 58.5], [51 + cape, 58.5], [46, 42]])} {...paint(CAPE)} />}
+        {cape > 1 && <path d="M15 58.2H49" {...line(GOLD.fill, 1.4)} />}
+        {shell > 0 && <path d={fan(32, 55, 15 + shell * 1.5, -90, 90)} {...paint(SHELL)} />}
+        {shell > 2 && <path d="M17 50h3M44 50h3M19 45h3M42 45h3" {...line(SHELL.shade, 1)} />}
         {[-1, 1].map((side) => (
-          <ellipse key={side} cx={32 + side * 13} cy={52} rx={5} ry={4} {...paint(body)} />
+          <circle key={side} cx={32 + side * 13} cy={52.5} r={4.5} {...paint(body)} />
         ))}
-        <path
-          d="M16 50C16 38 22 34 32 34C42 34 48 38 48 50C48 56 42 57 32 57C22 57 16 56 16 50z"
-          {...paint(body)}
-        />
-        <ellipse cx={32} cy={50.5} rx={9} ry={5.5} fill={body.light} />
+        <path d="M16 57V50A16 16 0 0 1 48 50V57z" {...paint(body)} />
+        <path d={capsule(26, 51.5, 38, 51.5, 9)} fill={body.light} />
         {spots.slice(0, level('spots') * 2).map(([x, y, r]) => (
           <circle key={x} cx={x} cy={y} r={r} fill={body.shade} opacity={0.35} />
         ))}
         {[24, 40].map((x) => (
           <g key={x}>
-            <ellipse cx={x} cy={57} rx={3.8} ry={1.8} {...paint(body)} />
+            <path d={fan(x, 58, 3.8, -90, 90)} {...paint(body)} />
             {level('webs') > 0 && (
-              <path
-                d={`M${x - 3} 57.5l-1 1.5M${x} 58.2v1.6M${x + 3} 57.5l1 1.5`}
-                {...line(body.shade, 0.9)}
-              />
+              <path d={`M${x - 3} 57.5l-1 1.5M${x} 58.2v1.6M${x + 3} 57.5l1 1.5`} {...line(body.shade, 0.9)} />
             )}
           </g>
         ))}
@@ -147,12 +130,9 @@ export const frog = creature<Step>(
         <Blush x={19.5} y={43} />
         <Blush x={44.5} y={43} />
         {kappa && beak > 0 ? (
-          <path
-            d={`M${28 - beak} 44Q32 ${47 + beak} ${36 + beak} 44Q32 42.5 ${28 - beak} 44z`}
-            {...paint(GOLD, 0.9)}
-          />
+          <path d={poly([[28 - beak, 44], [32, 42.5], [36 + beak, 44], [32, 47 + beak]])} {...paint(GOLD, 0.9)} />
         ) : (
-          <path d="M24 44Q32 50 40 44" {...line(INK, 1.3)} />
+          <path d="M24 44A11 11 0 0 0 40 44" {...line(INK, 1.3)} />
         )}
         {level('hair') > 0 &&
           [27, 29.5, 34.5, 37].map((x) => (
@@ -160,39 +140,18 @@ export const frog = creature<Step>(
           ))}
         {dish > 0 && (
           <g>
-            <ellipse
-              cx={32}
-              cy={31}
-              rx={5}
-              ry={1.8}
-              fill="#efe7d6"
-              stroke="#9b8f78"
-              strokeWidth={0.8}
-            />
-            {dish > 1 && <ellipse cx={32} cy={30.8} rx={3.6} ry={1.1} fill={WATER.fill} />}
+            <path d={capsule(27, 31, 37, 31, 3.4)} fill="#efe7d6" stroke="#9b8f78" strokeWidth={0.8} />
+            {dish > 1 && <path d={capsule(28.8, 30.8, 35.2, 30.8, 1.8)} fill={WATER.fill} />}
             {dish > 2 && <Leaf x={33} y={30.5} size={1.8} angle={50} />}
           </g>
         )}
         {level('crown') > 0 && (
-          <Crown
-            x={32}
-            y={33}
-            width={4 + level('crown') * 1.6}
-            gem={level('crown') > 3 ? '#ff6b8a' : undefined}
-          />
+          <Crown x={32} y={33} width={4 + level('crown') * 1.6} gem={level('crown') > 3 ? '#ff6b8a' : undefined} />
         )}
         {level('scepter') > 0 && (
           <g>
-            <path d="M44 55L50 41" {...line(GOLD.shade, 2)} />
-            <path d="M44 55L50 41" {...line(GOLD.fill, 1)} />
-            <circle
-              cx={50.5}
-              cy={40}
-              r={1.8 + level('scepter') * 0.6}
-              fill="#8fd3ff"
-              stroke="#2f6f9e"
-              strokeWidth={0.7}
-            />
+            <path d={capsule(44, 55, 50, 41, 1.8)} {...paint(GOLD, 0.7)} />
+            <circle cx={50.5} cy={40} r={1.8 + level('scepter') * 0.6} fill="#8fd3ff" stroke="#2f6f9e" strokeWidth={0.7} />
           </g>
         )}
         {level('cucumber') > 0 && (
@@ -220,11 +179,7 @@ export const frog = creature<Step>(
         ]
           .slice(0, level('splash') * 2)
           .map(([x, y]) => (
-            <path
-              key={`${x}${y}`}
-              d={`M${x} ${y - 3}q1.6 2 0 3.2q-1.6-1.2 0-3.2z`}
-              {...paint(WATER, 0.6)}
-            />
+            <path key={`${x}${y}`} d={drop(x, y - 3.2, 3.2, 1.2, 180)} {...paint(WATER, 0.6)} />
           ))}
         {level('sparkle') > 0 && <Sparkle x={52} y={22} size={2.4} />}
         {level('sparkle') > 1 && <Sparkle x={12} y={26} size={2} />}

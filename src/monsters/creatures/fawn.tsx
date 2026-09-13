@@ -1,6 +1,7 @@
 import { creature } from '../creature'
 import {
   Blush,
+  capsule,
   Cloud,
   Eye,
   Flame,
@@ -13,7 +14,7 @@ import {
   line,
   paint,
   Sparkle,
-  Tube,
+  tri,
   WHITE,
   WOOD,
 } from '../kit'
@@ -105,26 +106,15 @@ export const fawn = creature<Step>(
         {glow > 1 && <Glow x={36} y={36} r={26} color={LEAF.light} />}
         {level('clouds') > 0 && <Cloud x={33} y={58} width={16 + level('clouds') * 6} />}
         {legs.map((x) => (
-          <rect key={x} x={x - 1.4} y={45} width={2.8} height={12} rx={1.4} {...paint(body)} />
+          <path key={x} d={capsule(x, 46, x, 56.3, 2.8)} {...paint(body)} />
         ))}
         {level('hooves') > 0 &&
           legs.map((x) => <Flame key={x} x={x} y={57.5} size={1.2 + level('hooves') * 0.45} />)}
-        <ellipse
-          cx={21.5}
-          cy={39}
-          rx={2.5}
-          ry={1.8}
-          transform="rotate(-30 21.5 39)"
-          fill={WHITE}
-          stroke={body.shade}
-          strokeWidth={0.8}
-        />
-        <ellipse cx={33} cy={43} rx={11.5} ry={7.5} {...paint(body)} />
-        <ellipse cx={33} cy={46.5} rx={7} ry={3} fill={body.light} />
+        <circle cx={21.5} cy={39} r={2.2} fill={WHITE} stroke={body.shade} strokeWidth={0.8} />
+        <path d={capsule(26, 43, 40, 43, 15)} {...paint(body)} />
+        <path d={capsule(28, 46.8, 38, 46.8, 4.6)} fill={body.light} />
         {!qilin &&
-          spots
-            .slice(0, [0, 4, 7][level('spots')])
-            .map(([x, y]) => <circle key={x} cx={x} cy={y} r={1} fill={WHITE} />)}
+          spots.slice(0, [0, 4, 7][level('spots')]).map(([x, y]) => <circle key={x} cx={x} cy={y} r={1} fill={WHITE} />)}
         {level('moss') > 0 &&
           [
             [29, 36.3],
@@ -133,12 +123,12 @@ export const fawn = creature<Step>(
           ].map(([x, y]) => <circle key={x} cx={x} cy={y} r={2.2} fill={LEAF.fill} />)}
         {scales > 0 && (
           <path
-            d={`M26 42q1.5 1.5 3 0M30 42q1.5 1.5 3 0M34 42q1.5 1.5 3 0${scales > 1 ? 'M28 39q1.5 1.5 3 0M32 39q1.5 1.5 3 0M36 39q1.5 1.5 3 0' : ''}`}
+            d={`M26 42a1.5 1.5 0 0 0 3 0M30 42a1.5 1.5 0 0 0 3 0M34 42a1.5 1.5 0 0 0 3 0${scales > 1 ? 'M28 39a1.5 1.5 0 0 0 3 0M32 39a1.5 1.5 0 0 0 3 0M36 39a1.5 1.5 0 0 0 3 0' : ''}`}
             {...line(scales > 2 ? GOLD.shade : body.shade, 0.9)}
             opacity={0.6}
           />
         )}
-        <Tube d="M40 40Q43 35 45 30" color={body} width={6} />
+        <path d={capsule(40, 40.5, 45, 30, 6)} {...paint(body)} />
         {qilin &&
           [
             [40.5, 37.5],
@@ -146,9 +136,7 @@ export const fawn = creature<Step>(
             [43.5, 30.5],
           ]
             .slice(0, level('mane'))
-            .map(([x, y]) => (
-              <Leaf key={x} x={x} y={y} size={2.6} angle={-50} color={accent} vein={false} />
-            ))}
+            .map(([x, y]) => <Leaf key={x} x={x} y={y} size={2.6} angle={-50} color={accent} vein={false} />)}
         <Leaf x={43} y={24.5} size={3.2} angle={-65} color={body} vein={false} />
         {antlers > 0 && (
           <g>
@@ -171,32 +159,16 @@ export const fawn = creature<Step>(
           tips
             .slice(0, level('flowers'))
             .map(([x, y]) => (
-              <Flower
-                key={x}
-                x={x + 1}
-                y={y + 1.5}
-                size={1.1}
-                color={{ fill: '#ffb3c1', shade: '#b0566a', light: WHITE }}
-              />
+              <Flower key={x} x={x + 1} y={y + 1.5} size={1.1} color={{ fill: '#ffb3c1', shade: '#b0566a', light: WHITE }} />
             ))}
-        {level('horn') > 0 && (
-          <path d={`M45.6 23.5L47.3 ${20 - level('horn') * 2.5}L49 23.5z`} {...paint(GOLD, 0.8)} />
-        )}
-        <ellipse cx={46.5} cy={27.5} rx={6} ry={5.3} {...paint(body)} />
-        <ellipse
-          cx={51.5}
-          cy={29.5}
-          rx={3.2}
-          ry={2.5}
-          fill={body.light}
-          stroke={body.shade}
-          strokeWidth={0.8}
-        />
-        <circle cx={54} cy={28.8} r={0.8} fill={INK} />
+        {level('horn') > 0 && <path d={tri(47.3, 23.5, 3.4, 3.5 + level('horn') * 2.5)} {...paint(GOLD, 0.8)} />}
+        <circle cx={46.5} cy={27.5} r={5.6} {...paint(body)} />
+        <circle cx={51.5} cy={29.5} r={2.9} fill={body.light} stroke={body.shade} strokeWidth={0.8} />
+        <circle cx={53.6} cy={28.8} r={0.8} fill={INK} />
         <Eye x={46.5} y={26.5} r={1.5} />
         <Blush x={48.5} y={30.5} r={1.3} />
-        {level('whiskers') > 0 && <path d="M53 31q3 1 4 4" {...line(accent.shade, 0.9)} />}
-        {level('whiskers') > 1 && <path d="M52 31.5q1 3 -1 6" {...line(accent.shade, 0.9)} />}
+        {level('whiskers') > 0 && <path d="M53 31.5l3 1.5l1 3" {...line(accent.shade, 0.9)} />}
+        {level('whiskers') > 1 && <path d="M52 32l.5 3l-1.5 3" {...line(accent.shade, 0.9)} />}
         {glow > 0 && (
           <>
             <Sparkle x={14} y={24} size={1.8} color={{ ...GOLD, fill: '#e6ff9a' }} />

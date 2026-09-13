@@ -1,6 +1,8 @@
 import { creature } from '../creature'
 import {
   Blush,
+  capsule,
+  fan,
   Flame,
   GOLD,
   INK,
@@ -8,9 +10,9 @@ import {
   line,
   paint,
   polar,
+  poly,
   Sparkle,
   spread,
-  Tube,
   Waves,
   WHITE,
 } from '../kit'
@@ -92,14 +94,10 @@ export const hydra = creature<Step>(
     return (
       <g transform={`translate(32 58) scale(${grow}) translate(-32 -58)`}>
         {level('waves') > 0 && <Waves y={58} count={level('waves')} />}
-        <Tube d="M48 55Q56 55 57 48" color={body} width={3.5} />
+        <path d={capsule(47, 55, 56, 48, 3.5)} {...paint(body)} />
         {ordered.map(([x, y, angle]) => (
           <g key={angle}>
-            <Tube
-              d={`M${32 + angle * 0.12} 45Q${32 + angle * 0.1} ${y + 6} ${x} ${y}`}
-              color={body}
-              width={count > 4 ? 3.4 : 4.2}
-            />
+            <path d={capsule(32 + angle * 0.12, 46, x, y, count > 4 ? 3.4 : 4.2)} {...paint(body)} />
             {fins > 0 &&
               [-1, 1].map((side) => (
                 <Leaf
@@ -116,7 +114,11 @@ export const hydra = creature<Step>(
               [-1, 1].map((side) => (
                 <path
                   key={side}
-                  d={`M${x + side * radius * 0.3} ${y - radius * 0.8}L${x + side * radius * 0.7} ${y - radius - horns * 1.3}L${x + side * radius * 0.85} ${y - radius * 0.5}z`}
+                  d={poly([
+                    [x + side * radius * 0.3, y - radius * 0.8],
+                    [x + side * radius * 0.7, y - radius - horns * 1.3],
+                    [x + side * radius * 0.85, y - radius * 0.5],
+                  ])}
                   {...paint(GOLD, 0.6)}
                 />
               ))}
@@ -125,28 +127,23 @@ export const hydra = creature<Step>(
             <circle cx={x - radius * 0.38} cy={y - radius * 0.1} r={radius * 0.24} fill={INK} />
             <circle cx={x + radius * 0.38} cy={y - radius * 0.1} r={radius * 0.24} fill={INK} />
             <path
-              d={`M${x - radius * 0.3} ${y + radius * 0.35}Q${x} ${y + radius * 0.6} ${x + radius * 0.3} ${y + radius * 0.35}`}
+              d={`M${x - radius * 0.3} ${y + radius * 0.35}A${radius * 0.4} ${radius * 0.4} 0 0 0 ${x + radius * 0.3} ${y + radius * 0.35}`}
               {...line(INK, 0.8)}
             />
           </g>
         ))}
-        {flames > 0 &&
-          [22, 42].map((x) => <Flame key={x} x={x} y={44.5} size={1.6 + flames * 0.3} />)}
-        <path d="M13 57.5C13 46 21 40 32 40C43 40 51 46 51 57.5z" {...paint(body)} />
-        <ellipse cx={32} cy={52} rx={10} ry={4} fill={body.light} />
+        {flames > 0 && [22, 42].map((x) => <Flame key={x} x={x} y={44.5} size={1.6 + flames * 0.3} />)}
+        <path d={fan(32, 57.5, 19, -90, 90)} {...paint(body)} />
+        <path d={capsule(26, 52, 38, 52, 8)} fill={body.light} />
         {level('scales') > 0 && (
           <path
-            d="M20 47q1.5 1.5 3 0M26 44.5q1.5 1.5 3 0M35 44.5q1.5 1.5 3 0M41 47q1.5 1.5 3 0"
+            d="M20 47a1.5 1.5 0 0 0 3 0M26 44.5a1.5 1.5 0 0 0 3 0M35 44.5a1.5 1.5 0 0 0 3 0M41 47a1.5 1.5 0 0 0 3 0"
             {...line(body.shade, 0.8)}
             opacity={0.5}
           />
         )}
         {level('scales') > 1 && (
-          <path
-            d="M23 51q1.5 1.5 3 0M38 51q1.5 1.5 3 0"
-            {...line(accent.shade, 0.9)}
-            opacity={0.6}
-          />
+          <path d="M23 51a1.5 1.5 0 0 0 3 0M38 51a1.5 1.5 0 0 0 3 0" {...line(accent.shade, 0.9)} opacity={0.6} />
         )}
         {cracks.slice(0, level('cracks')).map((d) => (
           <g key={d}>
@@ -156,12 +153,8 @@ export const hydra = creature<Step>(
         ))}
         <Blush x={25} y={49} r={1.6} />
         <Blush x={39} y={49} r={1.6} />
-        {level('pearls') > 0 && (
-          <circle cx={10} cy={55} r={2.4} fill={WHITE} stroke="#9fd3ff" strokeWidth={0.8} />
-        )}
-        {level('pearls') > 1 && (
-          <circle cx={55} cy={40} r={2} fill={WHITE} stroke="#9fd3ff" strokeWidth={0.8} />
-        )}
+        {level('pearls') > 0 && <circle cx={10} cy={55} r={2.4} fill={WHITE} stroke="#9fd3ff" strokeWidth={0.8} />}
+        {level('pearls') > 1 && <circle cx={55} cy={40} r={2} fill={WHITE} stroke="#9fd3ff" strokeWidth={0.8} />}
         {level('embers') > 0 && <Sparkle x={10} y={30} size={1.8} color={EMBER} />}
         {level('embers') > 1 && <Sparkle x={56} y={24} size={2.2} color={EMBER} />}
       </g>

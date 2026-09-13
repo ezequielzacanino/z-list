@@ -1,5 +1,5 @@
 import { creature } from '../creature'
-import { Blush, Eye, Glow, GOLD, LEAF, line, paint, Smile, tone, Tube, WHITE, WOOD } from '../kit'
+import { Blush, capsule, Eye, fan, Glow, GOLD, LEAF, line, paint, Smile, tone, WHITE, WOOD } from '../kit'
 
 type Step =
   | 'spots'
@@ -86,9 +86,7 @@ export const mushroom = creature<Step>(
     ]
     return (
       <>
-        {glow > 0 && (
-          <Glow x={32} y={top + height / 2} r={width / 2 + 4 + glow * 2} color={accent.light} />
-        )}
+        {glow > 0 && <Glow x={32} y={top + height / 2} r={width / 2 + 4 + glow * 2} color={accent.light} />}
         {level('moon') > 0 && (
           <path
             d={`M50 ${12 - level('moon') * 2}A${3 + level('moon') * 1.5} ${3 + level('moon') * 1.5} 0 1 0 50 ${12 + level('moon') * 2}A${2.2 + level('moon')} ${3 + level('moon') * 1.5} 0 1 1 50 ${12 - level('moon') * 2}z`}
@@ -97,41 +95,25 @@ export const mushroom = creature<Step>(
         )}
         {babies.slice(0, level('babies')).map(([x, y, scale]) => (
           <g key={x} transform={`translate(${x} ${y}) scale(${scale})`}>
-            <rect
-              x={-2}
-              y={-6}
-              width={4}
-              height={6}
-              rx={1.5}
-              fill={STEM.fill}
-              stroke={STEM.shade}
-              strokeWidth={0.8}
-            />
-            <path d="M-6 -5.5Q-6 -12 0 -12Q6 -12 6 -5.5Q0 -4 -6 -5.5z" {...paint(capTone, 1)} />
-            {lunar && <circle cx={0} cy={-9} r={1.2} fill={accent.light} />}
+            <rect x={-2} y={-6} width={4} height={6} rx={1.5} fill={STEM.fill} stroke={STEM.shade} strokeWidth={0.8} />
+            <path d={fan(0, -5.5, 6, -90, 90)} {...paint(capTone, 1)} />
+            {lunar && <circle cx={0} cy={-8.5} r={1.2} fill={accent.light} />}
           </g>
         ))}
         {level('moss') > 0 &&
           [22, 27, 37, 42]
             .slice(0, level('moss') * 2)
-            .map((x) => <ellipse key={x} cx={x} cy={57.5} rx={3} ry={1.6} fill={LEAF.fill} />)}
+            .map((x) => <path key={x} d={fan(x, 58, 2.6, -90, 90)} fill={LEAF.fill} />)}
         {level('staff') > 0 && (
           <g>
-            <Tube d="M17.5 58L15.5 34" color={WOOD} width={1.6} />
+            <path d={capsule(17.5, 58, 15.5, 34, 1.8)} {...paint(WOOD, 0.8)} />
             {level('staff') > 1 ? (
               <>
                 <Glow x={15.3} y={32} r={4} color={accent.light} />
-                <circle
-                  cx={15.3}
-                  cy={32}
-                  r={2.2}
-                  fill={accent.light}
-                  stroke={accent.shade}
-                  strokeWidth={0.6}
-                />
+                <circle cx={15.3} cy={32} r={2.2} fill={accent.light} stroke={accent.shade} strokeWidth={0.6} />
               </>
             ) : (
-              <path d="M12 35Q12 31 15.5 31Q19 31 19 35z" {...paint(capTone, 0.8)} />
+              <path d={fan(15.5, 35, 3.5, -90, 90)} {...paint(capTone, 0.8)} />
             )}
           </g>
         )}
@@ -139,26 +121,22 @@ export const mushroom = creature<Step>(
           [-1, 1]
             .slice(0, level('arms') > 1 ? 2 : 1)
             .map((side) => (
-              <Tube
+              <path
                 key={side}
-                d={`M${32 + side * 7} 50q${side * 3} ${side > 0 ? -1 : 1} ${side * 5} ${side > 0 ? -5 : 3}`}
-                color={STEM}
-                width={1.8}
+                d={capsule(32 + side * 7, 50, 32 + side * 12, side > 0 ? 45 : 53, 1.8)}
+                {...paint(STEM, 1)}
               />
             ))}
-        <path d="M24 57.5C24 48 26 42 32 42C38 42 40 48 40 57.5z" {...paint(STEM)} />
+        <path d="M24 57.5V49A8 8 0 0 1 40 49V57.5z" {...paint(STEM)} />
         <Eye x={29.5} y={49.5} r={1.5} />
         <Eye x={34.5} y={49.5} r={1.5} />
         <Blush x={27} y={52.5} r={1.3} />
         <Blush x={37} y={52.5} r={1.3} />
-        <Smile x={32} y={52.5} w={1.3} />
-        <path
-          d={`M${32 - width / 2} 44Q${32 - width / 2} ${top} 32 ${top}Q${32 + width / 2} ${top} ${32 + width / 2} 44Q32 47.5 ${32 - width / 2} 44z`}
-          {...paint(capTone)}
-        />
+        <Smile x={32} y={52.3} w={1.3} />
+        <path d={`M${32 - width / 2} 44A${width / 2} ${height} 0 0 1 ${32 + width / 2} 44z`} {...paint(capTone)} />
         {level('gills') > 0 && (
           <path
-            d={`M${32 - width * 0.3} 45l1.5-1.5M28 45.8l.8-1.6M36 45.8l-.8-1.6M${32 + width * 0.3} 45l-1.5-1.5`}
+            d={`M${32 - width * 0.3} 45.5l1.5-1.5M28 46l.8-1.6M36 46l-.8-1.6M${32 + width * 0.3} 45.5l-1.5-1.5`}
             {...line(capTone.shade, 0.7)}
           />
         )}
@@ -170,13 +148,7 @@ export const mushroom = creature<Step>(
           spots
             .slice(0, level('dots') * 3)
             .map(([x, y, r]) => (
-              <circle
-                key={`${x}${y}`}
-                cx={x}
-                cy={y}
-                r={r * 0.8}
-                fill={glow > 2 ? WHITE : accent.light}
-              />
+              <circle key={`${x}${y}`} cx={x} cy={y} r={r * 0.8} fill={glow > 2 ? WHITE : accent.light} />
             ))}
         {[
           [14, 26],
@@ -188,15 +160,7 @@ export const mushroom = creature<Step>(
         ]
           .slice(0, level('spores') * 2)
           .map(([x, y]) => (
-            <circle
-              key={`${x}${y}`}
-              cx={x}
-              cy={y}
-              r={1}
-              fill="#f4ffb0"
-              stroke="#b8c26a"
-              strokeWidth={0.4}
-            />
+            <circle key={`${x}${y}`} cx={x} cy={y} r={1} fill="#f4ffb0" stroke="#b8c26a" strokeWidth={0.4} />
           ))}
         {[
           [12, 22],
@@ -206,24 +170,9 @@ export const mushroom = creature<Step>(
           .slice(0, level('moths'))
           .map(([x, y]) => (
             <g key={x}>
-              <ellipse
-                cx={x - 1.6}
-                cy={y}
-                rx={1.8}
-                ry={1.2}
-                fill={WHITE}
-                stroke="#b9c2cc"
-                strokeWidth={0.5}
-              />
-              <ellipse
-                cx={x + 1.6}
-                cy={y}
-                rx={1.8}
-                ry={1.2}
-                fill={WHITE}
-                stroke="#b9c2cc"
-                strokeWidth={0.5}
-              />
+              {[-1.4, 1.4].map((offset) => (
+                <circle key={offset} cx={x + offset} cy={y} r={1.4} fill={WHITE} stroke="#b9c2cc" strokeWidth={0.5} />
+              ))}
             </g>
           ))}
       </>

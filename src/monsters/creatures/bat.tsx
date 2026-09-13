@@ -1,18 +1,5 @@
 import { creature } from '../creature'
-import {
-  Blush,
-  Eye,
-  GOLD,
-  INK,
-  Leaf,
-  line,
-  paint,
-  Smile,
-  Sparkle,
-  spread,
-  tone,
-  WHITE,
-} from '../kit'
+import { Blush, Eye, GOLD, INK, Leaf, line, paint, poly, polar, Smile, Sparkle, spread, tone, tri, WHITE } from '../kit'
 
 type Step =
   | 'ears'
@@ -97,17 +84,10 @@ export const bat = creature<Step>(
             {...paint(GOLD, 0.7)}
           />
         )}
-        {sun > 0 && (
-          <circle cx={32} cy={34} r={15} fill={NIGHT.fill} stroke={GOLD.fill} strokeWidth={1.6} />
-        )}
+        {sun > 0 && <circle cx={32} cy={34} r={15} fill={NIGHT.fill} stroke={GOLD.fill} strokeWidth={1.6} />}
         {sun > 1 &&
           spread(10, 0, 324).map((angle) => (
-            <path
-              key={angle}
-              d="M32 17.5v-3"
-              {...line(GOLD.fill, 1.6)}
-              transform={`rotate(${angle} 32 34)`}
-            />
+            <path key={angle} d={tri(...polar(32, 34, angle, 16.2), 2.2, 2.8, angle)} fill={GOLD.fill} />
           ))}
         {feathers > 0 &&
           spread(1 + feathers * 2, -55, 55).map((angle, index) => (
@@ -121,17 +101,11 @@ export const bat = creature<Step>(
               vein={false}
             />
           ))}
-        {cape > 0 && (
-          <path d={`M21 38Q${15 - cape} 58 22 58.5H42Q${49 + cape} 58 43 38z`} {...paint(NIGHT)} />
-        )}
-        {cape > 1 && <path d="M24 42Q20 56 25 57H39Q44 56 40 42z" fill={RED.fill} />}
+        {cape > 0 && <path d={poly([[21, 38], [15 - cape, 58.5], [49 + cape, 58.5], [43, 38]])} {...paint(NIGHT)} />}
+        {cape > 1 && <path d={poly([[24, 42], [21, 57], [43, 57], [40, 42]])} fill={RED.fill} />}
         {cape > 2 &&
           [-1, 1].map((side) => (
-            <path
-              key={side}
-              d={`M${32 + side * 5} 43L${32 + side * 12} 31L${32 + side * 10} 44z`}
-              {...paint(NIGHT)}
-            />
+            <path key={side} d={poly([[32 + side * 5, 43], [32 + side * 12, 31], [32 + side * 10, 44]])} {...paint(NIGHT)} />
           ))}
         {wings > 0 &&
           [-1, 1].map((side) => {
@@ -141,59 +115,50 @@ export const bat = creature<Step>(
             return (
               <path
                 key={side}
-                d={`M${x} ${y - 3}Q${x + side * s * 0.6} ${y - s * 0.9} ${x + side * s * 1.3} ${y - s * 0.3}Q${x + side * s * 1.1} ${y + s * 0.05} ${x + side * s * 1.2} ${y + s * 0.4}Q${x + side * s * 0.85} ${y + s * 0.15} ${x + side * s * 0.7} ${y + s * 0.5}Q${x + side * s * 0.4} ${y + s * 0.2} ${x} ${y + s * 0.45}z`}
+                d={poly([
+                  [x, y - 3],
+                  [x + side * s * 1.3, y - s * 0.5],
+                  [x + side * s * 1.15, y + s * 0.35],
+                  [x + side * s * 0.8, y + s * 0.1],
+                  [x + side * s * 0.45, y + s * 0.45],
+                  [x, y + s * 0.3],
+                ])}
                 {...paint(wing)}
               />
             )
           })}
         {[-1, 1].map((side) => (
           <g key={side}>
+            <path d={poly([[32 + side * 3, 34], [32 + side * 7, 33 - earHeight], [32 + side * 10, 36]])} {...paint(body)} />
             <path
-              d={`M${32 + side * 3} 34L${32 + side * 7} ${33 - earHeight}L${32 + side * 10} 36z`}
-              {...paint(body)}
-            />
-            <path
-              d={`M${32 + side * 5} 34.5L${32 + side * 7} ${35 - earHeight * 0.8}L${32 + side * 8.4} 35.5z`}
+              d={poly([[32 + side * 5, 34.5], [32 + side * 7, 35 - earHeight * 0.8], [32 + side * 8.4, 35.5]])}
               fill="#ff9fb3"
               opacity={0.6}
             />
-            {level('jade') > 0 && (
-              <circle cx={32 + side * 9.5} cy={38.5} r={1.3} {...paint(JADE, 0.6)} />
-            )}
+            {level('jade') > 0 && <circle cx={32 + side * 9.5} cy={38.5} r={1.3} {...paint(JADE, 0.6)} />}
           </g>
         ))}
-        <path
-          d="M28 52.5l-1 2.5M30 53l-.4 2.6M34 53l.4 2.6M36 52.5l1 2.5"
-          {...line(body.shade, 1)}
-        />
+        <path d="M28 52.5l-1 2.5M30 53l-.4 2.6M34 53l.4 2.6M36 52.5l1 2.5" {...line(body.shade, 1)} />
         <circle cx={32} cy={42} r={10.5} {...paint(body)} />
-        <ellipse cx={32} cy={46.5} rx={6} ry={5} fill={body.light} />
+        <circle cx={32} cy={46.5} r={5.4} fill={body.light} />
         <Eye x={28.5} y={40} r={1.7} glow={glow} />
         <Eye x={35.5} y={40} r={1.7} glow={glow} />
-        <ellipse cx={32} cy={42.5} rx={1} ry={0.7} fill={INK} />
-        <Smile x={32} y={43.8} w={1.8} />
+        <circle cx={32} cy={42.4} r={0.9} fill={INK} />
+        <Smile x={32} y={43.6} w={1.8} />
         {level('fangs') > 0 &&
           [30.8, 33.2].map((x) => (
-            <path
-              key={x}
-              d={`M${x - 0.7} 44.4L${x + 0.7} 44.4L${x} ${45.6 + level('fangs') * 0.6}z`}
-              fill={WHITE}
-              stroke={INK}
-              strokeWidth={0.4}
-            />
+            <path key={x} d={tri(x, 44.3, 1.4, 1.3 + level('fangs') * 0.6, 180)} fill={WHITE} stroke={INK} strokeWidth={0.4} />
           ))}
         <Blush x={25.5} y={43.5} r={1.6} />
         <Blush x={38.5} y={43.5} r={1.6} />
         {level('bowtie') > 0 && (
           <g>
-            <path d="M32 51.5L27.5 49.5V53.5zM32 51.5L36.5 49.5V53.5z" {...paint(RED, 0.7)} />
+            <path d={`${tri(32, 51.5, 4, 4.5, -90)}${tri(32, 51.5, 4, 4.5, 90)}`} {...paint(RED, 0.7)} />
             <circle cx={32} cy={51.5} r={1} fill={RED.shade} />
           </g>
         )}
         {level('jade') > 1 &&
-          [28, 30, 32, 34, 36].map((x) => (
-            <circle key={x} cx={x} cy={x === 32 ? 51.5 : 51} r={0.9} fill={JADE.fill} />
-          ))}
+          [28, 30, 32, 34, 36].map((x) => <circle key={x} cx={x} cy={x === 32 ? 51.5 : 51} r={0.9} fill={JADE.fill} />)}
         {level('jade') > 2 && <circle cx={32} cy={54} r={1.8} {...paint(JADE, 0.6)} />}
         {(moon > 2 || sun > 1) && <Sparkle x={10} y={20} size={2.2} />}
       </g>

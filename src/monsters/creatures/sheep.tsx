@@ -1,7 +1,9 @@
 import { creature } from '../creature'
 import {
+  band,
   Blush,
   Cloud,
+  drop,
   Eye,
   GOLD,
   INK,
@@ -14,6 +16,7 @@ import {
   Sparkle,
   spread,
   tone,
+  tri,
   WATER,
   WHITE,
 } from '../kit'
@@ -101,29 +104,20 @@ export const sheep = creature<Step>(
     const grow = 0.78 + level('wool') * 0.06
     const horns = level('horns')
     const rainbow = level('rainbow')
+    const horn = tone(35, 35, 45)
     return (
       <>
         {rainbow > 0 &&
-          bands
-            .slice(0, rainbow + 1)
-            .map((color, index) => (
-              <path
-                key={color}
-                d={`M${32 - 14 - rainbow * 3 + index * 2} 50A${14 + rainbow * 3 - index * 2} ${14 + rainbow * 3 - index * 2} 0 0 1 ${32 + 14 + rainbow * 3 - index * 2} 50`}
-                {...line(color, 2)}
-              />
-            ))}
+          bands.slice(0, rainbow + 1).map((color, index) => {
+            const r = 14 + rainbow * 3 - index * 2
+            return <path key={color} d={`M${32 - r} 50A${r} ${r} 0 0 1 ${32 + r} 50`} {...line(color, 2)} />
+          })}
         {level('sun') > 0 && (
           <g>
             <circle cx={52} cy={13} r={3 + level('sun')} {...paint(GOLD, 0.7)} />
             {level('sun') > 1 &&
               spread(8, 0, 315).map((angle) => (
-                <path
-                  key={angle}
-                  d={`M52 ${7 - level('sun')}v-2`}
-                  {...line(GOLD.shade, 1.1)}
-                  transform={`rotate(${angle} 52 13)`}
-                />
+                <path key={angle} d={tri(...polar(52, 13, angle, 4.5 + level('sun')), 1.8, 2.2, angle)} fill={GOLD.fill} />
               ))}
           </g>
         )}
@@ -141,9 +135,7 @@ export const sheep = creature<Step>(
                 stroke={body.shade}
                 strokeWidth={0.8}
               />
-              {level('legs') > 1 && (
-                <rect x={x - 1.4} y={55.5} width={2.8} height={2} rx={0.6} fill={GOLD.fill} />
-              )}
+              {level('legs') > 1 && <rect x={x - 1.4} y={55.5} width={2.8} height={2} rx={0.6} fill={GOLD.fill} />}
             </g>
           ))}
         {level('drops') > 0 &&
@@ -153,13 +145,7 @@ export const sheep = creature<Step>(
             [32, 60],
           ]
             .slice(0, level('drops') + 1)
-            .map(([x, y]) => (
-              <path
-                key={x}
-                d={`M${x} ${y - 3.5}q1.8 2.2 0 3.5q-1.8-1.3 0-3.5z`}
-                {...paint(WATER, 0.6)}
-              />
-            ))}
+            .map(([x, y]) => <path key={x} d={drop(x, y - 3.6, 3.6, 1.3, 180)} {...paint(WATER, 0.6)} />)}
         <g transform={`translate(0 ${-lift})`}>
           <g transform={`translate(32 44) scale(${grow}) translate(-32 -44)`}>
             {puffs.slice(0, count).map(([x, y, r]) => (
@@ -171,29 +157,20 @@ export const sheep = creature<Step>(
           </g>
           {horns > 0 &&
             [-1, 1].map((side) => {
-              const size = 2 + horns * 1.3
+              const r = 1.5 + horns * 0.8
+              const x = 32 + side * (5 + r)
               return (
                 <path
                   key={side}
-                  d={`M${32 + side * 4} 36.5q${side * size * 1.6} -${size} ${side * size * 1.8} ${size * 0.6}q${side * 0.2} ${size} ${-side * size * 0.8} ${size * 0.9}q${-side * size * 0.6} 0 ${-side * size * 0.4} ${-size * 0.6}`}
-                  {...line(tone(35, 35, 45).fill, 2.6)}
+                  d={side > 0 ? band(x, 38, r, 2.2, -60, 200) : band(x, 38, r, 2.2, 160, 420)}
+                  {...paint(horn, 0.8)}
                 />
               )
             })}
           {[-1, 1].map((side) => (
-            <ellipse
-              key={side}
-              cx={32 + side * 8}
-              cy={39.5}
-              rx={3}
-              ry={1.5}
-              transform={`rotate(${side * 20} ${32 + side * 8} 39.5)`}
-              fill={body.fill}
-              stroke={body.shade}
-              strokeWidth={0.8}
-            />
+            <path key={side} d={drop(32 + side * 5, 39, 5.5, 1.5, side * 110)} {...paint(body, 0.8)} />
           ))}
-          <ellipse cx={32} cy={40.5} rx={5.8} ry={6.5} {...paint(body)} />
+          <circle cx={32} cy={40.5} r={6} {...paint(body)} />
           <Eye x={29.8} y={39.8} r={1.2} />
           <Eye x={34.2} y={39.8} r={1.2} />
           <path d="M31 43.6h2M32 43.6v.8" {...line(INK, 0.9)} />
@@ -205,8 +182,8 @@ export const sheep = creature<Step>(
           )}
           {level('bell') > 0 && (
             <>
-              <path d="M28 46.8Q32 48.8 36 46.8" {...line('#d64550', 1.4)} />
-              <circle cx={32} cy={49} r={1.7} {...paint(GOLD, 0.6)} />
+              <path d="M28 46.6A6 6 0 0 0 36 46.6" {...line('#d64550', 1.4)} />
+              <circle cx={32} cy={48.9} r={1.7} {...paint(GOLD, 0.6)} />
             </>
           )}
           {level('laurel') > 0 &&

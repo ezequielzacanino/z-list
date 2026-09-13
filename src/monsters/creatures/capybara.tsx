@@ -1,8 +1,11 @@
 import { creature } from '../creature'
 import {
   Blush,
+  capsule,
   ClosedEye,
+  drop,
   Eye,
+  fan,
   Glow,
   GOLD,
   INK,
@@ -12,6 +15,7 @@ import {
   paint,
   Sparkle,
   spread,
+  tri,
   WATER,
   WHITE,
 } from '../kit'
@@ -101,68 +105,38 @@ export const capybara = creature<Step>(
         {halo > 1 && <Glow x={28} y={36} r={26} color={GOLD.light} />}
         {lotus > 0 &&
           spread(5, -70, 70).map((angle) => (
-            <Leaf
-              key={angle}
-              x={32}
-              y={58}
-              size={4 + lotus * 1.6}
-              angle={angle}
-              color={PETAL}
-              vein={false}
-            />
+            <Leaf key={angle} x={32} y={58} size={4 + lotus * 1.6} angle={angle} color={PETAL} vein={false} />
           ))}
         {[22, 44].map((x) => (
           <rect key={x} x={x - 2} y={52} width={4} height={6} rx={1.6} fill={body.shade} />
         ))}
-        <path
-          d="M16 49C16 38 24 33 35 33C47 33 53 40 53 48C53 55 47 57.5 35 57.5H24C19 57.5 16 55 16 49z"
-          {...paint(body)}
-        />
+        <path d={capsule(28, 45.5, 41, 45.5, 24.5)} {...paint(body)} />
         {[
-          [38, 34.2],
-          [45.5, 36.5],
-          [31, 34],
+          [38, 35.5],
+          [45.5, 38],
+          [31, 35],
         ]
           .slice(0, level('moss'))
           .map(([x, y]) => (
-            <ellipse key={x} cx={x} cy={y} rx={3.4} ry={2} fill={LEAF.fill} />
+            <path key={x} d={fan(x, y, 3.4, -90, 90)} fill={LEAF.fill} />
           ))}
-        <path
-          d="M10 44C10 35 16 30 24 30C31 30 34 35 34 42C34 49 30 52 22 52C15 52 10 50 10 44z"
-          {...paint(body)}
-        />
-        <ellipse cx={28.5} cy={30.8} rx={2.2} ry={1.5} fill={body.shade} />
-        <ellipse cx={12.5} cy={42.5} rx={2.8} ry={3.6} fill={body.shade} opacity={0.45} />
-        <path d="M11.4 41.4v2M13.4 41.4v2" {...line(INK, 0.9)} />
+        <path d={capsule(21.5, 41, 22.5, 41, 22)} {...paint(body)} />
+        <circle cx={28.5} cy={31} r={2} fill={body.shade} />
+        <circle cx={13.8} cy={42.5} r={2.8} fill={body.shade} opacity={0.45} />
+        <path d="M12.8 41.4v2M14.8 41.4v2" {...line(INK, 0.9)} />
         {zen ? <ClosedEye x={22} y={38.6} w={1.6} /> : <Eye x={22} y={38.6} r={1.4} />}
         {zen && level('eyes') > 1 && (
-          <circle
-            cx={19.5}
-            cy={34}
-            r={1.1}
-            fill={accent.fill}
-            stroke={accent.shade}
-            strokeWidth={0.5}
-          />
+          <circle cx={19.5} cy={34} r={1.1} fill={accent.fill} stroke={accent.shade} strokeWidth={0.5} />
         )}
         <Blush x={18.5} y={45.5} r={1.6 + level('cheeks') * 0.4} />
-        <path d="M13 47.5Q15 48.6 17 47.5" {...line(INK, 0.9)} />
+        <path d="M13.5 47.4A1.6 1.6 0 0 0 16.5 47.4" {...line(INK, 0.9)} />
         {level('leaf') > 0 && <Leaf x={24} y={30.5} size={2.6 + level('leaf')} angle={25} />}
         {halo > 0 && (
-          <ellipse cx={22} cy={23 - halo} rx={6 + halo} ry={1.8} {...line(GOLD.fill, 1.6)} />
+          <path d={capsule(16 - halo, 23 - halo, 28 + halo, 23 - halo, 3.6)} {...line(GOLD.fill, 1.6)} />
         )}
         {towel > 0 && (
           <g>
-            <rect
-              x={17}
-              y={26.5}
-              width={10}
-              height={3.4}
-              rx={1}
-              fill={WHITE}
-              stroke="#b9c2cc"
-              strokeWidth={0.7}
-            />
+            <rect x={17} y={26.5} width={10} height={3.4} rx={1} fill={WHITE} stroke="#b9c2cc" strokeWidth={0.7} />
             {towel > 1 && <path d="M19.5 26.5v3.4M24.5 26.5v3.4" {...line('#ff9fb3', 1)} />}
           </g>
         )}
@@ -180,19 +154,8 @@ export const capybara = creature<Step>(
           ))}
         {water > 0 && (
           <g>
-            <rect
-              x={3}
-              y={waterY}
-              width={58}
-              height={60 - waterY}
-              fill={WATER.fill}
-              opacity={0.55}
-            />
-            <path
-              d={`M3 ${waterY}q3.5-2 7 0t7 0t7 0t7 0t7 0t7 0t7 0t7 0`}
-              {...line(WATER.shade, 1)}
-              opacity={0.6}
-            />
+            <rect x={3} y={waterY} width={58} height={60 - waterY} fill={WATER.fill} opacity={0.55} />
+            <path d={`M3 ${waterY}${'a3.5 3.5 0 0 1 7 0'.repeat(8)}`} {...line(WATER.shade, 1)} opacity={0.6} />
           </g>
         )}
         {[
@@ -202,25 +165,17 @@ export const capybara = creature<Step>(
         ]
           .slice(0, level('steam'))
           .map(([x, y]) => (
-            <path key={x} d={`M${x} ${y}q-2-2 0-4q2-2 0-4`} {...line('#c9d6e2', 1.5)} />
+            <path key={x} d={`M${x} ${y}a2 2 0 0 1 0-4a2 2 0 0 0 0-4`} {...line('#c9d6e2', 1.5)} />
           ))}
         {level('bird') > 0 && (
           <g>
             <circle cx={44} cy={31} r={2.6} fill="#ffe066" stroke="#b8942b" strokeWidth={0.7} />
-            <path d="M41.4 31.2l-1.6 .4l1.6 .6z" fill="#f5a142" />
+            <path d={tri(41.5, 31.3, 1, 1.6, -90)} fill="#f5a142" />
             <circle cx={43} cy={30.3} r={0.5} fill={INK} />
           </g>
         )}
         {petals.slice(0, level('petals') * 2).map(([x, y]) => (
-          <ellipse
-            key={`${x}${y}`}
-            cx={x}
-            cy={y}
-            rx={1.6}
-            ry={1}
-            transform={`rotate(30 ${x} ${y})`}
-            fill={PETAL.fill}
-          />
+          <path key={`${x}${y}`} d={drop(x - 1.2, y + 1, 3.2, 1, 30)} fill={PETAL.fill} />
         ))}
         {[
           [9, 22],

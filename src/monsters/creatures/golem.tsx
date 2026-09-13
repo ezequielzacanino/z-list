@@ -1,5 +1,5 @@
 import { creature } from '../creature'
-import { Blush, Eye, Flower, Glow, LEAF, line, paint, Smile, Sparkle, tone, WHITE } from '../kit'
+import { Blush, Eye, fan, Flower, Glow, LEAF, line, paint, Smile, Sparkle, tone, WHITE } from '../kit'
 
 type Step =
   | 'moss'
@@ -119,7 +119,7 @@ export const golem = creature<Step>(
             />
           ))}
         {[24, 40].map((x) => (
-          <ellipse key={x} cx={x} cy={56.5} rx={5} ry={2.8} {...paint(stone, 1.5)} />
+          <path key={x} d={fan(x, 58, 5, -90, 90)} {...paint(stone, 1.5)} />
         ))}
         {size > 1 &&
           [-1, 1].map((side) => (
@@ -137,7 +137,7 @@ export const golem = creature<Step>(
           mosses
             .slice(0, level('moss') + (level('moss') > 2 ? 1 : 0))
             .map(([x, y, r]) => (
-              <ellipse key={x} cx={x} cy={y} rx={r} ry={r * 0.55} fill={LEAF.fill} />
+              <path key={x} d={fan(x, y + 1, r, -90, 90)} fill={LEAF.fill} />
             ))}
         {!lava &&
           mosses
@@ -155,7 +155,7 @@ export const golem = creature<Step>(
           <g>
             <rect x={44.4} y={27} width={1.4} height={3} fill="#f3ead8" />
             <path
-              d="M42.5 27.5Q45 23.5 47.7 27.5z"
+              d={fan(45.1, 27.5, 2.6, -90, 90)}
               fill="#e85d5d"
               stroke="#8c2f25"
               strokeWidth={0.5}

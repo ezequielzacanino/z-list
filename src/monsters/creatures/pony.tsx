@@ -1,23 +1,31 @@
 import { creature } from '../creature'
 import {
   Blush,
+  capsule,
   Eye,
+  fan,
   Glow,
   GOLD,
-  Leaf,
+  INK,
   line,
   paint,
+  poly,
   Sparkle,
-  spread,
   Star,
-  Tube,
+  tri,
   WHITE,
 } from '../kit'
 
 type Step = 'mane' | 'horn' | 'wings' | 'tail' | 'size' | 'hooves' | 'stars'
 
 const rainbow = ['#ff8a80', '#ffd166', '#8fd6a0', '#8fc7ff']
-const legs = [26, 31, 40, 45]
+const farLegs = [32.5, 48.5]
+const nearLegs = [27, 43]
+const manes = [
+  [27, 22, 3.6],
+  [29, 28, 3.4],
+  [31, 34, 3.2],
+]
 
 // A foal whose forehead grows a spiral horn into a unicorn, or whose back grows wings into Pegasus.
 export const pony = creature<Step>(
@@ -72,90 +80,71 @@ export const pony = creature<Step>(
     const horn = level('horn')
     const wings = level('wings')
     const stars = level('stars')
-    const hornHeight = 3 + horn * 2.5
+    const hooves = level('hooves')
+    const wingRadius = 9 + wings * 3
+    const leg = (x: number) => (
+      <g key={x}>
+        <path d={capsule(x, 46, x, 56.5, 4.2)} {...paint(body)} />
+        {hooves > 0 && (
+          <path d={`M${x - 2.1} 55H${x + 2.1}V56.5A2.1 2.1 0 0 1 ${x - 2.1} 56.5z`} {...paint(GOLD, 0.8)} />
+        )}
+      </g>
+    )
     return (
       <g transform={`translate(32 58) scale(${grow}) translate(-32 -58)`}>
         {stars > 2 && <Glow x={34} y={38} r={26} color={accent.light} />}
-        {pegasus &&
-          wings > 0 &&
-          spread(2 + wings, 15, 80).map((angle) => (
-            <Leaf
-              key={angle}
-              x={39}
-              y={38}
-              size={4 + wings * 1.8}
-              angle={angle}
-              color={{ fill: WHITE, shade: body.shade, light: WHITE }}
-              vein={false}
-            />
-          ))}
-        {(tail > 2 ? rainbow.slice(0, 3) : [accent.fill]).map((color, index) => (
+        {farLegs.map(leg)}
+        {(tail > 2 ? [accent.fill, ...rainbow.slice(0, 2)] : [accent.fill]).map((color, index) => (
           <path
             key={color}
-            d={`M48 41Q${53 + tail * 2} ${43 + index * 1.5} ${51 + tail * 2} ${47 + tail * 2.5 + index}`}
-            {...line(color, tail > 0 ? 2.6 : 2)}
+            d={fan(50, 42.5, 5 + tail * 1.6 - index * 2.2, 0, 180)}
+            {...paint({ ...accent, fill: color })}
           />
         ))}
-        {legs.map((x) => (
-          <g key={x}>
-            <rect x={x - 1.8} y={46} width={3.6} height={11.5} rx={1.6} {...paint(body)} />
-            {level('hooves') > 0 && (
-              <rect
-                x={x - 1.9}
-                y={55}
-                width={3.8}
-                height={2.6}
-                rx={0.8}
-                fill={GOLD.fill}
-                stroke={GOLD.shade}
-                strokeWidth={0.6}
-              />
-            )}
-          </g>
+        <path d={capsule(29.5, 42.5, 44.5, 42.5, 15)} {...paint(body)} />
+        {nearLegs.map(leg)}
+        {stars > 1 && <Star x={44} y={41} size={2.3} color={accent} />}
+        {manes.slice(0, Math.min(3, mane)).map(([x, y, r], index) => (
+          <circle
+            key={y}
+            cx={x}
+            cy={y}
+            r={r}
+            {...paint({ ...accent, fill: mane > 2 ? rainbow[index] : accent.fill })}
+          />
         ))}
-        <ellipse cx={37} cy={44} rx={12} ry={8} {...paint(body)} />
-        {stars > 1 && <Star x={42} y={43.5} size={2.3} color={accent} />}
-        <Tube d="M30 42Q25 37 23 31" color={body} width={7} />
-        {mane > 1 && <Tube d="M25.5 23.5Q30.5 28 30 37" color={accent} width={2.4} />}
-        {mane > 2 && <path d="M23.5 25Q27 30 27 38" {...line(rainbow[1], 2.2)} />}
-        {mane > 3 && <path d="M27.5 23Q33 28 33 35" {...line(rainbow[3], 2)} />}
-        <path d="M21.5 24L23.5 18.5L26 23.5z" {...paint(body)} />
-        {mane > 0 &&
-          [
-            [25.5, 23],
-            [27.5, 26.5],
-          ].map(([x, y]) => <circle key={x} cx={x} cy={y} r={2.3} {...paint(accent, 0.8)} />)}
+        <path d={poly([[22, 43], [31, 43], [26.5, 23], [18.5, 25.5]])} {...paint(body)} />
+        <path d={tri(21, 20, 5, 9, 15)} {...paint(body)} />
+        <circle cx={18} cy={26} r={7.5} {...paint(body)} />
+        {mane > 3 && <circle cx={20.5} cy={19} r={2.6} {...paint(accent)} />}
         {horn > 0 && (
           <g>
-            <path
-              d={`M18.5 23.8L${16.5 - horn * 0.6} ${22 - hornHeight}L21.8 23z`}
-              {...paint(GOLD, 0.8)}
-            />
+            <path d={tri(15.5, 20, 3.4, 3 + horn * 2.5, -25)} {...paint(GOLD, 0.8)} />
             {Array.from({ length: horn }, (_, index) => (
               <path
                 key={index}
-                d={`M${18.6 - index * 0.25} ${22 - (index + 1) * 2.2}l${2.6 - index * 0.3} .9`}
+                d={`M${14.6 - index * 1} ${17.8 - index * 2}l2.2 1`}
                 {...line(GOLD.shade, 0.6)}
               />
             ))}
           </g>
         )}
-        <ellipse cx={20} cy={29} rx={7} ry={6.5} {...paint(body)} />
-        <ellipse
-          cx={14.5}
-          cy={32.5}
-          rx={4.5}
-          ry={3.6}
-          fill={body.light}
-          stroke={body.shade}
-          strokeWidth={0.8}
-        />
-        <circle cx={12.6} cy={32} r={0.6} fill={body.shade} />
-        <Eye x={20.5} y={27.5} r={1.7} />
-        <Blush x={18.5} y={31.8} r={1.3} />
-        <path d="M12.8 35Q14 35.8 15.2 35" {...line('#3a2c2b', 0.9)} />
-        {stars > 0 && <Sparkle x={54} y={22} size={2.4} />}
-        {stars > 2 && <Sparkle x={9} y={16} size={1.8} />}
+        <circle cx={11.5} cy={30} r={4.6} {...paint({ ...body, fill: body.light })} />
+        <circle cx={9.6} cy={29} r={0.7} fill={INK} />
+        <path d="M9.5 32.5A2 2 0 0 0 13 32.5" {...line(INK, 0.9)} />
+        <Eye x={19} y={24.5} r={1.7} />
+        <Blush x={17} y={29.5} r={1.4} />
+        {pegasus &&
+          wings > 0 &&
+          [WHITE, accent.light, WHITE].slice(0, Math.min(3, wings)).map((color, index) => (
+            <path
+              key={index}
+              d={fan(37, 39, wingRadius * (1 - index * 0.28), 0, 75)}
+              {...paint({ ...body, fill: color })}
+            />
+          ))}
+        {stars > 0 && <Sparkle x={54} y={20} size={2.4} />}
+        {stars > 2 && <Sparkle x={8} y={14} size={1.8} />}
       </g>
     )
   },
