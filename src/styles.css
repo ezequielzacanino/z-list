@@ -245,6 +245,7 @@ a.ghost {
 
 button.ghost svg,
 a.ghost svg {
+  display: block;
   width: 1.4rem;
   height: 1.4rem;
 }
@@ -590,6 +591,31 @@ ul {
 
 .logo {
   flex: none;
+  display: block;
+  line-height: 0;
+  border-radius: 50%;
+}
+
+.logo:active {
+  transform: scale(0.92);
+}
+
+.total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 0;
+  padding: 0.7rem 1rem;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.total strong {
+  font-size: 1.4rem;
+  color: var(--fg);
 }
 
 .logo-disc {

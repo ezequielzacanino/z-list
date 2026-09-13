@@ -19,6 +19,7 @@ import { isStandalone } from '../lib/homescreen'
 import { normalize } from '../lib/categorize'
 import { listAsText } from '../lib/shareText'
 import { feedback } from '../lib/feedback'
+import { formatMoney, listTotal } from '../lib/money'
 import type { Item, QuickAddField } from '../lib/types'
 
 // Checked items shown before the history asks to unfold further.
@@ -252,6 +253,12 @@ export function ListPage({ userId }: { userId: string }) {
             </label>
           ))}
         </div>
+      )}
+
+      {(list.quick_add_fields.includes('amount') || items.some((item) => item.amount !== null)) && (
+        <p className="total">
+          Acumulado <strong>{formatMoney(listTotal(items))}</strong>
+        </p>
       )}
 
       <QuickAdd fields={list.quick_add_fields} onAdd={add} onTyping={setTyped} />

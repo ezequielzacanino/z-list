@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { RecurrenceSelect } from './RecurrenceSelect'
+import { parseAmount } from '../lib/money'
 import type { ItemDraft, OptionDraft, QuickAddField } from '../lib/types'
 
 const emptyDraft: ItemDraft = { name: '' }
@@ -16,6 +17,7 @@ export function QuickAdd({
 }) {
   const [draft, setDraft] = useState<ItemDraft>(emptyDraft)
   const [option, setOption] = useState<OptionDraft>(emptyOption)
+  const [amount, setAmount] = useState('')
   const [busy, setBusy] = useState(false)
   const nameInput = useRef<HTMLInputElement>(null)
 
@@ -24,10 +26,11 @@ export function QuickAdd({
     event.preventDefault()
     if (busy) return
     setBusy(true)
-    await onAdd(draft, option.label ? option : undefined)
+    await onAdd({ ...draft, amount: parseAmount(amount) }, option.label ? option : undefined)
     setBusy(false)
     setDraft(emptyDraft)
     setOption(emptyOption)
+    setAmount('')
     onTyping('')
     nameInput.current?.focus()
   }
@@ -52,6 +55,15 @@ export function QuickAdd({
           placeholder="Cant."
           value={draft.quantity ?? ''}
           onChange={(event) => setDraft({ ...draft, quantity: event.target.value })}
+        />
+      )}
+      {fields.includes('amount') && (
+        <input
+          className="narrow"
+          inputMode="decimal"
+          placeholder="$"
+          value={amount}
+          onChange={(event) => setAmount(event.target.value)}
         />
       )}
       {fields.includes('priority') && (

@@ -415,3 +415,18 @@ del rectángulo, sin abrir el detalle. El detalle sigue usando `useItemOptions`.
 **Fundamento**: Una consulta por fila multiplicaba las peticiones por la cantidad de
 ítems. El filtro por lista de ids evita sumar `list_id` a `item_options` y respeta que
 la suscripción quede acotada a la lista abierta.
+
+## 2026-09-12 — Monto por ítem y preset Presupuesto
+
+**Resumen**: `items.amount` guarda el monto de cada ítem y el preset *Presupuesto* lo
+pide en la carga rápida. La lista muestra arriba el acumulado de todos los ítems,
+abiertos y tildados. Las copias por recurrencia, del cliente y de `pg_cron`, heredan
+el monto.
+
+**Archivos**: `supabase/migrations/0015_item_amount.sql`, `src/lib/money.ts`,
+`src/lib/types.ts`, `src/lib/presets.ts`, `src/lib/recurrence.ts`,
+`src/hooks/useItems.ts`, `src/components/QuickAdd.tsx`, `src/components/ItemDetail.tsx`,
+`src/components/ItemRow.tsx`, `src/pages/ListPage.tsx`, `CLAUDE.md`.
+
+**Fundamento**: Un atributo más en el modelo único de ítem, como el resto, así
+cualquier lista puede cargar montos desde el detalle sin cambiar de preset.

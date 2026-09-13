@@ -1,4 +1,4 @@
-export type QuickAddField = 'quantity' | 'priority' | 'notes' | 'recurrence' | 'options'
+export type QuickAddField = 'quantity' | 'amount' | 'priority' | 'notes' | 'recurrence' | 'options'
 
 // Icon buckets derived from the item name, never stored.
 export type Category =
@@ -42,6 +42,7 @@ export type Item = {
   quantity: string | null
   priority: number | null
   notes: string | null
+  amount: number | null
   recurrence_days: number | null
   position: number
   done_at: string | null
@@ -64,7 +65,7 @@ export type ItemOption = {
 export type OptionDraft = { label: string; url: string }
 
 export type ItemDraft = Pick<Item, 'name'> &
-  Partial<Pick<Item, 'quantity' | 'priority' | 'notes' | 'recurrence_days'>>
+  Partial<Pick<Item, 'quantity' | 'priority' | 'notes' | 'amount' | 'recurrence_days'>>
 
 export type ListInvite = {
   token: string

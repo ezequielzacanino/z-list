@@ -1,4 +1,5 @@
 import { categorize } from '../lib/categorize'
+import { formatMoney } from '../lib/money'
 import type { Item, ItemOption } from '../lib/types'
 import { CategoryIcon } from './CategoryIcon'
 
@@ -48,6 +49,7 @@ export function ItemRow({
         <button className="item-name" onClick={onOpen}>
           <span className="name">{item.name}</span>
           {item.quantity && <span className="tag">{item.quantity}</span>}
+          {item.amount !== null && <span className="tag">{formatMoney(item.amount)}</span>}
           {item.priority && (
             <span className={`tag priority-${item.priority}`}>{priorityLabels[item.priority]}</span>
           )}

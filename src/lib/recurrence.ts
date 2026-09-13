@@ -21,6 +21,7 @@ export function copyOf(item: Item): ItemDraft {
     quantity: item.quantity,
     priority: item.priority,
     notes: item.notes,
+    amount: item.amount,
     recurrence_days: item.recurrence_days,
   }
 }

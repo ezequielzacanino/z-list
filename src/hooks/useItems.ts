@@ -94,6 +94,7 @@ export function useItems(listId: string, userId: string | undefined) {
         quantity: draft.quantity ?? null,
         priority: draft.priority ?? null,
         notes: draft.notes ?? null,
+        amount: draft.amount ?? null,
         recurrence_days: draft.recurrence_days ?? null,
         position: nextPosition(items),
         done_at: null,

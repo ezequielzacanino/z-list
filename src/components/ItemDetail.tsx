@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useItemOptions } from '../hooks/useItemOptions'
 import { DraftInput } from './DraftInput'
 import { RecurrenceSelect } from './RecurrenceSelect'
+import { parseAmount } from '../lib/money'
 import type { Item } from '../lib/types'
 
 // Exposes every attribute, regardless of the list's quick-add fields.
@@ -54,6 +55,14 @@ export function ItemDetail({
           <DraftInput
             value={item.quantity ?? ''}
             onCommit={(quantity) => onUpdate({ quantity: quantity || null })}
+          />
+        </label>
+
+        <label>
+          Monto
+          <DraftInput
+            value={item.amount === null ? '' : String(item.amount)}
+            onCommit={(amount) => onUpdate({ amount: parseAmount(amount) })}
           />
         </label>
 

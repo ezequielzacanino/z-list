@@ -9,7 +9,7 @@ viewing the same list.
 ## Presets
 
 There is **one item model**. Every item can carry every attribute: quantity,
-recurrence, priority, notes, and candidate options with links.
+amount, recurrence, priority, notes, and candidate options with links.
 
 A list owns a **quick-add field set** that controls only which fields the quick-add
 form shows, so adding an item takes one or two taps instead of filling every
@@ -23,6 +23,7 @@ Presets are named starting points for that field set:
 | Household tasks | name, recurrence |
 | Shopping list | name, quantity |
 | Pending purchases | name, notes, options with links |
+| Budget | name, amount |
 | Plain | name |
 
 - Picking a preset copies its fields into the list. The list can then add or remove
@@ -44,6 +45,9 @@ A list is one screen with two zones:
 
 Checking an item moves it to the history. It stays there as a record of that
 occurrence and is never reused.
+
+A list whose quick-add asks for an amount, or holding any item with one, shows the
+sum of every item's amount, open and checked, above the items.
 
 ## Recurrence
 

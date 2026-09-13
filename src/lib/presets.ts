@@ -6,10 +6,12 @@ export const presets: Record<string, { label: string; fields: QuickAddField[] }>
   household: { label: 'Tareas del hogar', fields: ['recurrence'] },
   shopping: { label: 'Lista de compras', fields: ['quantity'] },
   purchases: { label: 'Compras pendientes', fields: ['notes', 'options'] },
+  budget: { label: 'Presupuesto', fields: ['amount'] },
 }
 
 export const fieldLabels: Record<QuickAddField, string> = {
   quantity: 'Cantidad',
+  amount: 'Monto',
   priority: 'Prioridad',
   notes: 'Especificaciones',
   recurrence: 'Repetición',
