@@ -19,7 +19,17 @@ const NOTE_GAP = 0.07
 const NOTE_LENGTH = 0.18
 const VOLUME = 0.07
 
+const mutedKey = 'muted'
+
 let audio: AudioContext | undefined
+
+export function readMuted() {
+  return localStorage.getItem(mutedKey) === 'true'
+}
+
+export function storeMuted(muted: boolean) {
+  localStorage.setItem(mutedKey, String(muted))
+}
 
 // Plays each note as a soft sine blip, one after the other.
 function play(frequencies: number[]) {
@@ -40,5 +50,5 @@ function play(frequencies: number[]) {
 
 export function feedback(cue: Cue) {
   navigator.vibrate?.(pulses[cue])
-  play(notes[cue])
+  if (!readMuted()) play(notes[cue])
 }
