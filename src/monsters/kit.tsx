@@ -277,13 +277,6 @@ export function Maw({ x, y, w, h, tongue = true }: { x: number; y: number; w: nu
   )
 }
 
-// Eyebrow: a short ink stroke, tilted by an angle so it frowns or lifts.
-export function Brow({ x, y, w, tilt = 0 }: { x: number; y: number; w: number; tilt?: number }) {
-  const [ax, ay] = polar(x, y, 270 + tilt, w / 2)
-  const [bx, by] = polar(x, y, 90 + tilt, w / 2)
-  return <path d={`M${ax} ${ay}L${bx} ${by}`} {...line(INK, 1.3)} />
-}
-
 // Single fang hanging from a mouth line.
 export function Fang({ x, y, size = 1.6 }: { x: number; y: number; size?: number }) {
   return <path d={tri(x, y, size * 0.8, size, 180)} fill={WHITE} stroke={INK} strokeWidth={0.5} strokeLinejoin="round" />
