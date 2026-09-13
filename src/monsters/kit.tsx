@@ -152,6 +152,21 @@ export function smooth(points: Point[], closed = false) {
   return closed ? d + 'z' : d
 }
 
+// Closed outline whose every edge bulges outward by a depth, for fluff, fleece and foliage.
+export function bumps(points: Point[], depth: number) {
+  const n = points.length
+  let d = `M${points[0].join(' ')}`
+  for (let index = 0; index < n; index++) {
+    const [x1, y1] = points[index]
+    const [x2, y2] = points[(index + 1) % n]
+    const length = Math.hypot(x2 - x1, y2 - y1) || 1
+    const cx = (x1 + x2) / 2 + ((y2 - y1) / length) * depth * 2
+    const cy = (y1 + y2) / 2 - ((x2 - x1) / length) * depth * 2
+    d += `Q${round(cx)} ${round(cy)} ${x2} ${y2}`
+  }
+  return d + 'z'
+}
+
 // Points sampled along the open spline through the anchors, several per segment.
 export function trace(points: Point[], perSegment = 8): Point[] {
   const n = points.length

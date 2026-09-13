@@ -1,9 +1,6 @@
 import { creature } from '../creature'
+import { FaceFront } from '../faces'
 import {
-  band,
-  Blush,
-  Eye,
-  fan,
   Flame,
   Glow,
   GOLD,
@@ -11,12 +8,15 @@ import {
   Leaf,
   line,
   paint,
-  poly,
   polar,
+  ribbon,
+  Silhouette,
+  smooth,
   Sparkle,
   spread,
   tone,
   tri,
+  type Point,
 } from '../kit'
 
 type Step =
@@ -96,6 +96,15 @@ export const cat = creature<Step>(
     const tails = level('tails')
     const earHeight = 6 + ears * 2
     const cloth = tone(215, 60, 55)
+    const tailPaths = (nekomata ? (tails > 0 ? [-1, 1] : [1]) : [1]).map((side) => {
+      const reach = nekomata ? 6 + tails * 2 : 7
+      return [
+        [32 + side * 6, 54],
+        [32 + side * 13, 52],
+        [32 + side * (15 + reach * 0.3), 50 - reach],
+        [32 + side * (12 + reach * 0.2), 44 - reach * 1.4],
+      ] as Point[]
+    })
     return (
       <g transform={`translate(32 58) scale(${grow}) translate(-32 -58)`}>
         {level('sun') > 0 && (
@@ -122,41 +131,52 @@ export const cat = creature<Step>(
               />
             )),
           )}
-        {(nekomata ? (tails > 0 ? [-1, 1] : [1]) : [1]).map((side) => {
-          const reach = nekomata ? 6 + tails * 2 : 7
-          const from = 60 - reach * 4
-          const [fx, fy] = polar(32 + side * 9, 48, side * from, 8)
-          return (
-            <g key={side}>
-              <path
-                d={side > 0 ? band(41, 48, 8, 3.2, from, 180) : band(23, 48, 8, 3.2, 180, 360 - from)}
-                {...paint(body)}
-              />
-              {nekomata && tails > 2 && <Flame x={fx} y={fy - 1} size={2} cold />}
-            </g>
-          )
-        })}
-        <path d="M23 57.5V46A9 9 0 0 1 41 46V57.5z" {...paint(body)} />
-        <path d="M28 55V50A4 4 0 0 1 36 50V55z" fill={body.light} />
+        {nekomata &&
+          tails > 2 &&
+          tailPaths.map((path, index) => <Flame key={index} x={path[3][0]} y={path[3][1] - 1} size={2} cold />)}
+        <Silhouette color={body.fill}>
+          {tailPaths.map((path, index) => (
+            <path key={index} d={ribbon(path, [3.6, 3.6, 3.2, 2.4])} />
+          ))}
+          <path d={smooth([[32, 37.5], [39, 40.5], [41.5, 49], [40.5, 57.5], [23.5, 57.5], [22.5, 49], [25, 40.5]], true)} />
+          {[27.5, 36.5].map((x) => (
+            <path key={x} d={ribbon([[x, 49], [x, 56.5]], [5, 5.5])} />
+          ))}
+          {[-1, 1].map((side) => (
+            <path
+              key={side}
+              d={smooth([[32 + side * 3, 25], [32 + side * 7.5, 26 - earHeight], [32 + side * 10, 29.5]], true)}
+            />
+          ))}
+          <path
+            d={smooth(
+              [[32, 22], [38.5, 23.5], [41.5, 29], [40.5, 35.5], [36, 39.5], [28, 39.5], [23.5, 35.5], [22.5, 29], [25.5, 23.5]],
+              true,
+            )}
+          />
+        </Silhouette>
+        <path d={smooth([[32, 46], [36, 48], [36.5, 55], [27.5, 55], [28, 48]], true)} fill={body.light} />
         {level('stripes') > 1 && (
           <path d="M24.5 46h3M24 50h3M39.5 46h-3M40 50h-3" {...line(body.shade, 1)} opacity={0.5} />
         )}
-        {[28, 36].map((x) => (
-          <path key={x} d={fan(x, 57.5, 3, -90, 90)} {...paint(body)} />
-        ))}
-        {headdress > 1 &&
-          [-1, 1].map((side) => (
-            <path
-              key={side}
-              d={poly([
-                [32 + side * 8, 26],
-                [32 + side * 11.5, headdress > 2 ? 47 : 41],
-                [32 + side * 6.5, headdress > 2 ? 47 : 41],
-                [32 + side * 5.5, 33],
-              ])}
-              {...paint(cloth, 1)}
-            />
-          ))}
+        {headdress > 1 && (
+          <Silhouette color={cloth.fill} width={1.6}>
+            {[-1, 1].map((side) => (
+              <path
+                key={side}
+                d={smooth(
+                  [
+                    [32 + side * 8, 25],
+                    [32 + side * 12, headdress > 2 ? 46 : 40],
+                    [32 + side * 6.5, headdress > 2 ? 47 : 41],
+                    [32 + side * 5.5, 33],
+                  ],
+                  true,
+                )}
+              />
+            ))}
+          </Silhouette>
+        )}
         {headdress > 1 &&
           [-1, 1].map((side) => (
             <path
@@ -166,49 +186,38 @@ export const cat = creature<Step>(
             />
           ))}
         {!nekomata && level('collar') > 0 && (
-          <path d="M25 38.5A10 10 0 0 0 39 38.5" {...line(GOLD.fill, level('collar') > 1 ? 3.6 : 2)} />
+          <path d="M24.5 38Q32 43 39.5 38" {...line(GOLD.fill, level('collar') > 1 ? 3.6 : 2)} />
         )}
         {!nekomata &&
           level('collar') > 1 &&
           [28, 32, 36].map((x) => (
-            <circle key={x} cx={x} cy={x === 32 ? 41.3 : 40.7} r={0.9} fill={cloth.fill} />
+            <circle key={x} cx={x} cy={x === 32 ? 41.3 : 40.5} r={0.9} fill={cloth.fill} />
           ))}
         {level('bell') > 0 && (
           <>
-            <path d="M25.5 38.5A9 9 0 0 0 38.5 38.5" {...line('#d64550', 1.8)} />
+            <path d="M25 38Q32 42.5 39 38" {...line('#d64550', 1.8)} />
             <circle cx={32} cy={41.8} r={1.9} {...paint(GOLD, 0.6)} />
           </>
         )}
         {[-1, 1].map((side) => (
-          <g key={side}>
-            <path
-              d={poly([[32 + side * 3, 25], [32 + side * 7.5, 26 - earHeight], [32 + side * 9.5, 29]])}
-              {...paint(body)}
-            />
-            <path
-              d={poly([[32 + side * 5, 26], [32 + side * 7.4, 27.5 - earHeight * 0.75], [32 + side * 8.4, 28.5]])}
-              fill={PINK}
-              opacity={0.7}
-            />
-            {ears > 1 && (
-              <path d={`M${32 + side * 7.5} ${26 - earHeight}l${side * 0.6} -2.5`} {...line(body.shade, 1)} />
-            )}
-          </g>
+          <path
+            key={side}
+            d={smooth([[32 + side * 5, 26], [32 + side * 7.4, 27.5 - earHeight * 0.75], [32 + side * 8.6, 28.5]], true)}
+            fill={PINK}
+            opacity={0.7}
+          />
         ))}
-        <circle cx={32} cy={31} r={8.8} {...paint(body)} />
         {level('stripes') > 0 && (
           <path d="M30.5 24v2.5M32 23.5v3M33.5 24v2.5" {...line(body.shade, 1)} opacity={0.5} />
         )}
-        {headdress > 0 && <path d="M23.5 27A10 10 0 0 1 40.5 27" {...line(GOLD.fill, 2.4)} />}
-        {headdress > 3 && <path d={poly([[32, 20.5], [33.6, 23], [32, 25.5], [30.4, 23]])} {...paint(GOLD, 0.7)} />}
-        <Eye x={28} y={31} r={1.7} glow={nekomata && level('eyes') > 0 ? accent.fill : undefined} />
-        <Eye x={36} y={31} r={1.7} glow={nekomata && level('eyes') > 1 ? accent.fill : undefined} />
+        {headdress > 0 && <path d="M23.5 27.5Q32 22.5 40.5 27.5" {...line(GOLD.fill, 2.4)} />}
+        {headdress > 3 && <path d={smooth([[32, 20.5], [33.6, 23], [32, 25.5], [30.4, 23]], true)} {...paint(GOLD, 0.7)} />}
+        <FaceFront x={32} y={31} gap={4} />
+        {nekomata && level('eyes') > 0 && <circle cx={28} cy={31} r={3} fill={accent.fill} opacity={0.35} />}
+        {nekomata && level('eyes') > 1 && <circle cx={36} cy={31} r={3} fill={accent.fill} opacity={0.35} />}
         {level('eyeliner') > 0 && <path d="M26.2 30.6l-2.4-1M37.8 30.6l2.4-1" {...line(INK, 1)} />}
-        <path d={tri(32, 33.7, 2, 1.1, 180)} fill={PINK} />
-        <path d="M30.3 35.2A0.9 0.9 0 0 0 32 35.2A0.9 0.9 0 0 0 33.7 35.2" {...line(INK, 0.9)} />
+        <path d={tri(32, 33.6, 2, 1.1, 180)} fill={PINK} />
         <path d="M26 34.3l-4-.6M26 35.6l-4 .6M38 34.3l4-.6M38 35.6l4 .6" {...line(body.shade, 0.7)} />
-        <Blush x={25.8} y={33.6} r={1.5} />
-        <Blush x={38.2} y={33.6} r={1.5} />
         {nekomata &&
           ghostfires.slice(0, level('ghostfire')).map(([x, y]) => (
             <g key={x}>

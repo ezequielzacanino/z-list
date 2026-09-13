@@ -1,5 +1,18 @@
 import { creature } from '../creature'
-import { Blush, capsule, Eye, fan, Flame, Glow, INK, line, paint, Sparkle, tone, tri, type Tone } from '../kit'
+import { FaceFront } from '../faces'
+import {
+  Flame,
+  Glow,
+  INK,
+  paint,
+  ribbon,
+  Silhouette,
+  smooth,
+  Sparkle,
+  tone,
+  tri,
+  type Point,
+} from '../kit'
 
 type Step = 'heads' | 'ears' | 'size' | 'tail' | 'paws' | 'collar' | 'mane' | 'spots'
 
@@ -15,6 +28,18 @@ const layouts = [
     [44.5, 35, 16],
     [32, 27.5, 0],
   ],
+]
+
+// Dog head with a rounded muzzle, centered on its origin.
+const skull: Point[] = [
+  [-7.5, -1],
+  [-5, -6.5],
+  [0, -8],
+  [5, -6.5],
+  [7.5, -1],
+  [6.5, 5],
+  [0, 7.8],
+  [-6.5, 5],
 ]
 
 // A puppy that sprouts a second head, grows, then a third, with burning paws: Cerberus.
@@ -66,7 +91,7 @@ export const dog = creature<Step>(
   ],
   (level, { body, hue }, orthrus) => {
     const heads = layouts[level('heads')]
-    const radius = [7.5, 6.6, 6.2][heads.length - 1]
+    const k = [1, 0.88, 0.82][heads.length - 1]
     const grow = 0.86 + level('size') * 0.045
     const ear = tone(hue, 40, 56)
     const ears = level('ears')
@@ -74,58 +99,96 @@ export const dog = creature<Step>(
     const collar = level('collar')
     const mane = level('mane')
     const tail = level('tail')
-    const head = ([x, y, tilt]: number[], index: number) => (
-      <g key={index} transform={`rotate(${tilt} ${x} ${y})`}>
-        {mane > 1 && <Flame x={x} y={y - radius + 2} size={3.2} cold={orthrus} />}
-        {[-1, 1].map((side) =>
-          ears > 1 ? (
-            <path key={side} d={tri(x + side * 4.2, y - radius + 2.5, 5, 6, side * 20)} {...paint(ear)} />
-          ) : (
-            <path
-              key={side}
-              d={capsule(x + side * (radius - 0.5), y - 2, x + side * (radius + 0.8), y + 2.5 + ears, 4.6 + ears)}
-              {...paint(ear)}
-            />
-          ),
-        )}
-        <circle cx={x} cy={y} r={radius} {...paint(body)} />
-        <circle cx={x} cy={y + 3} r={3.3} fill={body.light} />
-        {orthrus && index === 0 && level('spots') > 0 && (
-          <circle cx={x + 2.8} cy={y - 1.3} r={2.6} fill={ear.fill} opacity={0.8} />
-        )}
-        <path d={fan(x, y + 1.2, 1.4, 90, 270)} fill={INK} />
-        <Eye x={x - 2.8} y={y - 1.3} r={1.45} />
-        <Eye x={x + 2.8} y={y - 1.3} r={1.45} />
-        <Blush x={x - 4.4} y={y + 2.4} r={1.4} />
-        <Blush x={x + 4.4} y={y + 2.4} r={1.4} />
-        <path d={`M${x - 1.6} ${y + 3.6}A2 2 0 0 0 ${x + 1.6} ${y + 3.6}`} {...line(INK, 1)} />
-        {index === heads.length - 1 && <path d={fan(x + 0.9, y + 4.6, 1.2, 90, 270)} fill="#ff8fa3" />}
-        {collar > 0 && (
-          <path d={capsule(x - 4.5, y + radius - 0.2, x + 4.5, y + radius - 0.2, 2.2)} {...paint(tone(0, 65, 62), 0.7)} />
-        )}
-        {collar > 1 && <circle cx={x} cy={y + radius + 2} r={1.3} {...paint(tone(45, 90, 65), 0.6)} />}
-        {collar > 2 &&
-          [-3, 3].map((offset) => (
-            <path key={offset} d={tri(x + offset, y + radius + 0.6, 1.8, 2.2, offset * 8)} fill="#c8c8d0" />
-          ))}
-      </g>
-    )
+    const place = ([x, y, tilt]: number[]) => `translate(${x} ${y}) rotate(${tilt}) scale(${k})`
     return (
       <g transform={`translate(32 58) scale(${grow}) translate(-32 -58)`}>
         {mane > 2 && <Glow x={32} y={40} r={27} color={orthrus ? '#8fd3ff' : '#ff9a5a'} />}
-        <Tail level={tail} color={body} cold={orthrus} burning={paws > 2} />
-        {[-1, 1].map((side) => (
-          <circle key={side} cx={32 + side * 9.5} cy={52.5} r={4.6} {...paint(body)} />
+        {mane > 1 &&
+          heads.map((head, index) => (
+            <g key={index} transform={place(head)}>
+              <Flame x={0} y={-6.5} size={3.2} cold={orthrus} />
+            </g>
+          ))}
+        {tail > 1 && <Flame x={50} y={37 - tail} size={paws > 2 ? 2.4 : 0} cold={orthrus} />}
+        <Silhouette color={ear.fill} width={1.8}>
+          {heads.map((head, index) => (
+            <g key={index} transform={place(head)}>
+              {[-1, 1].map((side) =>
+                ears > 1 ? (
+                  <path
+                    key={side}
+                    d={smooth([[side * 3, -6], [side * (6 + ears * 0.6), -12 - ears], [side * 8, -3.5]], true)}
+                  />
+                ) : (
+                  <path
+                    key={side}
+                    d={ribbon([[side * 6, -4], [side * (8.5 + ears * 0.5), 1 + ears * 1.5]], [5, 4.6 + ears])}
+                  />
+                ),
+              )}
+            </g>
+          ))}
+        </Silhouette>
+        <Silhouette color={body.fill}>
+          {tail === 0 ? (
+            <path d={ribbon([[42, 50], [46, 47]], [3.5, 2.5])} />
+          ) : (
+            <path d={ribbon([[42, 51], [48, 47], [50, 40 - tail]], [4.5, 4 + tail * 0.6, 2.5])} />
+          )}
+          {[-1, 1].map((side) => (
+            <path
+              key={side}
+              d={smooth(
+                [[32 + side * 7, 46], [32 + side * 13, 47], [32 + side * 14.5, 54], [32 + side * 11, 58], [32 + side * 6, 56]],
+                true,
+              )}
+            />
+          ))}
+          <path d={smooth([[32, 36.5], [40, 39], [43, 47], [42, 57], [22, 57], [21, 47], [24, 39]], true)} />
+          {[27, 37].map((x) => (
+            <path key={x} d={ribbon([[x, 48], [x, 56.5]], [5.5, 6])} />
+          ))}
+          {heads.map((head, index) => (
+            <g key={index} transform={place(head)}>
+              <path d={smooth(skull, true)} />
+            </g>
+          ))}
+        </Silhouette>
+        <path d={smooth([[32, 42], [37, 45], [37.5, 55], [26.5, 55], [27, 45]], true)} fill={body.light} />
+        {mane > 0 &&
+          [-1, 1].map((side) => (
+            <path
+              key={side}
+              d={smooth([[32 + side * 3, 40], [32 + side * 8, 38.5], [32 + side * 10, 44], [32 + side * 6, 45]], true)}
+              fill={body.light}
+            />
+          ))}
+        {tail > 1 && <circle cx={50} cy={39 - tail} r={2.2} fill={body.light} />}
+        {heads.map((head, index) => (
+          <g key={index} transform={place(head)}>
+            <path d={smooth([[-4, 2], [0, 0.5], [4, 2], [3, 6.5], [-3, 6.5]], true)} fill={body.light} />
+            {orthrus && index === 0 && level('spots') > 0 && (
+              <circle cx={3} cy={-2.2} r={2.8} fill={ear.fill} opacity={0.8} />
+            )}
+            <FaceFront x={0} y={-2.2} gap={3} />
+            <path d={smooth([[-1.4, 0.4], [1.4, 0.4], [0, 2]], true)} fill={INK} />
+            {index === heads.length - 1 && (
+              <path d={smooth([[0.4, 3.2], [2, 3.2], [1.4, 5.2]], true)} fill="#ff8fa3" />
+            )}
+            {collar > 0 && (
+              <Silhouette color={tone(0, 65, 62).fill} width={1.4}>
+                <path d={ribbon([[-5.5, 6.2], [0, 7.4], [5.5, 6.2]], [2.2, 2.4, 2.2])} />
+              </Silhouette>
+            )}
+            {collar > 1 && <circle cx={0} cy={9.4} r={1.3} {...paint(tone(45, 90, 65), 0.6)} />}
+            {collar > 2 &&
+              [-3.2, 3.2].map((offset) => (
+                <path key={offset} d={tri(offset, 7.6, 1.8, 2.2, offset * 8)} fill="#c8c8d0" />
+              ))}
+          </g>
         ))}
-        {paws > 1 && [22, 42].map((x) => <Flame key={x} x={x} y={57} size={2.6} cold={orthrus} />)}
-        <circle cx={32} cy={47} r={10} {...paint(body)} />
-        <circle cx={32} cy={49.5} r={5.8} fill={body.light} />
-        {mane > 0 && [28, 32, 36].map((x) => <circle key={x} cx={x} cy={41.5} r={2.4} fill={body.light} />)}
-        {[28, 36].map((x) => (
-          <path key={x} d={capsule(x, 52, x, 55.5, 5.2)} {...paint(body)} />
-        ))}
-        {paws > 0 && [28, 36].map((x) => <Flame key={x} x={x} y={58} size={1.6 + paws * 0.5} cold={orthrus} />)}
-        {heads.map(head)}
+        {paws > 1 && [20, 44].map((x) => <Flame key={x} x={x} y={57} size={2.6} cold={orthrus} />)}
+        {paws > 0 && [27, 37].map((x) => <Flame key={x} x={x} y={58} size={1.6 + paws * 0.5} cold={orthrus} />)}
         {mane > 2 && (
           <>
             <Sparkle x={8} y={22} size={2.2} />
@@ -136,14 +199,3 @@ export const dog = creature<Step>(
     )
   },
 )
-
-function Tail({ level, color, cold, burning }: { level: number; color: Tone; cold: boolean; burning: boolean }) {
-  if (level === 0) return <circle cx={43.5} cy={50} r={2.6} {...paint(color)} />
-  return (
-    <>
-      <path d={capsule(41, 51, 49, 39.5, level > 1 ? 4.6 : 3.2)} {...paint(color)} />
-      {level > 1 && <circle cx={49} cy={38.5} r={2.6} fill={color.light} />}
-      {burning && <Flame x={49} y={37} size={2.4} cold={cold} />}
-    </>
-  )
-}
