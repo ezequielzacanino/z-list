@@ -1,4 +1,10 @@
-export type QuickAddField = 'quantity' | 'amount' | 'priority' | 'notes' | 'recurrence' | 'options'
+import type { PointerEvent } from 'react'
+
+export type QuickAddField =
+  'quantity' | 'amount' | 'priority' | 'due' | 'notes' | 'recurrence' | 'options'
+
+// How the open zone is ordered: by hand, by priority, or grouped by aisle.
+export type SortMode = 'manual' | 'priority' | 'category'
 
 // Icon buckets derived from the item name, never stored.
 export type Category =
@@ -30,10 +36,17 @@ export type List = {
   name: string
   preset: string
   quick_add_fields: QuickAddField[]
-  sort_by_priority: boolean
+  sort_mode: SortMode
+  budget_limit: number | null
+  monster: number
+  growth: number
+  growth_at: string
   created_by: string
   created_at: string
 }
+
+// A list as the home screen shows it, with how many items are still open.
+export type ListWithCount = List & { items: { count: number }[] }
 
 export type Item = {
   id: string
@@ -43,9 +56,11 @@ export type Item = {
   priority: number | null
   notes: string | null
   amount: number | null
+  due_on: string | null
   recurrence_days: number | null
   position: number
   done_at: string | null
+  checked_by: string | null
   created_by: string | null
   source_item_id: string | null
   created_at: string
@@ -65,7 +80,10 @@ export type ItemOption = {
 export type OptionDraft = { label: string; url: string }
 
 export type ItemDraft = Pick<Item, 'name'> &
-  Partial<Pick<Item, 'quantity' | 'priority' | 'notes' | 'amount' | 'recurrence_days'>>
+  Partial<Pick<Item, 'quantity' | 'priority' | 'notes' | 'amount' | 'due_on' | 'recurrence_days'>>
+
+// The grip of an open row that can be dragged to reorder.
+export type DragHandle = { onPointerDown: (event: PointerEvent) => void; dragging: boolean }
 
 export type ListInvite = {
   token: string

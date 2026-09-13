@@ -9,7 +9,7 @@ viewing the same list.
 ## Presets
 
 There is **one item model**. Every item can carry every attribute: quantity,
-amount, recurrence, priority, notes, and candidate options with links.
+amount, deadline, recurrence, priority, notes, and candidate options with links.
 
 A list owns a **quick-add field set** that controls only which fields the quick-add
 form shows, so adding an item takes one or two taps instead of filling every
@@ -39,15 +39,26 @@ Scope is added on request. Do not build a feature before it is asked for.
 
 A list is one screen with two zones:
 
-- **Open items** on top, unchecked. Default order is insertion order, and the user
-  can reorder them by hand to raise what matters.
-- **History** below, holding checked items in completion order.
+- **Open items** on top, unchecked. The list shares one order for everyone: by hand
+  (insertion order, dragged by a grip), by priority, or grouped by aisle category.
+- **History** below, holding checked items newest first. Checks older than three
+  months stay folded until asked for, and a search looks through all of them.
 
 Checking an item moves it to the history. It stays there as a record of that
-occurrence and is never reused.
+occurrence and is never reused. A row checks with a swipe right and deletes with a
+swipe left; both, and the checkbox, can be undone for a few seconds, and a delete
+reaches the database only once that window closes.
+
+Typing in the quick-add narrows both zones and offers past items with that name,
+which come back with the attributes they carried.
+
+The history shows who checked an item when it was somebody else, stamped by the
+database from the session. The header shows which other members have the list open,
+through Realtime Presence.
 
 A list whose quick-add asks for an amount, or holding any item with one, shows the
-sum of every item's amount, open and checked, above the items.
+sum of every amount, what is checked against what is open, the checked sums of this
+month and the last, and a meter against the list's optional spending cap.
 
 ## Recurrence
 
@@ -63,6 +74,24 @@ Due copies are materialized when the list is opened, so a list nobody opens grow
 items. Generation is idempotent: exactly one copy per completed occurrence, whoever
 opens the list and however many devices open it at once. Copies chain, so an
 uncompleted copy never piles up further copies.
+
+## Deadlines and notices
+
+An item can carry a deadline. The notifier reminds every member of the list by push
+once, from the morning of the day before; moving the deadline arms the reminder again.
+
+Each member chooses per list whether to hear about the items others add. Additions
+settle for a few minutes and arrive as one notice per author and list.
+
+## Monsters
+
+Every list raises a monster, picked at random from the species in `src/monsters/`
+when the list is created; while it is still a baby, tapping it swaps the species.
+A person adding an item earns the list one point and the first completion of an item
+three; generated copies and repeated checks earn nothing. Points map to twenty
+stages, each a little further than the one before. After a week without use the
+monster loses one stage per idle week. The database keeps the points and applies the
+decay on every new point; the client computes the stage with the same formula.
 
 ## Outbound links
 
@@ -88,6 +117,7 @@ src/
   hooks/        # data hooks, one per concern (useSession, useLists, useItems)
   components/   # presentational components, one per file
   pages/        # routed screens
+  monsters/     # species, body parts and growth stages of the list monsters
 supabase/
   migrations/   # numbered SQL migrations, forward-only
 ```

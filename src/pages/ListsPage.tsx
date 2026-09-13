@@ -7,6 +7,8 @@ import { PasswordPanel } from '../components/PasswordPanel'
 import { ThemeToggle } from '../components/ThemeToggle'
 import { SoundToggle } from '../components/SoundToggle'
 import { Logo } from '../components/Logo'
+import { Monster } from '../components/Monster'
+import { currentStage } from '../monsters/growth'
 import { presets } from '../lib/presets'
 import { supabase } from '../lib/supabase'
 
@@ -34,6 +36,8 @@ export function ListsPage({ userId, recovery }: { userId: string; recovery: bool
   }
 
   if (loading) return <p className="notice">Cargando…</p>
+
+  const now = new Date()
 
   return (
     <div className="stack">
@@ -72,8 +76,16 @@ export function ListsPage({ userId, recovery }: { userId: string; recovery: bool
         {lists.map((list) => (
           <li key={list.id}>
             <Link to={`/lista/${list.id}`}>
-              <strong>{list.name}</strong>
-              <span className="muted">{presets[list.preset]?.label ?? list.preset}</span>
+              <Monster
+                index={list.monster}
+                stage={currentStage(list.growth, list.growth_at, now)}
+                size={2.8}
+              />
+              <span className="card-text">
+                <strong>{list.name}</strong>
+                <span className="muted">{presets[list.preset]?.label ?? list.preset}</span>
+              </span>
+              {list.items[0]?.count > 0 && <span className="count">{list.items[0].count}</span>}
             </Link>
           </li>
         ))}

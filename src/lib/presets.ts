@@ -13,6 +13,7 @@ export const fieldLabels: Record<QuickAddField, string> = {
   quantity: 'Cantidad',
   amount: 'Monto',
   priority: 'Prioridad',
+  due: 'Fecha límite',
   notes: 'Especificaciones',
   recurrence: 'Repetición',
   options: 'Opciones con links',

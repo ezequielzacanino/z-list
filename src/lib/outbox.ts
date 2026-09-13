@@ -84,4 +84,3 @@ async function replay() {
   if (sent) commit(queue.slice(sent))
   return { sent, rejected }
 }
-

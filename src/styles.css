@@ -167,18 +167,29 @@ input[type='checkbox'] {
   margin: -0.55rem -0.2rem;
 }
 
-.move {
-  display: flex;
+/* The grip drags the row; the page does not scroll while it is held. */
+.handle {
   flex: none;
+  align-self: stretch;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  margin-right: -0.5rem;
+  color: var(--muted);
+  font-size: 1.3rem;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
 }
 
-.move button {
-  min-width: 2.5rem;
-  padding: 0.45rem 0.4rem;
+.items .item.dragging {
+  z-index: 1;
+  transform: scale(1.02);
+  box-shadow: 0 10px 24px rgb(120 80 60 / 18%);
 }
 
-.move button:disabled {
-  opacity: 0.25;
+.items.sorting .item {
+  animation: none;
 }
 
 .checked {
@@ -318,11 +329,30 @@ ul {
 
 .cards li a {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  padding: 0.85rem 1rem;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem 0.5rem 0.5rem;
   color: inherit;
   text-decoration: none;
+}
+
+.card-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.35;
+}
+
+.count {
+  flex: none;
+  min-width: 1.9rem;
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-line);
+  font-weight: 700;
+  text-align: center;
 }
 
 .quick-add {
@@ -600,22 +630,249 @@ ul {
   transform: scale(0.92);
 }
 
-.total {
+.budget {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin: 0;
-  padding: 0.7rem 1rem;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.75rem 1rem;
   background: var(--accent-soft);
   border: 1px solid var(--accent);
   border-radius: var(--radius);
   color: var(--muted);
+  font-size: 0.9rem;
   font-weight: 600;
 }
 
-.total strong {
+.budget-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.budget-row strong {
   font-size: 1.4rem;
   color: var(--fg);
+}
+
+.budget label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.budget label input {
+  max-width: 8rem;
+  padding: 0.2rem 0.6rem;
+}
+
+.meter {
+  height: 0.55rem;
+  border-radius: 999px;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.meter span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent-line);
+  transition: width 0.4s;
+}
+
+.meter.near span {
+  background: #e0a526;
+}
+
+.meter.over span {
+  background: var(--danger);
+}
+
+/* Monsters breathe gently and bounce when they reach a new stage. */
+.monster {
+  flex: none;
+  overflow: visible;
+}
+
+.monster-breath {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: breathe 3.2s ease-in-out infinite;
+}
+
+.monster.grew {
+  animation: grow 0.8s cubic-bezier(0.2, 0.8, 0.3, 1.2);
+}
+
+@keyframes breathe {
+  50% {
+    transform: scale(1.03, 0.97);
+  }
+}
+
+@keyframes grow {
+  30% {
+    transform: scale(1.3) rotate(-8deg);
+  }
+  60% {
+    transform: scale(0.94) rotate(5deg);
+  }
+}
+
+.monster-badge {
+  position: relative;
+  flex: none;
+  padding: 0;
+  background: none;
+  line-height: 0;
+}
+
+.monster-badge .level {
+  position: absolute;
+  right: -0.2rem;
+  bottom: -0.1rem;
+  min-width: 1.2rem;
+  height: 1.2rem;
+  padding: 0 0.25rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.2rem;
+  text-align: center;
+}
+
+.presence {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+  animation: enter 0.2s both;
+}
+
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  background: var(--pink-soft);
+  color: var(--pink-ink);
+  font-size: 0.8rem;
+  font-weight: 700;
+  box-shadow: 0 0 0 2px var(--bg);
+}
+
+.avatar + .avatar {
+  margin-left: -0.5rem;
+}
+
+.undo {
+  position: fixed;
+  left: 50%;
+  bottom: calc(1rem + env(safe-area-inset-bottom));
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: calc(100% - 2rem);
+  padding: 0.35rem 0.35rem 0.35rem 1rem;
+  background: var(--fg);
+  color: var(--bg);
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 20%);
+  white-space: nowrap;
+  transform: translateX(-50%);
+  animation: toast 0.25s cubic-bezier(0.2, 0.8, 0.3, 1.2);
+}
+
+.undo span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.undo button {
+  flex: none;
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+}
+
+@keyframes toast {
+  from {
+    transform: translate(-50%, 1.5rem);
+    opacity: 0;
+  }
+}
+
+/* A swiped row slides over a hint of what letting go will do. */
+.item-main {
+  position: relative;
+  background: inherit;
+  touch-action: pan-y;
+}
+
+.swipe-hint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 1.1rem;
+  border-radius: var(--radius);
+  font-weight: 700;
+}
+
+.swipe-hint.check {
+  background: var(--accent-soft);
+  color: var(--accent-line);
+}
+
+.swipe-hint.delete {
+  justify-content: flex-end;
+  background: var(--danger);
+  color: var(--surface);
+}
+
+.aisle {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.aisle h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.3rem 0 0;
+}
+
+.suggestions {
+  flex-basis: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.chip {
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-line);
+  font-size: 0.9rem;
+  animation: enter 0.2s both;
+}
+
+.tag.due {
+  color: var(--muted);
+  background: var(--sunken);
+}
+
+.tag.due.urgent {
+  color: var(--surface);
+  background: var(--danger);
 }
 
 .logo-disc {

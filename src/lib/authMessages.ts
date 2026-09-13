@@ -5,11 +5,20 @@ const messages: [string, string][] = [
   ['User not found', 'No hay ninguna cuenta con ese email.'],
   ['Signups not allowed', 'No hay ninguna cuenta con ese email.'],
   ['Password should be at least', 'La contraseña es muy corta.'],
-  ['New password should be different', 'La contraseña nueva tiene que ser distinta de la anterior.'],
+  [
+    'New password should be different',
+    'La contraseña nueva tiene que ser distinta de la anterior.',
+  ],
   ['For security purposes', 'Esperá unos segundos antes de volver a pedirlo.'],
   ['rate limit', 'Se llegó al límite de mails por hora. Probá de nuevo más tarde.'],
-  ['otp_expired', 'El link del mail ya venció o se usó. Pedí uno nuevo con «Olvidé mi contraseña».'],
-  ['access_denied', 'El link del mail ya venció o se usó. Pedí uno nuevo con «Olvidé mi contraseña».'],
+  [
+    'otp_expired',
+    'El link del mail ya venció o se usó. Pedí uno nuevo con «Olvidé mi contraseña».',
+  ],
+  [
+    'access_denied',
+    'El link del mail ya venció o se usó. Pedí uno nuevo con «Olvidé mi contraseña».',
+  ],
 ]
 
 export function authMessage(original: string) {

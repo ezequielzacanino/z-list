@@ -3,21 +3,26 @@ import { readCache, writeCache } from '../lib/localCache'
 import { isOffline } from '../lib/outbox'
 import { supabase } from '../lib/supabase'
 import { presets } from '../lib/presets'
-import type { List } from '../lib/types'
+import type { ListWithCount } from '../lib/types'
 import { useVisible } from './useVisible'
 
 export function useLists(userId: string | undefined) {
-  const [lists, setLists] = useState<List[]>([])
+  const [lists, setLists] = useState<ListWithCount[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  // Each list comes with the count of its open items.
   const load = useCallback(async () => {
-    const { data, error } = await supabase.from('lists').select('*').order('created_at')
+    const { data, error } = await supabase
+      .from('lists')
+      .select('*, items(count)')
+      .is('items.done_at', null)
+      .order('created_at')
     if (!error) {
-      setLists(data as List[])
-      writeCache('lists', data as List[])
+      setLists(data as ListWithCount[])
+      writeCache('lists', data as ListWithCount[])
     } else if (isOffline(error)) {
-      setLists(readCache<List>('lists') ?? [])
+      setLists(readCache<ListWithCount>('lists') ?? [])
     } else {
       setError(error.message)
     }

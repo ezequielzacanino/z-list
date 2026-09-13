@@ -430,3 +430,49 @@ el monto.
 
 **Fundamento**: Un atributo más en el modelo único de ítem, como el resto, así
 cualquier lista puede cargar montos desde el detalle sin cambiar de preset.
+
+## 2026-09-12 — Presupuesto con tope, orden por góndola y quién tildó
+
+**Resumen**: `lists.budget_limit` guarda el tope; el resumen suma gastado, pendiente y
+los tildados de este mes y el anterior. `lists.sort_mode` reemplaza a
+`sort_by_priority` con manual, prioridad o góndola. `items.checked_by` lo estampa un
+trigger desde `auth.uid()` al tildar y lo limpia al destildar.
+
+**Archivos**: `supabase/migrations/0016_budget_limit.sql`, `0017_sort_mode.sql`,
+`0018_checked_by.sql`, `src/lib/money.ts`, `src/lib/aisles.ts`,
+`src/components/BudgetSummary.tsx`, `src/components/OpenItems.tsx`, `src/lib/types.ts`.
+
+**Fundamento**: El estampado en la base evita que un cliente se atribuya el tilde de
+otro. Un modo de orden único en la lista reemplaza dos booleanos que no combinaban.
+
+## 2026-09-12 — Fechas límite y avisos de altas
+
+**Resumen**: `items.due_on` con `reminded_at`, que un trigger rearma al mover la fecha;
+`notify-due` recuerda desde las 9 del día anterior. `list_members.notify_additions`
+activa por miembro y lista la función `notify-additions`, que `pg_cron` llama cada 5
+minutos y estampa `items.announced_at`. Los miembros sólo pueden actualizar esa
+columna de su propia fila. Las dos funciones comparten `_shared/push.ts`.
+
+**Archivos**: `supabase/migrations/0019_due_on.sql`, `0020_addition_notices.sql`,
+`supabase/functions/_shared/push.ts`, `supabase/functions/notify-due/index.ts`,
+`supabase/functions/notify-additions/index.ts`, `src/hooks/useAdditionNotices.ts`.
+
+**Fundamento**: Las altas de hace menos de 3 minutos esperan una vuelta para agruparse
+en un aviso. El privilegio por columna impide mover una membresía a otra lista con la
+política de update.
+
+## 2026-09-12 — Monstruos por lista
+
+**Resumen**: `lists.monster`, `growth` y `growth_at`, con un trigger que suma 1 punto
+por alta de una persona y 3 por primer tildado (`items.counted_at`), aplicando antes el
+decaimiento por semanas sin uso. `src/monsters/` define las especies y sus etapas. La
+lista también suma presencia en tiempo real, deshacer, gestos, sugerencias y conteo de
+pendientes, sin cambios de esquema.
+
+**Archivos**: `supabase/migrations/0021_monsters.sql`, `src/monsters/*`,
+`src/components/Monster.tsx`, `src/components/MonsterBadge.tsx`, `src/hooks/useLists.ts`,
+`src/hooks/usePresence.ts`, `src/hooks/useUndo.ts`, `src/pages/ListPage.tsx`.
+
+**Fundamento**: Los puntos viven en la base para que borrar ítems no reste progreso;
+`counted_at` impide sumar tildando y destildando. El decaimiento se aplica al sumar y
+se calcula igual en el cliente, así nadie tiene que escribir cuando la lista está quieta.

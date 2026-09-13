@@ -95,9 +95,11 @@ export function useItems(listId: string, userId: string | undefined) {
         priority: draft.priority ?? null,
         notes: draft.notes ?? null,
         amount: draft.amount ?? null,
+        due_on: draft.due_on ?? null,
         recurrence_days: draft.recurrence_days ?? null,
         position: nextPosition(items),
         done_at: null,
+        checked_by: null,
         created_by: userId ?? null,
         source_item_id: null,
         created_at: new Date().toISOString(),
@@ -128,9 +130,16 @@ export function useItems(listId: string, userId: string | undefined) {
     setError(await sendOrQueue({ op: 'update', table: 'items', id, patch }))
   }, [])
 
+  // The database stamps who checked it; the local copy guesses the same.
   const toggleItem = useCallback(
-    (item: Item) => updateItem(item.id, { done_at: item.done_at ? null : new Date().toISOString() }),
-    [updateItem],
+    (item: Item) =>
+      updateItem(
+        item.id,
+        item.done_at
+          ? { done_at: null, checked_by: null }
+          : { done_at: new Date().toISOString(), checked_by: userId ?? null },
+      ),
+    [updateItem, userId],
   )
 
   const deleteItem = useCallback(async (id: string) => {

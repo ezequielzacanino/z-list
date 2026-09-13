@@ -10,6 +10,8 @@ const base: Item = {
   priority: null,
   notes: null,
   amount: null,
+  due_on: null,
+  checked_by: null,
   recurrence_days: 7,
   position: 1024,
   done_at: '2026-01-01T00:00:00.000Z',

@@ -20,7 +20,10 @@ export function RecurrenceSelect({
 
   return (
     <>
-      <select value={custom ? 'custom' : (value ?? '')} onChange={(event) => pick(event.target.value)}>
+      <select
+        value={custom ? 'custom' : (value ?? '')}
+        onChange={(event) => pick(event.target.value)}
+      >
         <option value="">Sin repetir</option>
         {recurrencePresets.map((preset) => (
           <option key={preset.days} value={preset.days}>

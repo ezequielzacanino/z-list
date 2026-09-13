@@ -44,6 +44,16 @@ con una línea en `PROJECT_LOG.md` si cambió una decisión.
       encabezado. El orden elegido se guarda en la lista.
 
 - [x] Botón de tema claro/oscuro en el encabezado, recordado por dispositivo.
+- [x] Presupuesto: tope con barra, gastado contra pendiente y totales por mes.
+- [x] Deshacer al tildar y al borrar; deslizar para tildar o borrar.
+- [x] Sugerencias desde el historial al escribir en Agregar.
+- [x] Reordenar arrastrando y agrupar por góndola como tercer orden.
+- [x] Historial de más de tres meses plegado.
+- [x] Quién tildó cada cosa y quién tiene la lista abierta.
+- [x] Aviso push opcional por lista cuando otro agrega algo.
+- [x] Pendientes contados en cada lista de la pantalla principal.
+- [x] Fecha límite por ítem con recordatorio push el día anterior.
+- [x] Un monstruo por lista que crece con el uso y decae sin uso.
 
 ## Más adelante
 

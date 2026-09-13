@@ -1,18 +1,22 @@
 import { useRef, useState } from 'react'
 import { RecurrenceSelect } from './RecurrenceSelect'
 import { parseAmount } from '../lib/money'
-import type { ItemDraft, OptionDraft, QuickAddField } from '../lib/types'
+import type { Item, ItemDraft, OptionDraft, QuickAddField } from '../lib/types'
 
 const emptyDraft: ItemDraft = { name: '' }
 const emptyOption: OptionDraft = { label: '', url: '' }
 
 export function QuickAdd({
   fields,
+  suggestions,
   onAdd,
+  onPick,
   onTyping,
 }: {
   fields: QuickAddField[]
+  suggestions: Item[]
   onAdd: (draft: ItemDraft, option?: OptionDraft) => Promise<void>
+  onPick: (item: Item) => Promise<void>
   onTyping: (name: string) => void
 }) {
   const [draft, setDraft] = useState<ItemDraft>(emptyDraft)
@@ -22,17 +26,21 @@ export function QuickAdd({
   const nameInput = useRef<HTMLInputElement>(null)
 
   // One item per submit, and the cursor stays on the name to add the next one.
-  async function submit(event: React.FormEvent) {
-    event.preventDefault()
+  async function run(request: () => Promise<void>) {
     if (busy) return
     setBusy(true)
-    await onAdd({ ...draft, amount: parseAmount(amount) }, option.label ? option : undefined)
+    await request()
     setBusy(false)
     setDraft(emptyDraft)
     setOption(emptyOption)
     setAmount('')
     onTyping('')
     nameInput.current?.focus()
+  }
+
+  function submit(event: React.FormEvent) {
+    event.preventDefault()
+    run(() => onAdd({ ...draft, amount: parseAmount(amount) }, option.label ? option : undefined))
   }
 
   function typeName(name: string) {
@@ -77,6 +85,13 @@ export function QuickAdd({
           <option value="3">Baja</option>
         </select>
       )}
+      {fields.includes('due') && (
+        <input
+          type="date"
+          value={draft.due_on ?? ''}
+          onChange={(event) => setDraft({ ...draft, due_on: event.target.value || null })}
+        />
+      )}
       {fields.includes('recurrence') && (
         <RecurrenceSelect
           value={draft.recurrence_days ?? null}
@@ -108,6 +123,21 @@ export function QuickAdd({
       <button type="submit" disabled={busy}>
         +
       </button>
+      {suggestions.length > 0 && (
+        <div className="suggestions">
+          {suggestions.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              className="chip"
+              onClick={() => run(() => onPick(item))}
+            >
+              + {item.name}
+              {item.quantity ? ` (${item.quantity})` : ''}
+            </button>
+          ))}
+        </div>
+      )}
     </form>
   )
 }

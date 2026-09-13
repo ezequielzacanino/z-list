@@ -10,7 +10,10 @@ const owns = (row: Item) => row.list_id === 'l1'
 describe('applyPending', () => {
   it('appends an insert that has not left the device', () => {
     const writes: PendingWrite[] = [{ op: 'insert', table: 'items', row: item('b') }]
-    expect(applyPending([item('a')], writes, 'items', owns).map((row) => row.id)).toEqual(['a', 'b'])
+    expect(applyPending([item('a')], writes, 'items', owns).map((row) => row.id)).toEqual([
+      'a',
+      'b',
+    ])
   })
 
   it('does not duplicate an insert the server already returned', () => {

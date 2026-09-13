@@ -67,6 +67,15 @@ export function ItemDetail({
         </label>
 
         <label>
+          Fecha límite
+          <input
+            type="date"
+            value={item.due_on ?? ''}
+            onChange={(event) => onUpdate({ due_on: event.target.value || null })}
+          />
+        </label>
+
+        <label>
           Prioridad
           <select
             value={item.priority ?? ''}
