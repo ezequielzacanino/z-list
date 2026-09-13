@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { authMessage, linkError } from '../lib/authMessages'
 import { supabase } from '../lib/supabase'
+import { Logo } from '../components/Logo'
 
 export function AuthPage() {
   const [email, setEmail] = useState('')
@@ -56,7 +57,10 @@ export function AuthPage() {
 
   return (
     <form className="stack" onSubmit={signIn}>
-      <h1>Z-list</h1>
+      <div className="brand">
+        <Logo size={4.5} />
+        <h1>Z-list</h1>
+      </div>
       <input
         type="email"
         required

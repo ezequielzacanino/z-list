@@ -213,8 +213,10 @@ button:active:not(:disabled) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  * {
+  *,
+  *::before {
     transition: none !important;
+    animation: none !important;
   }
 }
 
@@ -281,6 +283,37 @@ ul {
   gap: 0.55rem;
 }
 
+.cards li {
+  animation: enter 0.3s both;
+}
+
+.cards li:nth-child(2) {
+  animation-delay: 40ms;
+}
+
+.cards li:nth-child(3) {
+  animation-delay: 80ms;
+}
+
+.cards li:nth-child(n + 4) {
+  animation-delay: 120ms;
+}
+
+.cards li a {
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s;
+}
+
+.cards li a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgb(120 80 60 / 10%);
+}
+
+.cards li a:active {
+  transform: scale(0.98);
+}
+
 .cards li a {
   display: flex;
   justify-content: space-between;
@@ -306,6 +339,11 @@ ul {
   flex-direction: column;
   padding: 0 0.75rem;
   transition: background 0.15s;
+  animation: enter 0.3s cubic-bezier(0.2, 0.8, 0.3, 1.2) both;
+}
+
+.items .item input[type='checkbox']:active {
+  transform: scale(0.85);
 }
 
 .item-main {
@@ -417,7 +455,9 @@ ul {
 
 .item.generated .item-name::before {
   content: '↻';
+  display: inline-block;
   color: var(--accent-line);
+  animation: spin 0.7s ease-out;
 }
 
 .history {
@@ -511,6 +551,82 @@ ul {
   from {
     opacity: 0;
   }
+}
+
+@keyframes enter {
+  from {
+    transform: translateY(-0.4rem) scale(0.98);
+    opacity: 0;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0.4);
+  }
+  60% {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+/* Panels opened from the header slide in under it. */
+.share,
+.fields {
+  animation: enter 0.2s both;
+}
+
+.logo {
+  flex: none;
+}
+
+.logo-disc {
+  fill: var(--accent);
+  transform-origin: center;
+  animation: pop 0.4s cubic-bezier(0.2, 0.8, 0.3, 1.2) both;
+}
+
+.logo-check {
+  fill: none;
+  stroke: var(--accent-ink);
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  animation: draw 0.45s 0.25s ease-out both;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 2rem 0 1rem;
+}
+
+.all-done {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 0 0.5rem;
+  color: var(--muted);
+  font-weight: 700;
+  animation: fade 0.3s;
+}
+
+.all-done p {
+  margin: 0.3rem 0 0;
 }
 
 @keyframes rise {

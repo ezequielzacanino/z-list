@@ -5,6 +5,7 @@ import { usePassword } from '../hooks/usePassword'
 import { usePush } from '../hooks/usePush'
 import { PasswordPanel } from '../components/PasswordPanel'
 import { ThemeToggle } from '../components/ThemeToggle'
+import { Logo } from '../components/Logo'
 import { presets } from '../lib/presets'
 import { supabase } from '../lib/supabase'
 
@@ -36,6 +37,7 @@ export function ListsPage({ userId, recovery }: { userId: string; recovery: bool
   return (
     <div className="stack">
       <header className="row">
+        <Logo />
         <h1>Mis listas</h1>
         <div className="row actions">
           <ThemeToggle />

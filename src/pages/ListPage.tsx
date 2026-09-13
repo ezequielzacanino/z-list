@@ -12,11 +12,13 @@ import { ItemRow } from '../components/ItemRow'
 import { QuickAdd } from '../components/QuickAdd'
 import { HomeScreenHint } from '../components/HomeScreenHint'
 import { SharePanel } from '../components/SharePanel'
+import { Logo } from '../components/Logo'
 import { fieldLabels } from '../lib/presets'
 import { inviteUrl } from '../lib/invites'
 import { isStandalone } from '../lib/homescreen'
 import { normalize } from '../lib/categorize'
 import { listAsText } from '../lib/shareText'
+import { feedback } from '../lib/feedback'
 import type { Item, QuickAddField } from '../lib/types'
 
 // Checked items shown before the history asks to unfold further.
@@ -121,6 +123,19 @@ export function ListPage({ userId }: { userId: string }) {
   // Deleting takes the list away from everyone, so it asks once before going.
   async function removeList() {
     if (await deleteList()) navigate('/')
+  }
+
+  // Adding acknowledges itself with a short blip.
+  async function add(...args: Parameters<typeof addItem>) {
+    feedback('add')
+    await addItem(...args)
+  }
+
+  // Checking the last open item earns its own cue.
+  function toggle(item: Item) {
+    if (item.done_at) feedback('uncheck')
+    else feedback(open.length === 1 ? 'done' : 'check')
+    toggleItem(item)
   }
 
   function toggleField(field: QuickAddField) {
@@ -239,9 +254,15 @@ export function ListPage({ userId }: { userId: string }) {
         </div>
       )}
 
-      <QuickAdd fields={list.quick_add_fields} onAdd={addItem} onTyping={setTyped} />
+      <QuickAdd fields={list.quick_add_fields} onAdd={add} onTyping={setTyped} />
 
       {!items.length && <p className="muted">La lista está vacía. Agregá algo arriba.</p>}
+      {items.length > 0 && !open.length && !filter && (
+        <div className="all-done">
+          <Logo size={3.5} />
+          <p>Todo listo</p>
+        </div>
+      )}
       {filter && !visibleOpen.length && !visibleDone.length && (
         <p className="muted">Nada con ese nombre. Enter lo agrega.</p>
       )}
@@ -253,7 +274,7 @@ export function ListPage({ userId }: { userId: string }) {
             item={item}
             options={optionsByItem[item.id]}
             authorName={authorName(item)}
-            onToggle={() => toggleItem(item)}
+            onToggle={() => toggle(item)}
             onOpen={() => setOpenItemId(item.id)}
             onMoveUp={
               index && !list.sort_by_priority && !filter
@@ -279,7 +300,7 @@ export function ListPage({ userId }: { userId: string }) {
                 item={item}
                 options={optionsByItem[item.id]}
                 authorName={authorName(item)}
-                onToggle={copied.has(item.id) ? undefined : () => toggleItem(item)}
+                onToggle={copied.has(item.id) ? undefined : () => toggle(item)}
                 onOpen={() => setOpenItemId(item.id)}
               />
             ))}
