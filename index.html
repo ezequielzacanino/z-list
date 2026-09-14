@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fdf7f3" />
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#14151e" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#fdf7f3" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="apple-touch-icon" href="/icon-192.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -18,9 +18,12 @@
   <body>
     <script>
       // Paints the stored theme, or the system one, before the first frame.
-      document.documentElement.dataset.theme =
+      const theme =
         localStorage.getItem('theme') ??
         (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+      document.documentElement.dataset.theme = theme
+      document.querySelector('meta[name="theme-color"]').content =
+        theme === 'dark' ? '#14151e' : '#fdf7f3'
     </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>

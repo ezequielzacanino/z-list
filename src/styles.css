@@ -15,7 +15,7 @@
   --radius: 1.1rem;
   --radius-sm: 0.75rem;
   --shadow: 0 2px 10px rgb(120 80 60 / 6%);
-  color-scheme: light;
+  color-scheme: only light;
 }
 
 :root[data-theme='dark'] {
@@ -33,7 +33,7 @@
   --pink-ink: #bcabdf;
   --danger: #e08c8c;
   --shadow: 0 2px 10px rgb(0 0 0 / 35%);
-  color-scheme: dark;
+  color-scheme: only dark;
 }
 
 * {
