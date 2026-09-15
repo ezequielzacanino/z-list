@@ -5,6 +5,7 @@ tsconfig.tsbuildinfo
 
 # local environment and tooling
 .env*
-!.env.example
 .vercel
 supabase/.temp
+.claude/
+CLAUDE.md

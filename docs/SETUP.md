@@ -7,8 +7,16 @@ esquema de `supabase/migrations/`.
 ## Instancia mínima
 
 1. Crear un proyecto en [supabase.com](https://supabase.com).
-2. Copiar `.env.example` a `.env` y completar `VITE_SUPABASE_URL` y
-   `VITE_SUPABASE_ANON_KEY` (Project Settings → API).
+2. Crear un `.env` en la raíz con los valores de Project Settings → API:
+
+   ```
+   VITE_SUPABASE_URL=https://<proyecto>.supabase.co
+   VITE_SUPABASE_ANON_KEY=<anon key>
+   VITE_VAPID_PUBLIC_KEY=<clave pública VAPID>
+   ```
+
+   La clave VAPID sale del paso de notificaciones push, más abajo; sin ella la app
+   funciona, pero sin avisos.
 3. Aplicar las migraciones de `supabase/migrations/`, en orden, desde el SQL Editor.
    Con el proyecto linkeado a la CLI, `npm run db:push` aplica las pendientes.
 4. `npm run functions:deploy` publica las edge functions de `supabase/functions/`.

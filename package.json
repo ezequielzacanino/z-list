@@ -11,6 +11,11 @@
     "url": "https://github.com/ezequielzacanino/z-list.git"
   },
   "type": "module",
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "printWidth": 100
+  },
   "scripts": {
     "dev": "vite",
     "dev:lan": "vite --host",
