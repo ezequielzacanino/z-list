@@ -125,6 +125,7 @@ src/
   plants/       # list plants: kinds, species, pots, gradients and growth stages
 supabase/
   migrations/   # numbered SQL migrations, forward-only
+docs/           # SETUP.md, TASKS.md, PROJECT_LOG.md
 ```
 
 ## General rules
@@ -183,10 +184,10 @@ supabase/
   from the schema), turn it into a script under `scripts/` so it stays traceable and
   reproducible. The directory is created when the first script needs it.
 
-## PROJECT_LOG.md maintenance
+## docs/PROJECT_LOG.md maintenance
 
 - Update it **only** when a change affects the data model, sharing or permission
   rules, the realtime mechanism, generated outputs, or project structure. Do **not**
   log formatting, comments, renames, or style/tooling fixes.
 - Each entry: **Date, Summary, Files modified, Rationale**, kept to **3-8 lines**.
-- When the file grows unwieldy, split older months into `PROJECT_LOG_archive.md`.
+- When the file grows unwieldy, split older months into `docs/PROJECT_LOG_archive.md`.

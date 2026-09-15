@@ -1,7 +1,7 @@
 # TASKS
 
 Estado del proyecto. Lo terminado se mueve a **Hecho**; lo que se descarta se borra
-con una línea en `PROJECT_LOG.md` si cambió una decisión.
+con una línea en `PROJECT_LOG.md` (en esta misma carpeta) si cambió una decisión.
 
 ## Hecho
 

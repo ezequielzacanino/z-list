@@ -1,7 +1,15 @@
 {
-  "name": "listas",
-  "private": true,
+  "name": "z-list",
   "version": "0.1.0",
+  "private": true,
+  "description": "Listas compartidas con actualizacion en tiempo real, sobre React y Supabase",
+  "license": "MIT",
+  "author": "Ezequiel Zacanino",
+  "homepage": "https://z-list.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ezequielzacanino/z-list.git"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",

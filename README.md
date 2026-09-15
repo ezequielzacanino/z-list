@@ -1,63 +1,67 @@
 # Z-list
 
-App de listas compartidas con actualización en tiempo real:
-[z-list.vercel.app](https://z-list.vercel.app)
+Listas compartidas que se actualizan solas. Una pareja, una familia o un equipo abren
+la misma lista en sus teléfonos y cada alta, tildado o reorden aparece en el resto en
+el momento.
 
-## Puesta en marcha
+**[z-list.vercel.app](https://z-list.vercel.app)**
 
-1. Crear un proyecto en [supabase.com](https://supabase.com).
-2. Copiar `.env.example` a `.env` y completar `VITE_SUPABASE_URL` y
-   `VITE_SUPABASE_ANON_KEY` (Project Settings → API).
-3. Aplicar las migraciones de `supabase/migrations/`, en orden, desde el SQL Editor.
-   Con el proyecto linkeado a la CLI, `npm run db:push` aplica las pendientes.
-4. `npm run functions:deploy` publica las edge functions de `supabase/functions/`.
-5. En Authentication → URL Configuration, la URL de la app tiene que estar entre las
-   redirecciones permitidas: es a donde vuelve el invitado a poner su contraseña.
-6. `npm install && npm run dev`
+## Cómo es
 
-Para las notificaciones push, una vez por proyecto:
+Una lista es una sola pantalla con dos zonas: arriba lo pendiente, abajo el historial
+de lo tildado, de lo más reciente a lo más viejo y con el día en que se tildó cada
+cosa. Tildar no borra: mueve al historial, que queda como registro de lo que se hizo
+y cuándo.
 
-1. Generar un par de claves VAPID; la pública va a `VITE_VAPID_PUBLIC_KEY` en `.env` y
-   en las variables de Vercel, la privada queda sólo en Supabase.
-2. `supabase secrets set VAPID_PUBLIC_KEY=… VAPID_PRIVATE_KEY=… VAPID_SUBJECT=…`
-3. `npm run functions:deploy`
-4. `node scripts/setup_push.mjs`, que guarda en el vault la URL y la anon key con las
-   que el cron llama a la función.
+No hay tipos de lista. Todos los ítems pueden llevar los mismos atributos —cantidad,
+monto, fecha límite, repetición, prioridad, especificaciones y opciones con links—; lo
+que cambia entre listas es qué pide el formulario de carga rápida, para que agregar
+algo sean una o dos pulsaciones. Los **presets** (tareas del hogar, lista de compras,
+compras pendientes, presupuesto, simple) son puntos de partida de ese formulario y se
+cambian cuando se quiera, sin tocar los ítems ya cargados.
 
-`node scripts/query.mjs "<sql>"` consulta la base del proyecto linkeado, con la
-contraseña de `.env.local`; sirve para mirar `cron.job_run_details` o el estado de una
-tabla sin abrir el panel.
+## Qué hace
 
-## Uso
+- **Tiempo real.** Los cambios se propagan por Supabase Realtime, y el encabezado
+  muestra qué otros miembros tienen la lista abierta en ese momento.
+- **Compartir.** Se invita por email —si la cuenta no existe, se crea y le llega un
+  mail para poner su contraseña— o por un link de WhatsApp que vence a los 7 días y se
+  anula desde el mismo panel.
+- **Repeticiones.** Un ítem con repetición reaparece arriba como copia nueva (marcada
+  con `↻`) cuando pasa el intervalo desde que se tildó. La ocurrencia anterior queda
+  intacta en el historial, así que el historial contesta "¿lo compramos la vez
+  pasada?" para cada ciclo. Genera las copias el cron del servidor o la app al abrir
+  la lista, y nunca sale más de una por ocurrencia.
+- **Avisos.** Notificaciones push por fechas límite y, si se quiere, por lo que
+  agregan los demás, agrupadas por autor y lista.
+- **Presupuesto.** Una lista con montos suma lo abierto y lo tildado, compara este mes
+  contra el anterior y mide contra un tope opcional.
+- **Orden.** Manual arrastrando, por prioridad o agrupado por categoría de góndola; el
+  orden es el mismo para todos.
+- **Deshacer.** Tildar y borrar se hacen con un gesto y se pueden deshacer por unos
+  segundos; el borrado recién llega a la base cuando esa ventana se cierra.
+- **Buscar y repetir.** Escribir en el campo de carga rápida filtra las dos zonas y
+  ofrece ítems pasados con el mismo nombre, que vuelven con los atributos que tenían.
+- **PWA.** Se instala en la pantalla de inicio, funciona con tema claro u oscuro y
+  aguanta perder la conexión: lo que se hace sin señal sale cuando vuelve.
 
-- Se entra con email y contraseña. Las cuentas se crean a mano en Authentication →
-  Users, donde el mismo formulario fija la contraseña inicial. Quien no la tenga o la
-  olvide usa **Olvidé mi contraseña**, o entra con un link por email; ya adentro,
-  **Contraseña** en el encabezado la define.
-- El botón `☾`/`☀` del encabezado cambia entre tema claro y oscuro; arranca en el del
-  sistema y recuerda la elección en el dispositivo.
-- **Compartir** abre el panel de la lista. Invitar por email suma a la cuenta que ya
-  exista; si no existe, le crea una y le manda un mail para que ponga su contraseña.
-  **Compartir por WhatsApp** abre WhatsApp con un mensaje que lleva un link de
-  invitación, que vence a los 7 días y se anula desde el mismo panel. El panel lista
-  los miembros y las invitaciones vivas, y de las dos cosas se puede sacar a alguien.
-- Los ítems abiertos van arriba, el historial de tildados abajo, del más reciente al
-  más viejo y con el día en que se tildó cada uno. El orden de los abiertos es manual
-  y se puede alternar a orden por prioridad, elección que queda guardada en la lista.
-- Cada fila muestra quién agregó el ítem, sólo cuando lo agregó otra persona.
-- Si un ítem tiene especificaciones o links, cuelgan de su fila en una pestaña
-  angosta, sin abrir el detalle. Los links se abren de ahí mismo.
-- Un ítem con repetición reaparece arriba como copia (marcada con `↻`) cuando pasa el
-  intervalo desde que se tildó, la genere el cron del servidor o la app al abrir la
-  lista. La ocurrencia anterior queda en el historial y ya no se puede destildar. El
-  intervalo puede ser semanal, quincenal, mensual o libre en días.
-- **Avisos** suscribe ese dispositivo a las notificaciones de tareas vencidas: llega
-  un aviso por lista con las copias que generó el servidor. Hay que apretarlo en cada
-  dispositivo, y en iPhone con la app ya instalada en la pantalla de inicio.
-- **Campos** elige qué pide el formulario de carga rápida en esa lista. Cualquier
-  atributo se puede poner igual entrando al ítem.
-- Escribir en **Agregar** filtra los abiertos y el historial por nombre mientras se
-  tipea; Enter agrega lo escrito.
-- **Mandar como texto**, dentro de Compartir, abre la hoja de compartir del teléfono
-  con los ítems abiertos en texto plano, o los copia al portapapeles en escritorio.
-- **Instalar** deja la lista como ícono propio en la pantalla de inicio.
+## La planta
+
+Cada lista tiene una planta en maceta, de estilo japonés, sorteada entre cincuenta
+especies al crearla. Usar la lista la hace crecer —un punto por agregar un ítem, tres
+por completarlo la primera vez— a lo largo de veinte etapas; una semana sin usarla la
+hace retroceder. Las copias automáticas y los tildados repetidos no suman.
+
+## Stack
+
+React + TypeScript + Vite con una hoja de estilos plana, sin librería de estado ni
+framework de UI. Supabase (Postgres, Auth, Realtime, Row Level Security y edge
+functions) es el único servidor; el front es un build estático en Vercel.
+
+## Correrlo
+
+Ver [docs/SETUP.md](docs/SETUP.md).
+
+## Licencia
+
+MIT — ver [LICENSE](LICENSE).

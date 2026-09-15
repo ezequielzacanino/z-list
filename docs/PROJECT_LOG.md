@@ -506,3 +506,16 @@ un guion de crecimiento de 19 pasos. `Monster` y `MonsterBadge` pasan a `Plant` 
 **Fundamento**: Sin cambios de esquema: `lists.monster` sigue guardando un índice de 0 a
 49, que ahora elige la especie de planta. Los gradientes llevan un prefijo por dibujo
 para que varias plantas en la misma pantalla no compartan ids.
+
+## 2026-09-15 — Presentación del repositorio
+
+**Resumen**: El README describe la app —qué es, cómo funciona, qué hace— y la puesta
+en marcha pasa a `docs/SETUP.md`. Los documentos internos se agrupan en `docs/`, el
+proyecto queda con licencia MIT y `package.json` con nombre, autor y repositorio.
+
+**Archivos**: `README.md`, `docs/SETUP.md`, `docs/TASKS.md`, `docs/PROJECT_LOG.md`,
+`LICENSE`, `.gitignore`, `package.json`, `package-lock.json`, `CLAUDE.md`.
+
+**Fundamento**: El repositorio es público: la portada tiene que explicar la app a
+quien llega de afuera, no dar instrucciones de instalación a quien ya la conoce. La
+licencia explícita permite reusar el código, que sin ella queda reservado.
